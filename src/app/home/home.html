@@ -1,0 +1,28 @@
+<div class="home">
+  <div class="hero">
+    <div class="flag-icons">🌍</div>
+    <h1>Flag Drawing Game</h1>
+    <p class="subtitle">Test your vexillology skills! Draw country flags from memory.</p>
+  </div>
+
+  <div class="difficulty-section">
+    <h2>Choose Difficulty</h2>
+    <div class="cards">
+      @for (d of difficulties; track d.key) {
+        <button
+          class="card"
+          [class.selected]="selected() === d.key"
+          (click)="select(d.key)"
+        >
+          <span class="card-emoji">{{ d.emoji }}</span>
+          <span class="card-label">{{ d.label }}</span>
+          <span class="card-desc">{{ d.description }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <button class="start-btn" (click)="startGame()">
+    🚩 Start Drawing!
+  </button>
+</div>

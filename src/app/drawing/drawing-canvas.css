@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.canvas-wrapper {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  /* width and aspect-ratio set dynamically based on country ratio */
+  width: 100%;
+  margin: 0 auto;
+}
+
+.base-canvas,
+.splits-canvas,
+.overlay-canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.splits-canvas {
+  pointer-events: none;
+}
+
+.overlay-canvas {
+  cursor: crosshair;
+}
+
+.overlay-canvas.eraser-cursor {
+  cursor: cell;
+}
+
+.overlay-canvas.crosshair-cursor {
+  cursor: crosshair;
+}
+
+.overlay-canvas.placement-cursor {
+  cursor: copy;
+}

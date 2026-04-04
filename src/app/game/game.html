@@ -1,0 +1,51 @@
+<div class="game-screen">
+  <div class="header">
+    <div class="country-info">
+      <span class="label">Draw the flag of</span>
+      <h1 class="country-name">{{ gameState.currentCountry()?.name }}</h1>
+    </div>
+    <div class="progress">
+      <span class="progress-text">
+        {{ gameState.roundScores().length + 1 }} / {{ gameState.roundScores().length + 1 + gameState.queue().length }}
+      </span>
+    </div>
+  </div>
+
+  <app-toolbar
+    [activeTool]="activeTool()"
+    [activeColor]="activeColor()"
+    (toolChange)="onToolChange($event)"
+    (colorChange)="onColorChange($event)"
+    (clearCanvas)="onClearCanvas()"
+    (openElements)="onOpenElements()"
+  />
+
+  <!-- Placement mode banner -->
+  @if (drawingCanvas?.isPlacingElement()) {
+    <div class="placement-banner">
+      <span>Click on the canvas to stamp the element — right-click or <kbd>Esc</kbd> to cancel</span>
+      <button class="cancel-placement-btn" (click)="drawingCanvas.cancelPlacement()">Cancel</button>
+    </div>
+  }
+
+  <div class="canvas-area">
+    <app-drawing-canvas
+      [tool]="activeTool()"
+      [color]="activeColor()"
+      [ratio]="gameState.currentCountry()?.ratio ?? '2:3'"
+      (placementCancelled)="onPlacementCancelled()"
+    />
+  </div>
+
+  <button class="submit-btn" (click)="submit()">
+    ✅ Submit Drawing
+  </button>
+</div>
+
+<app-elements-modal
+  [isOpen]="isElementsModalOpen()"
+  [activeColor]="activeColor()"
+  (closed)="isElementsModalOpen.set(false)"
+  (elementSelected)="onElementSelected($event)"
+  (splitsSelected)="onSplitsSelected($event)"
+/>

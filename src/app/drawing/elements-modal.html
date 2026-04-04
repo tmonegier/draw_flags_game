@@ -1,0 +1,87 @@
+@if (isOpen()) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)">
+    <div class="modal-panel">
+
+      <div class="modal-header">
+        <h2 class="modal-title">Flag Elements</h2>
+        <button class="close-btn" (click)="onClose()" title="Close">✕</button>
+      </div>
+
+      <!-- Category tabs -->
+      <div class="category-tabs">
+        @for (cat of categories; track cat.id) {
+          <button
+            class="cat-tab"
+            [class.active]="activeCategory() === cat.id"
+            (click)="setCategory(cat.id)"
+          >{{ cat.label }}</button>
+        }
+      </div>
+
+      <!-- Element / Band grid -->
+      <div class="element-grid">
+        @for (item of filteredItems(); track item.kind === 'element' ? item.el.id : item.direction) {
+          @if (item.kind === 'band') {
+            <button
+              class="element-card band-card"
+              [class.selected]="isItemSelected(item)"
+              (click)="selectItem(item)"
+            >
+              <div class="element-preview" [innerHTML]="getBandPreviewSvg(item.direction)"></div>
+              <span class="element-name">{{ item.label }}</span>
+            </button>
+          } @else {
+            <button
+              class="element-card"
+              [class.selected]="isItemSelected(item)"
+              (click)="selectItem(item)"
+              [title]="item.el.name"
+            >
+              <div class="element-preview" [innerHTML]="getElementPreviewSvg(item.el)"></div>
+              <span class="element-name">{{ item.el.name }}</span>
+              <span class="element-flag">{{ item.el.flagOf }}</span>
+            </button>
+          }
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        @if (isBandSelected()) {
+          <div class="band-config">
+            <select
+              class="band-count-select"
+              [value]="splitCount()"
+              (change)="setSplitCount(+$any($event.target).value)"
+            >
+              @for (n of splitCounts; track n) {
+                <option [value]="n">{{ n }} bands</option>
+              }
+            </select>
+            <div class="splits-ratios">
+              @for (r of splitRatios(); track $index; let idx = $index) {
+                @if (idx > 0) { <span class="ratio-sep">:</span> }
+                <input
+                  type="number"
+                  class="ratio-input"
+                  min="1"
+                  max="9"
+                  [value]="r"
+                  (change)="updateRatio(idx, $event)"
+                />
+              }
+            </div>
+          </div>
+        }
+        <button
+          class="place-btn"
+          [disabled]="!selectedItem()"
+          (click)="onOk()"
+        >
+          OK!
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

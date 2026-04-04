@@ -1,0 +1,125 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+}
+
+.divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.12);
+  flex-shrink: 0;
+}
+
+/* Tools */
+.tool-group {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.tool-btn {
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  color: #ccc;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-btn:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.tool-btn.active {
+  background: rgba(99, 179, 237, 0.25);
+  border-color: #63b3ed;
+  color: #fff;
+}
+
+/* Color picker */
+.color-picker-wrapper {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.color-picker-swatch {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,0.25);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.1);
+  transition: border-color 0.15s, transform 0.15s;
+  pointer-events: none;
+}
+
+.color-picker-wrapper:hover .color-picker-swatch {
+  border-color: #63b3ed;
+  transform: scale(1.08);
+}
+
+.color-picker-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+/* Elements button */
+.elements-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  background: rgba(154, 117, 237, 0.15);
+  border: 1px solid rgba(154, 117, 237, 0.35);
+  border-radius: 8px;
+  color: #b794f4;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.elements-btn:hover {
+  background: rgba(154, 117, 237, 0.28);
+  border-color: #b794f4;
+  color: #fff;
+}
+
+/* Clear */
+.clear-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  background: rgba(245, 101, 101, 0.15);
+  border: 1px solid rgba(245, 101, 101, 0.3);
+  border-radius: 8px;
+  color: #fc8181;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.clear-btn:hover {
+  background: rgba(245, 101, 101, 0.3);
+}

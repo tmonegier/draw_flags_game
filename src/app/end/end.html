@@ -1,0 +1,43 @@
+<div class="end-screen">
+  <div class="trophy">🏆</div>
+  <h1>Game Over!</h1>
+
+  <div class="overall-score">
+    <span class="avg-label">Overall Score</span>
+    <div class="avg-badge" [style.border-color]="gradeColor(gameState.overallGrade())" [style.color]="gradeColor(gameState.overallGrade())">
+      <span class="avg-number">{{ gameState.averageScore() }}%</span>
+      <span class="avg-grade">{{ gameState.overallGrade() }}</span>
+    </div>
+  </div>
+
+  <div class="cards">
+    @for (round of gameState.roundScores(); track round.code; let i = $index) {
+      <div class="card">
+        <div class="card-header">
+          <span class="card-index">{{ i + 1 }}</span>
+          <span class="card-country">{{ round.country }}</span>
+          <span class="card-grade" [style.color]="gradeColor(round.grade)">{{ round.grade }}</span>
+          <span class="card-score">{{ round.score }}%</span>
+        </div>
+        <div class="card-flags">
+          <div class="flag-slot">
+            <span class="flag-slot-label">Your drawing</span>
+            <div class="flag-frame" [style.aspect-ratio]="aspectRatio(round.ratio)">
+              <img [src]="round.drawingDataUrl" [alt]="round.country" class="flag-img" />
+            </div>
+          </div>
+          <div class="flag-slot">
+            <span class="flag-slot-label">Real flag</span>
+            <div class="flag-frame" [style.aspect-ratio]="aspectRatio(round.ratio)">
+              <img [src]="'/flags/' + round.svgFile" [alt]="round.country" class="flag-img" />
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <button class="play-again-btn" (click)="playAgain()">
+    🔄 Play Again
+  </button>
+</div>

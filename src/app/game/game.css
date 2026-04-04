@@ -1,0 +1,122 @@
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.5rem 1rem 2rem;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 800px;
+}
+
+.country-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: #8892a4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.country-name {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.progress {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 0.35rem 0.9rem;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: #b0b8c8;
+  font-weight: 600;
+}
+
+app-toolbar {
+  width: 100%;
+  max-width: 800px;
+}
+
+.canvas-area {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: center;
+}
+
+.submit-btn {
+  padding: 0.85rem 2.8rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 18px rgba(72, 187, 120, 0.35);
+}
+
+.placement-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  max-width: 640px;
+  padding: 0.55rem 1rem;
+  background: rgba(66, 153, 225, 0.12);
+  border: 1px solid rgba(66, 153, 225, 0.3);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #90cdf4;
+}
+
+.placement-banner kbd {
+  display: inline-block;
+  padding: 0.05rem 0.35rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.cancel-placement-btn {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(245,101,101,0.15);
+  border: 1px solid rgba(245,101,101,0.3);
+  border-radius: 6px;
+  color: #fc8181;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.cancel-placement-btn:hover {
+  background: rgba(245,101,101,0.3);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(72, 187, 120, 0.55);
+}
