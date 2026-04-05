@@ -54,8 +54,10 @@ describe('GameComponent', () => {
     expect(component.activeTool()).toBe('fill');
   });
 
-  it('activeColor defaults to #000000', () => {
-    expect(component.activeColor()).toBe('#000000');
+  it('activeColor is set to the first flag color in easy mode after init', () => {
+    const country = gameState.currentCountry()!;
+    expect(country.colors.length).toBeGreaterThan(0);
+    expect(component.activeColor()).toBe(country.colors[0]);
   });
 
   it('isElementsModalOpen defaults to false', () => {

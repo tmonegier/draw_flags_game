@@ -13,16 +13,30 @@
 
   <div class="divider"></div>
 
-  <!-- Color picker -->
-  <div class="color-picker-wrapper" title="Pick a color">
-    <div class="color-picker-swatch" [style.background]="activeColor()"></div>
-    <input
-      type="color"
-      class="color-picker-input"
-      [value]="activeColor()"
-      (input)="onColorInput($event)"
-    />
-  </div>
+  <!-- Color picker or restricted palette -->
+  @if (allowedColors(); as palette) {
+    <div class="color-palette">
+      @for (c of palette; track c) {
+        <button
+          class="palette-swatch"
+          [class.active]="activeColor() === c"
+          [style.background]="c"
+          [title]="c"
+          (click)="colorChange.emit(c)"
+        ></button>
+      }
+    </div>
+  } @else {
+    <div class="color-picker-wrapper" title="Pick a color">
+      <div class="color-picker-swatch" [style.background]="activeColor()"></div>
+      <input
+        type="color"
+        class="color-picker-input"
+        [value]="activeColor()"
+        (input)="onColorInput($event)"
+      />
+    </div>
+  }
 
   <div class="divider"></div>
 

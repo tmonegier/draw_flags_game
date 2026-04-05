@@ -4,6 +4,7 @@ import {
   computed, input, output, signal
 } from '@angular/core';
 import { DrawingTool, CrossConfig } from './toolbar';
+import { DrawingHint } from '../services/country.service';
 import { FlagElement } from './flag-elements';
 
 export const CANVAS_HEIGHT = 400;
@@ -105,6 +106,72 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     this.baseCtx.fillRect(0, 0, W, H);
     this.splitsCtx.clearRect(0, 0, W, H);
     this.overlayCtx.clearRect(0, 0, W, H);
+  }
+
+  applyHints(hints: DrawingHint[]): void {
+    for (const hint of hints) {
+      if (hint.kind === 'bands') {
+        this.applySplits(hint.direction, hint.ratios);
+      } else if (hint.kind === 'cross') {
+        this.applyNordicCross({ variant: hint.variant, widthRatios: hint.widthRatios, heightRatios: hint.heightRatios });
+      } else {
+        this.drawCrossOutline(hint.widthRatios, hint.heightRatios);
+      }
+    }
+  }
+
+  /**
+   * Draws a plus-sign outline on baseCanvas for flags whose cross does NOT extend
+   * to the flag edges (e.g. Switzerland). The outline pixel color differs from
+   * white so flood fill treats it as a boundary, leaving the background as one
+   * connected fillable region.
+   *
+   * widthRatios / heightRatios must yield exactly 4 positions via toPositions():
+   * [outer-left, inner-left, inner-right, outer-right].
+   */
+  drawCrossOutline(widthRatios: number[], heightRatios: number[]): void {
+    const W = this.canvasWidth();
+    const H = this.canvasHeight;
+
+    const toPositions = (ratios: number[], total: number): number[] => {
+      const sum = ratios.reduce((a, b) => a + b, 0);
+      const positions: number[] = [];
+      let acc = 0;
+      for (let i = 0; i < ratios.length - 1; i++) {
+        acc += ratios[i];
+        positions.push(Math.round(acc / sum * total));
+      }
+      return positions;
+    };
+
+    const xPos = toPositions(widthRatios, W);
+    const yPos = toPositions(heightRatios, H);
+    if (xPos.length < 4 || yPos.length < 4) return;
+
+    const [x0, x1, x2, x3] = xPos;
+    const [y0, y1, y2, y3] = yPos;
+
+    const ctx = this.baseCtx;
+    ctx.save();
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    // 12-vertex plus-sign polygon, clockwise from top-left of top arm
+    ctx.moveTo(x1, y0);
+    ctx.lineTo(x2, y0);
+    ctx.lineTo(x2, y1);
+    ctx.lineTo(x3, y1);
+    ctx.lineTo(x3, y2);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x2, y3);
+    ctx.lineTo(x1, y3);
+    ctx.lineTo(x1, y2);
+    ctx.lineTo(x0, y2);
+    ctx.lineTo(x0, y1);
+    ctx.lineTo(x1, y1);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
   }
 
   applyNordicCross(config: CrossConfig): void {

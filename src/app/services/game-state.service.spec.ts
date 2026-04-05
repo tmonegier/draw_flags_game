@@ -89,19 +89,19 @@ describe('GameStateService', () => {
       expect(service.currentCountry()).not.toBeNull();
     });
 
-    it('queue length + 1 equals total country count for easy (9)', () => {
+    it('queue length + 1 equals 10 for easy', () => {
       service.startGame('easy');
-      expect(service.queue().length + 1).toBe(9);
+      expect(service.queue().length + 1).toBe(10);
     });
 
-    it('queue length + 1 equals total country count for medium (10)', () => {
+    it('queue length + 1 equals 10 for medium', () => {
       service.startGame('medium');
       expect(service.queue().length + 1).toBe(10);
     });
 
-    it('queue length + 1 equals total country count for hard (6)', () => {
+    it('queue length + 1 equals 10 for hard', () => {
       service.startGame('hard');
-      expect(service.queue().length + 1).toBe(6);
+      expect(service.queue().length + 1).toBe(10);
     });
 
     it('clears drawingDataUrl', () => {
@@ -170,7 +170,7 @@ describe('GameStateService', () => {
   // ── nextCountry ───────────────────────────────────────────────────────────
 
   describe('nextCountry', () => {
-    beforeEach(() => service.startGame('easy')); // 1 current + 8 queue
+    beforeEach(() => service.startGame('easy')); // 1 current + 9 queue
 
     it('returns true when the queue is not empty', () => {
       expect(service.nextCountry()).toBeTrue();
@@ -195,14 +195,14 @@ describe('GameStateService', () => {
     });
 
     it('returns false when queue is empty', () => {
-      service.startGame('hard'); // 1 current + 5 queue
-      for (let i = 0; i < 5; i++) service.nextCountry();
+      service.startGame('hard'); // 1 current + 9 queue
+      for (let i = 0; i < 9; i++) service.nextCountry();
       expect(service.nextCountry()).toBeFalse();
     });
 
     it('does not change currentCountry when queue is empty', () => {
       service.startGame('hard');
-      for (let i = 0; i < 5; i++) service.nextCountry();
+      for (let i = 0; i < 9; i++) service.nextCountry();
       const last = service.currentCountry();
       service.nextCountry(); // returns false, should not change
       expect(service.currentCountry()).toEqual(last);
@@ -222,8 +222,8 @@ describe('GameStateService', () => {
     });
 
     it('is true when the queue is drained and currentCountry is set', () => {
-      service.startGame('hard'); // 6 countries total
-      for (let i = 0; i < 5; i++) service.nextCountry();
+      service.startGame('hard'); // 10 countries total
+      for (let i = 0; i < 9; i++) service.nextCountry();
       expect(service.isGameOver()).toBeTrue();
     });
   });

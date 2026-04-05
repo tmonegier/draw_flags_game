@@ -40,6 +40,8 @@ export interface ToolState {
 export class ToolbarComponent {
   activeTool = input.required<DrawingTool>();
   activeColor = input.required<string>();
+  /** When non-null, replaces the free color picker with a fixed palette of flag colors. */
+  allowedColors = input<string[] | null>(null);
 
   toolChange = output<DrawingTool>();
   colorChange = output<string>();

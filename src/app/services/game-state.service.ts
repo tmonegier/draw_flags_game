@@ -44,7 +44,7 @@ export class GameStateService {
   startGame(difficulty: Difficulty): void {
     this.difficulty.set(difficulty);
     this.roundScores.set([]);
-    const all = this.countryService.shuffle(this.countryService.getCountries(difficulty));
+    const all = this.countryService.shuffle(this.countryService.getCountries());
     const [first, ...rest] = all.slice(0, 10);
     this.currentCountry.set(first);
     this.queue.set(rest);

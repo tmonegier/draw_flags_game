@@ -12,68 +12,98 @@ describe('CountryService', () => {
   // ── getCountries ─────────────────────────────────────────────────────────────
 
   describe('getCountries', () => {
-    it('returns 9 countries for easy', () => {
-      expect(service.getCountries('easy').length).toBe(9);
-    });
-
-    it('returns 10 countries for medium', () => {
-      expect(service.getCountries('medium').length).toBe(10);
-    });
-
-    it('returns 6 countries for hard', () => {
-      expect(service.getCountries('hard').length).toBe(6);
+    it('returns 40 countries', () => {
+      expect(service.getCountries().length).toBe(40);
     });
 
     it('returns a new array each call (not the same reference)', () => {
-      const a = service.getCountries('easy');
-      const b = service.getCountries('easy');
-      expect(a).not.toBe(b);
+      expect(service.getCountries()).not.toBe(service.getCountries());
     });
 
     it('does not mutate internal data when the returned array is modified', () => {
-      const a = service.getCountries('easy');
-      a.push({ name: 'Test', code: 'xx', ratio: '1:1', svgFile: 'test.svg' });
-      expect(service.getCountries('easy').length).toBe(9);
+      const a = service.getCountries();
+      a.push({ name: 'Test', code: 'xx', ratio: '1:1', svgFile: 'test.svg', hints: [], colors: [] });
+      expect(service.getCountries().length).toBe(40);
     });
 
     it('every country has a non-empty name', () => {
-      for (const diff of ['easy', 'medium', 'hard'] as const) {
-        service.getCountries(diff).forEach(c => expect(c.name).toBeTruthy());
-      }
+      service.getCountries().forEach(c => expect(c.name).toBeTruthy());
     });
 
     it('every country has a non-empty code', () => {
-      for (const diff of ['easy', 'medium', 'hard'] as const) {
-        service.getCountries(diff).forEach(c => expect(c.code).toBeTruthy());
-      }
+      service.getCountries().forEach(c => expect(c.code).toBeTruthy());
     });
 
     it('every country ratio matches the h:w pattern', () => {
-      for (const diff of ['easy', 'medium', 'hard'] as const) {
-        service.getCountries(diff).forEach(c =>
-          expect(c.ratio).toMatch(/^\d+:\d+$/)
-        );
-      }
+      service.getCountries().forEach(c => expect(c.ratio).toMatch(/^\d+:\d+$/));
     });
 
     it('every country svgFile ends with .svg', () => {
-      for (const diff of ['easy', 'medium', 'hard'] as const) {
-        service.getCountries(diff).forEach(c =>
-          expect(c.svgFile).toMatch(/\.svg$/)
-        );
-      }
+      service.getCountries().forEach(c => expect(c.svgFile).toMatch(/\.svg$/));
     });
 
-    it('easy countries include France', () => {
-      expect(service.getCountries('easy').map(c => c.name)).toContain('France');
+    it('every country has a non-empty hints array', () => {
+      service.getCountries().forEach(c => expect(c.hints.length).toBeGreaterThan(0));
     });
 
-    it('medium countries include Armenia', () => {
-      expect(service.getCountries('medium').map(c => c.name)).toContain('Armenia');
+    it('every country has at least one color', () => {
+      service.getCountries().forEach(c => expect(c.colors.length).toBeGreaterThan(0));
     });
 
-    it('hard countries include Madagascar', () => {
-      expect(service.getCountries('hard').map(c => c.name)).toContain('Madagascar');
+    it('every color is a valid hex string', () => {
+      service.getCountries().forEach(c =>
+        c.colors.forEach(col => expect(col).toMatch(/^#[0-9a-fA-F]{6}$/))
+      );
+    });
+
+    it('includes France', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('France');
+    });
+
+    it('includes Armenia', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Armenia');
+    });
+
+    it('includes Madagascar', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Madagascar');
+    });
+
+    it('includes Norway', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Norway');
+    });
+
+    it('band hints have a direction and non-empty ratios', () => {
+      service.getCountries().forEach(c =>
+        c.hints.forEach(h => {
+          if (h.kind === 'bands') {
+            expect(['horizontal', 'vertical']).toContain(h.direction);
+            expect(h.ratios.length).toBeGreaterThan(0);
+          }
+        })
+      );
+    });
+
+    it('cross hints have a valid variant and non-empty ratio arrays', () => {
+      service.getCountries().forEach(c =>
+        c.hints.forEach(h => {
+          if (h.kind === 'cross') {
+            expect(['simple', 'double']).toContain(h.variant);
+            expect(h.widthRatios.length).toBeGreaterThan(0);
+            expect(h.heightRatios.length).toBeGreaterThan(0);
+          }
+        })
+      );
+    });
+
+    it('crossOutline hints have non-empty ratio arrays with at least 5 parts each', () => {
+      service.getCountries().forEach(c =>
+        c.hints.forEach(h => {
+          if (h.kind === 'crossOutline') {
+            expect(h.widthRatios.length).toBeGreaterThanOrEqual(5);
+            expect(h.heightRatios.length).toBeGreaterThanOrEqual(5);
+          }
+        })
+      );
     });
   });
 
@@ -111,7 +141,7 @@ describe('CountryService', () => {
     });
 
     it('returns the same elements when shuffling country objects', () => {
-      const countries = service.getCountries('easy');
+      const countries = service.getCountries();
       const shuffled = service.shuffle(countries);
       expect(shuffled.length).toBe(countries.length);
       countries.forEach(c => expect(shuffled).toContain(c));

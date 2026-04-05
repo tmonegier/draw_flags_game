@@ -15,9 +15,9 @@ export class HomeComponent {
   selected = signal<Difficulty>('easy');
 
   readonly difficulties: { key: Difficulty; label: string; description: string; emoji: string }[] = [
-    { key: 'easy', label: 'Easy', description: 'Well-known countries with simple flags', emoji: '🟢' },
-    { key: 'medium', label: 'Medium', description: 'Countries with more complex designs', emoji: '🟡' },
-    { key: 'hard', label: 'Hard', description: 'Challenging flags from around the world', emoji: '🔴' },
+    { key: 'easy',   label: 'Easy',   description: 'Bands pre-drawn — pick from flag colors only', emoji: '🟢' },
+    { key: 'medium', label: 'Medium', description: 'Bands pre-drawn — use any color you like',     emoji: '🟡' },
+    { key: 'hard',   label: 'Hard',   description: 'Blank canvas — draw everything from scratch',  emoji: '🔴' },
   ];
 
   select(difficulty: Difficulty): void {

@@ -106,8 +106,8 @@ describe('CompareComponent', () => {
   });
 
   it('hasMore is false when the queue is empty', async () => {
-    gameState.startGame('hard'); // 1 current + 5 queue
-    for (let i = 0; i < 5; i++) gameState.nextCountry(); // drain queue
+    gameState.startGame('hard'); // 1 current + 9 queue
+    for (let i = 0; i < 9; i++) gameState.nextCountry(); // drain queue
     gameState.submitDrawing('data:x', 600, 400);
     fixture   = TestBed.createComponent(CompareComponent);
     component = fixture.componentInstance;
@@ -258,7 +258,7 @@ describe('CompareComponent', () => {
 
   it('next() navigates to /end when the queue is exhausted', async () => {
     gameState.startGame('hard');
-    for (let i = 0; i < 5; i++) gameState.nextCountry(); // drain queue
+    for (let i = 0; i < 9; i++) gameState.nextCountry(); // drain queue
     gameState.submitDrawing('data:x', 600, 400);
     fixture   = TestBed.createComponent(CompareComponent);
     component = fixture.componentInstance;

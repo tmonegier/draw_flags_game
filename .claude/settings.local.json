@@ -4,7 +4,17 @@
       "WebFetch(domain:en.wikipedia.org)",
       "Bash(python3 -c \"import requests, bs4; print\\('requests+bs4 ok'\\)\")",
       "Bash(git branch:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npm test:*)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --no-watch --no-progress)",
+      "Bash(git:*)",
+      "Bash(python3)",
+      "Bash(python3:*)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/4/4c/Flag_of_Sweden.svg\" -o /home/m78730/projects/flag_draws/public/flags/sweden.svg)",
+      "Bash(npm run:*)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg\" -o /home/m78730/projects/flag_draws/public/flags/greece.svg)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --watch=false)"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, signal } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { DrawingCanvasComponent } from '../drawing/drawing-canvas';
@@ -12,7 +12,7 @@ import { SplitConfig, CrossConfig } from '../drawing/toolbar';
   styleUrl: './game.css',
   imports: [DrawingCanvasComponent, ToolbarComponent, ElementsModalComponent],
 })
-export class GameComponent {
+export class GameComponent implements AfterViewInit {
   @ViewChild(DrawingCanvasComponent) drawingCanvas!: DrawingCanvasComponent;
 
   private readonly router = inject(Router);
@@ -21,6 +21,31 @@ export class GameComponent {
   activeTool = signal<DrawingTool>('fill');
   activeColor = signal<string>('#000000');
   isElementsModalOpen = signal(false);
+
+  /** In easy mode, restrict the palette to the current flag's colors. */
+  readonly allowedColors = computed<string[] | null>(() => {
+    if (this.gameState.difficulty() === 'easy') {
+      return this.gameState.currentCountry()?.colors ?? null;
+    }
+    return null;
+  });
+
+  ngAfterViewInit(): void {
+    const country = this.gameState.currentCountry();
+    const difficulty = this.gameState.difficulty();
+    if (!country) return;
+
+    if (difficulty === 'easy' || difficulty === 'medium') {
+      // Defer one tick so DrawingCanvasComponent.ngAfterViewInit runs first.
+      setTimeout(() => {
+        this.drawingCanvas.applyHints(country.hints);
+      });
+    }
+
+    if (difficulty === 'easy' && country.colors.length > 0) {
+      this.activeColor.set(country.colors[0]);
+    }
+  }
 
   onToolChange(tool: DrawingTool): void {
     this.activeTool.set(tool);

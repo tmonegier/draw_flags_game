@@ -88,6 +88,36 @@
   padding: 0;
 }
 
+/* Color palette (easy mode) */
+.color-palette {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.palette-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+}
+
+.palette-swatch:hover {
+  transform: scale(1.15);
+  border-color: rgba(255,255,255,0.6);
+}
+
+.palette-swatch.active {
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 2px #63b3ed;
+  transform: scale(1.1);
+}
+
 /* Elements button */
 .elements-btn {
   padding: 0.4rem 0.8rem;
