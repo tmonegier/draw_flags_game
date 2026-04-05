@@ -111,7 +111,6 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const W = this.canvasWidth();
     const H = this.canvasHeight;
     const ctx = this.splitsCtx;
-    ctx.clearRect(0, 0, W, H);
     ctx.save();
     ctx.strokeStyle = '#888888';
     ctx.lineWidth = 1;
@@ -144,7 +143,6 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const H = this.canvasHeight;
     const total = ratios.reduce((s, r) => s + r, 0);
     const ctx = this.splitsCtx;
-    ctx.clearRect(0, 0, W, H);
     ctx.save();
     ctx.strokeStyle = '#888888';
     ctx.lineWidth = 1;
