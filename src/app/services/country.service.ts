@@ -9,7 +9,7 @@ export interface Country {
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
-// Only flags made purely of rectangular bands (no symbols, emblems or stars).
+// Flags drawable with the available tools: rectangular bands and/or a Nordic/centered cross.
 // Ratio format: height:width (Wikipedia convention).
 const COUNTRIES: Record<Difficulty, Country[]> = {
   easy: [
@@ -55,6 +55,8 @@ const COUNTRIES: Record<Difficulty, Country[]> = {
     { name: 'Guatemala',            code: 'gt', ratio: '5:8',   svgFile: 'guatemala.svg'            },
     { name: 'Norway',               code: 'no', ratio: '8:11',  svgFile: 'norway.svg'               },
     { name: 'Iceland',              code: 'is', ratio: '18:25', svgFile: 'iceland.svg'              },
+    { name: 'Switzerland',          code: 'ch', ratio: '1:1',   svgFile: 'switzerland.svg'          },
+    { name: 'Greece',               code: 'gr', ratio: '2:3',   svgFile: 'greece.svg'               },
   ],
 };
 
