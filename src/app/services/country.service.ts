@@ -22,6 +22,9 @@ const COUNTRIES: Record<Difficulty, Country[]> = {
     { name: 'Latvia',      code: 'lv', ratio: '1:2',   svgFile: 'latvia.svg'      },
     { name: 'Estonia',     code: 'ee', ratio: '7:11',  svgFile: 'estonia.svg'     },
     { name: 'Monaco',      code: 'mc', ratio: '4:5',   svgFile: 'monaco.svg'      },
+    { name: 'Spain',       code: 'es', ratio: '2:3',   svgFile: 'spain.svg'       },
+    { name: 'Argentina',   code: 'ar', ratio: '5:8',   svgFile: 'argentina.svg'   },
+    { name: 'Russia',      code: 'ru', ratio: '2:3',   svgFile: 'russia.svg'      },
   ],
   medium: [
     { name: 'Armenia',      code: 'am', ratio: '1:2', svgFile: 'armenia.svg'      },
@@ -34,6 +37,9 @@ const COUNTRIES: Record<Difficulty, Country[]> = {
     { name: 'Sierra Leone', code: 'sl', ratio: '2:3', svgFile: 'sierra_leone.svg' },
     { name: 'Yemen',        code: 'ye', ratio: '1:2', svgFile: 'yemen.svg'        },
     { name: 'Peru',         code: 'pe', ratio: '2:3', svgFile: 'peru.svg'         },
+    { name: 'Serbia',       code: 'rs', ratio: '2:3', svgFile: 'serbia.svg'       },
+    { name: 'Haiti',        code: 'ht', ratio: '3:5', svgFile: 'haiti.svg'        },
+    { name: 'Costa Rica',   code: 'cr', ratio: '3:5', svgFile: 'costa_rica.svg'   },
   ],
   hard: [
     { name: 'Gabon',                code: 'ga', ratio: '3:4', svgFile: 'gabon.svg'                  },
@@ -42,6 +48,8 @@ const COUNTRIES: Record<Difficulty, Country[]> = {
     { name: 'Botswana',             code: 'bw', ratio: '2:3', svgFile: 'botswana.svg'               },
     { name: 'United Arab Emirates', code: 'ae', ratio: '1:2', svgFile: 'united_arab_emirates.svg'   },
     { name: 'Madagascar',           code: 'mg', ratio: '2:3', svgFile: 'madagascar.svg'             },
+    { name: 'Andorra',              code: 'ad', ratio: '7:10', svgFile: 'andorra.svg'               },
+    { name: 'Guatemala',            code: 'gt', ratio: '5:8', svgFile: 'guatemala.svg'              },
   ],
 };
 
