@@ -195,11 +195,27 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
       return positions;
     };
 
-    for (const x of toPositions(config.widthRatios, W)) {
-      ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H); ctx.stroke();
+    const xPos = toPositions(config.widthRatios, W);
+    const yPos = toPositions(config.heightRatios, H);
+
+    // Each guide line at index i is paired with its symmetric counterpart: the
+    // outer pair skips the full cross bar, the inner pair (double cross) skips only
+    // the inner bar. This makes each cross-arm level a single flood-fill region.
+    for (let i = 0; i < xPos.length; i++) {
+      const p = Math.min(i, xPos.length - 1 - i);
+      const x = xPos[i] + 0.5;
+      const ySkip0 = yPos[p];
+      const ySkip1 = yPos[yPos.length - 1 - p];
+      ctx.beginPath(); ctx.moveTo(x, 0);       ctx.lineTo(x, ySkip0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, ySkip1);  ctx.lineTo(x, H);      ctx.stroke();
     }
-    for (const y of toPositions(config.heightRatios, H)) {
-      ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); ctx.stroke();
+    for (let i = 0; i < yPos.length; i++) {
+      const p = Math.min(i, yPos.length - 1 - i);
+      const y = yPos[i] + 0.5;
+      const xSkip0 = xPos[p];
+      const xSkip1 = xPos[xPos.length - 1 - p];
+      ctx.beginPath(); ctx.moveTo(0,       y); ctx.lineTo(xSkip0, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(xSkip1,  y); ctx.lineTo(W,      y); ctx.stroke();
     }
 
     ctx.restore();
