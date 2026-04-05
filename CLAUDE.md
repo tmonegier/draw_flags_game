@@ -13,6 +13,8 @@ npm test           # Unit tests via Karma/Jasmine
 
 Run a single test file by passing `--include` to Karma, or focus tests with `fdescribe`/`fit` in the spec file.
 
+Set `CHROME_BIN=/snap/bin/chromium` if Chrome is not found automatically (Linux/snap environments).
+
 To download/refresh flag SVGs: `python3 scripts/download_flags.py` (requires `requests` + `bs4`; 20 s delay between downloads; resumes if interrupted).
 
 ## Architecture
@@ -92,3 +94,30 @@ Emits `elementSelected: ElementSelection` or `splitsSelected: SplitConfig` depen
 ### Grading
 
 `scoreToGrade()` in `game-state.service.ts` maps 0–100 → A/B/C/D/F. Exported and used by both `GameStateService` and `CompareComponent`.
+
+## Testing
+
+Every service, component, and utility has a corresponding `*.spec.ts` file. **284 tests** covering all methods and behaviours. Run with `npm test`.
+
+### Spec file locations
+
+| Spec file | What it covers |
+|---|---|
+| `services/country.service.spec.ts` | `getCountries()`, `shuffle()` |
+| `services/game-state.service.spec.ts` | `scoreToGrade()`, all signals, all methods |
+| `services/scoring.service.spec.ts` | Pixel tolerance, error handling, URL construction |
+| `home/home.spec.ts` | Difficulty selection, `startGame()` navigation |
+| `game/game.spec.ts` | Signal defaults, tool/color/modal handlers, `submit()` |
+| `compare/compare.spec.ts` | Redirect guard, scoring flow, `getScoreMessage()`, navigation |
+| `end/end.spec.ts` | `gradeColor()`, `aspectRatio()`, `playAgain()` |
+| `drawing/toolbar.spec.ts` | Outputs (`toolChange`, `colorChange`, `clearCanvas`) |
+| `drawing/elements-modal.spec.ts` | Category filter, band config, `updateRatio()` clamping, OK/close |
+| `drawing/drawing-canvas.spec.ts` | Canvas dimensions, flood fill, split boundaries, mouse events |
+
+### Testing patterns
+
+- **Services with async image loading** (`ScoringService`): replace `window.Image` with a mock class whose `set src` calls `queueMicrotask(() => this.onload?.())`. Also spy on `CanvasRenderingContext2D.prototype.drawImage` and `.getImageData` to control pixel data without loading real images.
+- **Components with `Router`**: provide with `provideRouter([])` + `provideLocationMocks()`, then `spyOn(router, 'navigate')`.
+- **Signal inputs** (`input.required<T>()`): set via `fixture.componentRef.setInput('name', value)` before `detectChanges()`.
+- **Signal outputs** (`output<T>()`): subscribe directly — `component.myOutput.subscribe(spy)`.
+- **Private canvas methods** (`floodFill`, `hexToRgba`, `colorMatch`): call via `(component as any).methodName()`.
