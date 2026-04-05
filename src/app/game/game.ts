@@ -4,7 +4,7 @@ import { GameStateService } from '../services/game-state.service';
 import { DrawingCanvasComponent } from '../drawing/drawing-canvas';
 import { ToolbarComponent, DrawingTool } from '../drawing/toolbar';
 import { ElementsModalComponent, ElementSelection } from '../drawing/elements-modal';
-import { SplitConfig } from '../drawing/toolbar';
+import { SplitConfig, CrossConfig } from '../drawing/toolbar';
 
 @Component({
   selector: 'app-game',
@@ -46,6 +46,11 @@ export class GameComponent {
   onSplitsSelected(config: SplitConfig): void {
     this.isElementsModalOpen.set(false);
     this.drawingCanvas.applySplits(config.direction, config.ratios);
+  }
+
+  onCrossSelected(config: CrossConfig): void {
+    this.isElementsModalOpen.set(false);
+    this.drawingCanvas.applyNordicCross(config.variant);
   }
 
   onPlacementCancelled(): void {

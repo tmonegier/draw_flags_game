@@ -1,13 +1,14 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FLAG_ELEMENTS, FlagElement, ElementCategory } from './flag-elements';
-import { SplitConfig, SplitDirection } from './toolbar';
+import { SplitConfig, SplitDirection, CrossConfig, CrossVariant } from './toolbar';
 
-type ActiveCategory = ElementCategory | 'all' | 'bands';
+type ActiveCategory = ElementCategory | 'all' | 'bands' | 'crosses';
 
 type GridItem =
   | { kind: 'element'; el: FlagElement }
-  | { kind: 'band'; direction: SplitDirection; label: string };
+  | { kind: 'band'; direction: SplitDirection; label: string }
+  | { kind: 'cross'; variant: CrossVariant; label: string };
 
 export interface ElementSelection {
   element: FlagElement;
@@ -36,10 +37,12 @@ export class ElementsModalComponent {
   closed = output<void>();
   elementSelected = output<ElementSelection>();
   splitsSelected = output<SplitConfig>();
+  crossSelected = output<CrossConfig>();
 
   readonly categories: { id: ActiveCategory; label: string }[] = [
-    { id: 'all',   label: 'All' },
-    { id: 'bands', label: 'Bands' },
+    { id: 'all',     label: 'All' },
+    { id: 'bands',   label: 'Bands' },
+    { id: 'crosses', label: 'Crosses' },
     ...[...new Set(FLAG_ELEMENTS.map(e => e.category))].map(cat => ({
       id: cat as ActiveCategory,
       label: CATEGORY_LABELS[cat],
@@ -49,6 +52,11 @@ export class ElementsModalComponent {
   readonly bandItems: GridItem[] = [
     { kind: 'band', direction: 'horizontal', label: 'Horizontal Bands' },
     { kind: 'band', direction: 'vertical',   label: 'Vertical Bands'   },
+  ];
+
+  readonly crossItems: GridItem[] = [
+    { kind: 'cross', variant: 'simple', label: 'Simple Cross' },
+    { kind: 'cross', variant: 'double', label: 'Double Cross' },
   ];
 
   activeCategory = signal<ActiveCategory>('all');
@@ -61,12 +69,13 @@ export class ElementsModalComponent {
 
   readonly filteredItems = computed((): GridItem[] => {
     const cat = this.activeCategory();
-    if (cat === 'bands') return this.bandItems;
+    if (cat === 'bands')   return this.bandItems;
+    if (cat === 'crosses') return this.crossItems;
     const elements = (cat === 'all'
       ? FLAG_ELEMENTS
       : FLAG_ELEMENTS.filter(e => e.category === cat)
     ).map(el => ({ kind: 'element' as const, el }));
-    return cat === 'all' ? [...this.bandItems, ...elements] : elements;
+    return cat === 'all' ? [...this.bandItems, ...this.crossItems, ...elements] : elements;
   });
 
   setCategory(cat: ActiveCategory): void {
@@ -81,8 +90,9 @@ export class ElementsModalComponent {
   isItemSelected(item: GridItem): boolean {
     const sel = this.selectedItem();
     if (!sel) return false;
-    if (sel.kind === 'band' && item.kind === 'band') return sel.direction === item.direction;
+    if (sel.kind === 'band'    && item.kind === 'band')    return sel.direction === item.direction;
     if (sel.kind === 'element' && item.kind === 'element') return sel.el.id === item.el.id;
+    if (sel.kind === 'cross'   && item.kind === 'cross')   return sel.variant === item.variant;
     return false;
   }
 
@@ -112,8 +122,10 @@ export class ElementsModalComponent {
     if (!item) return;
     if (item.kind === 'element') {
       this.elementSelected.emit({ element: item.el, size: 80 });
-    } else {
+    } else if (item.kind === 'band') {
       this.splitsSelected.emit({ direction: item.direction, ratios: this.splitRatios() });
+    } else {
+      this.crossSelected.emit({ variant: item.variant });
     }
     this.onClose();
   }
@@ -142,5 +154,21 @@ export class ElementsModalComponent {
     return this.sanitizer.bypassSecurityTrustHtml(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${rects}</svg>`
     );
+  }
+
+  getCrossPreviewSvg(variant: CrossVariant): SafeHtml {
+    // Simple cross: Denmark proportions (viewBox 37×28, cross at x=14 y=14, width=4)
+    // Double cross: Norway proportions (viewBox 22×16, outer=4, inner=2)
+    const svg = variant === 'simple'
+      ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 28">
+           <rect width="37" height="28" fill="#c8102e"/>
+           <path stroke="#fff" stroke-width="4" d="M0,14h37M14,0v28"/>
+         </svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16">
+           <rect width="22" height="16" fill="#ba0c2f"/>
+           <path stroke="#fff" stroke-width="4" d="M0,8h22M8,0v16"/>
+           <path stroke="#00205b" stroke-width="2" d="M0,8h22M8,0v16"/>
+         </svg>`;
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 }

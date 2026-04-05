@@ -9,6 +9,12 @@ export interface SplitConfig {
   ratios: number[];
 }
 
+export type CrossVariant = 'simple' | 'double';
+
+export interface CrossConfig {
+  variant: CrossVariant;
+}
+
 export interface ToolState {
   tool: DrawingTool;
   color: string;

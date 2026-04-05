@@ -3,7 +3,7 @@ import {
   AfterViewInit, AfterViewChecked,
   computed, input, output, signal
 } from '@angular/core';
-import { DrawingTool } from './toolbar';
+import { DrawingTool, CrossVariant } from './toolbar';
 import { FlagElement } from './flag-elements';
 
 export const CANVAS_HEIGHT = 400;
@@ -105,6 +105,42 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     this.baseCtx.fillRect(0, 0, W, H);
     this.splitsCtx.clearRect(0, 0, W, H);
     this.overlayCtx.clearRect(0, 0, W, H);
+  }
+
+  applyNordicCross(variant: CrossVariant): void {
+    const W = this.canvasWidth();
+    const H = this.canvasHeight;
+    const ctx = this.splitsCtx;
+    ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.strokeStyle = '#888888';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
+
+    // Nordic cross proportions derived from real flags:
+    // - vertical bar center at 36% of width (8/22 ≈ 36.4%)
+    // - horizontal bar center at 50% of height
+    // - outer half-width = H/8 (≈ 50 px for H=400)
+    const xCenter = Math.round(W * 8 / 22);
+    const yCenter = Math.round(H / 2);
+    const outerHalf = Math.round(H / 8);
+
+    const drawBox = (x1: number, x2: number, y1: number, y2: number): void => {
+      ctx.beginPath(); ctx.moveTo(0,       y1 + 0.5); ctx.lineTo(W,       y1 + 0.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,       y2 + 0.5); ctx.lineTo(W,       y2 + 0.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1 + 0.5, 0      ); ctx.lineTo(x1 + 0.5, H      ); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x2 + 0.5, 0      ); ctx.lineTo(x2 + 0.5, H      ); ctx.stroke();
+    };
+
+    drawBox(xCenter - outerHalf, xCenter + outerHalf, yCenter - outerHalf, yCenter + outerHalf);
+
+    if (variant === 'double') {
+      // Inner cross (half the bar width of the outer)
+      const innerHalf = Math.round(H / 16);
+      drawBox(xCenter - innerHalf, xCenter + innerHalf, yCenter - innerHalf, yCenter + innerHalf);
+    }
+
+    ctx.restore();
   }
 
   applySplits(direction: 'horizontal' | 'vertical', ratios: number[]): void {

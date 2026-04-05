@@ -18,9 +18,9 @@
         }
       </div>
 
-      <!-- Element / Band grid -->
+      <!-- Element / Band / Cross grid -->
       <div class="element-grid">
-        @for (item of filteredItems(); track item.kind === 'element' ? item.el.id : item.direction) {
+        @for (item of filteredItems(); track (item.kind === 'element' ? 'el_' + item.el.id : item.kind === 'band' ? 'band_' + item.direction : 'cross_' + item.variant)) {
           @if (item.kind === 'band') {
             <button
               class="element-card band-card"
@@ -28,6 +28,15 @@
               (click)="selectItem(item)"
             >
               <div class="element-preview" [innerHTML]="getBandPreviewSvg(item.direction)"></div>
+              <span class="element-name">{{ item.label }}</span>
+            </button>
+          } @else if (item.kind === 'cross') {
+            <button
+              class="element-card band-card"
+              [class.selected]="isItemSelected(item)"
+              (click)="selectItem(item)"
+            >
+              <div class="element-preview" [innerHTML]="getCrossPreviewSvg(item.variant)"></div>
               <span class="element-name">{{ item.label }}</span>
             </button>
           } @else {
