@@ -117,24 +117,23 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     ctx.lineWidth = 1;
     ctx.setLineDash([]);
 
-    // Vertical bar center at ~36% from left (canonical Nordic cross position).
-    // outerWidthPct is the full bar width as % of H, so half = pct/200 * H.
-    const xCenter = Math.round(W * 8 / 22);
-    const yCenter = Math.round(H / 2);
-    const outerHalf = Math.round(H * config.outerWidthPct / 200);
-
-    const drawBox = (x1: number, x2: number, y1: number, y2: number): void => {
-      ctx.beginPath(); ctx.moveTo(0,         y1 + 0.5); ctx.lineTo(W,         y1 + 0.5); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0,         y2 + 0.5); ctx.lineTo(W,         y2 + 0.5); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x1 + 0.5,  0       ); ctx.lineTo(x1 + 0.5,  H       ); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x2 + 0.5,  0       ); ctx.lineTo(x2 + 0.5,  H       ); ctx.stroke();
+    // Convert ratio array into N-1 guide-line pixel positions.
+    const toPositions = (ratios: number[], total: number): number[] => {
+      const sum = ratios.reduce((a, b) => a + b, 0);
+      const positions: number[] = [];
+      let acc = 0;
+      for (let i = 0; i < ratios.length - 1; i++) {
+        acc += ratios[i];
+        positions.push(Math.round(acc / sum * total));
+      }
+      return positions;
     };
 
-    drawBox(xCenter - outerHalf, xCenter + outerHalf, yCenter - outerHalf, yCenter + outerHalf);
-
-    if (config.variant === 'double') {
-      const innerHalf = Math.round(H * config.innerWidthPct / 200);
-      drawBox(xCenter - innerHalf, xCenter + innerHalf, yCenter - innerHalf, yCenter + innerHalf);
+    for (const x of toPositions(config.widthRatios, W)) {
+      ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H); ctx.stroke();
+    }
+    for (const y of toPositions(config.heightRatios, H)) {
+      ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); ctx.stroke();
     }
 
     ctx.restore();

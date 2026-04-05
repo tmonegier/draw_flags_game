@@ -67,9 +67,11 @@ export class ElementsModalComponent {
   splitRatios = signal<number[]>([1, 1]);
   readonly splitCount = computed(() => this.splitRatios().length);
 
-  // Cross width configuration (% of canvas height)
-  crossOuterWidthPct = signal<number>(25);
-  crossInnerWidthPct = signal<number>(13);
+  // Cross ratio configuration — reset to defaults when the variant changes
+  // Simple default: Finland (5:3:10 width, 4:3:4 height)
+  // Double default: Norway (6:1:2:1:12 width, 6:1:2:1:6 height)
+  crossWidthRatios  = signal<number[]>([5, 3, 10]);
+  crossHeightRatios = signal<number[]>([4, 3, 4]);
 
   readonly filteredItems = computed((): GridItem[] => {
     const cat = this.activeCategory();
@@ -88,7 +90,21 @@ export class ElementsModalComponent {
   }
 
   selectItem(item: GridItem): void {
+    const prev = this.selectedItem();
     this.selectedItem.set(item);
+    // Reset cross ratios when switching to a different variant
+    if (item.kind === 'cross') {
+      const prevVariant = prev?.kind === 'cross' ? prev.variant : null;
+      if (prevVariant !== item.variant) {
+        if (item.variant === 'simple') {
+          this.crossWidthRatios.set([5, 3, 10]);
+          this.crossHeightRatios.set([4, 3, 4]);
+        } else {
+          this.crossWidthRatios.set([6, 1, 2, 1, 12]);
+          this.crossHeightRatios.set([6, 1, 2, 1, 6]);
+        }
+      }
+    }
   }
 
   isItemSelected(item: GridItem): boolean {
@@ -108,24 +124,20 @@ export class ElementsModalComponent {
     return this.selectedItem()?.kind === 'cross';
   }
 
-  isDoubleCrossSelected(): boolean {
-    const sel = this.selectedItem();
-    return sel?.kind === 'cross' && sel.variant === 'double';
+  updateCrossWidthRatio(index: number, event: Event): void {
+    const raw = Number((event.target as HTMLInputElement).value);
+    const value = Math.max(1, Math.min(99, isNaN(raw) ? 1 : raw));
+    const ratios = [...this.crossWidthRatios()];
+    ratios[index] = value;
+    this.crossWidthRatios.set(ratios);
   }
 
-  updateCrossOuterWidth(event: Event): void {
+  updateCrossHeightRatio(index: number, event: Event): void {
     const raw = Number((event.target as HTMLInputElement).value);
-    const value = Math.max(5, Math.min(40, isNaN(raw) ? 25 : raw));
-    this.crossOuterWidthPct.set(value);
-    if (this.crossInnerWidthPct() >= value) {
-      this.crossInnerWidthPct.set(Math.max(5, value - 1));
-    }
-  }
-
-  updateCrossInnerWidth(event: Event): void {
-    const raw = Number((event.target as HTMLInputElement).value);
-    const max = this.crossOuterWidthPct() - 1;
-    this.crossInnerWidthPct.set(Math.max(5, Math.min(max, isNaN(raw) ? 13 : raw)));
+    const value = Math.max(1, Math.min(99, isNaN(raw) ? 1 : raw));
+    const ratios = [...this.crossHeightRatios()];
+    ratios[index] = value;
+    this.crossHeightRatios.set(ratios);
   }
 
   setSplitCount(n: number): void {
@@ -155,8 +167,8 @@ export class ElementsModalComponent {
     } else {
       this.crossSelected.emit({
         variant: item.variant,
-        outerWidthPct: this.crossOuterWidthPct(),
-        innerWidthPct: this.crossInnerWidthPct(),
+        widthRatios:  this.crossWidthRatios(),
+        heightRatios: this.crossHeightRatios(),
       });
     }
     this.onClose();

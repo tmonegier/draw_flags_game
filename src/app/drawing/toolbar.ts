@@ -13,10 +13,18 @@ export type CrossVariant = 'simple' | 'double';
 
 export interface CrossConfig {
   variant: CrossVariant;
-  /** Full bar width as % of canvas height (5–40). Default 25. */
-  outerWidthPct: number;
-  /** Inner bar width as % of canvas height, only used for 'double' (5–40). Default 13. */
-  innerWidthPct: number;
+  /**
+   * Width division ratios: [left, bar, right] for simple cross,
+   * or [left, outer, inner, outer, right] for double cross.
+   * e.g. Finland simple: [5, 3, 10]
+   */
+  widthRatios: number[];
+  /**
+   * Height division ratios: [top, bar, bottom] for simple cross,
+   * or [top, outer, inner, outer, bottom] for double cross.
+   * e.g. Finland simple: [4, 3, 4]
+   */
+  heightRatios: number[];
 }
 
 export interface ToolState {

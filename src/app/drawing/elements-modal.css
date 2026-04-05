@@ -231,6 +231,28 @@
   user-select: none;
 }
 
+/* Cross config */
+.cross-config {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.cross-config-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cross-ratios-label {
+  font-size: 0.75rem;
+  color: #8892a4;
+  font-weight: 500;
+  width: 38px;
+  flex-shrink: 0;
+}
+
 .place-btn {
   padding: 0.55rem 1.3rem;
   font-size: 0.9rem;

@@ -83,33 +83,39 @@
           </div>
         }
         @if (isCrossSelected()) {
-          <div class="band-config">
-            <span class="cross-width-label">Bar width</span>
-            <div class="splits-ratios">
-              <input
-                type="number"
-                class="ratio-input"
-                min="5"
-                max="40"
-                [value]="crossOuterWidthPct()"
-                (change)="updateCrossOuterWidth($event)"
-              />
-              <span class="ratio-sep">% of height</span>
-            </div>
-            @if (isDoubleCrossSelected()) {
-              <span class="cross-width-label">Inner</span>
+          <div class="cross-config">
+            <div class="cross-config-row">
+              <span class="cross-ratios-label">Width</span>
               <div class="splits-ratios">
-                <input
-                  type="number"
-                  class="ratio-input"
-                  min="5"
-                  [attr.max]="crossOuterWidthPct() - 1"
-                  [value]="crossInnerWidthPct()"
-                  (change)="updateCrossInnerWidth($event)"
-                />
-                <span class="ratio-sep">% of height</span>
+                @for (r of crossWidthRatios(); track $index; let idx = $index) {
+                  @if (idx > 0) { <span class="ratio-sep">:</span> }
+                  <input
+                    type="number"
+                    class="ratio-input"
+                    min="1"
+                    max="99"
+                    [value]="r"
+                    (change)="updateCrossWidthRatio(idx, $event)"
+                  />
+                }
               </div>
-            }
+            </div>
+            <div class="cross-config-row">
+              <span class="cross-ratios-label">Height</span>
+              <div class="splits-ratios">
+                @for (r of crossHeightRatios(); track $index; let idx = $index) {
+                  @if (idx > 0) { <span class="ratio-sep">:</span> }
+                  <input
+                    type="number"
+                    class="ratio-input"
+                    min="1"
+                    max="99"
+                    [value]="r"
+                    (change)="updateCrossHeightRatio(idx, $event)"
+                  />
+                }
+              </div>
+            </div>
           </div>
         }
         <button
