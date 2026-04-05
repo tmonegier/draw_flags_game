@@ -50,7 +50,7 @@ export class GameComponent {
 
   onCrossSelected(config: CrossConfig): void {
     this.isElementsModalOpen.set(false);
-    this.drawingCanvas.applyNordicCross(config.variant);
+    this.drawingCanvas.applyNordicCross(config);
   }
 
   onPlacementCancelled(): void {

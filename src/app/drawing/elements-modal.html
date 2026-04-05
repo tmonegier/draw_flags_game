@@ -82,6 +82,36 @@
             </div>
           </div>
         }
+        @if (isCrossSelected()) {
+          <div class="band-config">
+            <span class="cross-width-label">Bar width</span>
+            <div class="splits-ratios">
+              <input
+                type="number"
+                class="ratio-input"
+                min="5"
+                max="40"
+                [value]="crossOuterWidthPct()"
+                (change)="updateCrossOuterWidth($event)"
+              />
+              <span class="ratio-sep">% of height</span>
+            </div>
+            @if (isDoubleCrossSelected()) {
+              <span class="cross-width-label">Inner</span>
+              <div class="splits-ratios">
+                <input
+                  type="number"
+                  class="ratio-input"
+                  min="5"
+                  [attr.max]="crossOuterWidthPct() - 1"
+                  [value]="crossInnerWidthPct()"
+                  (change)="updateCrossInnerWidth($event)"
+                />
+                <span class="ratio-sep">% of height</span>
+              </div>
+            }
+          </div>
+        }
         <button
           class="place-btn"
           [disabled]="!selectedItem()"

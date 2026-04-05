@@ -13,6 +13,10 @@ export type CrossVariant = 'simple' | 'double';
 
 export interface CrossConfig {
   variant: CrossVariant;
+  /** Full bar width as % of canvas height (5–40). Default 25. */
+  outerWidthPct: number;
+  /** Inner bar width as % of canvas height, only used for 'double' (5–40). Default 13. */
+  innerWidthPct: number;
 }
 
 export interface ToolState {

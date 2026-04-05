@@ -67,6 +67,10 @@ export class ElementsModalComponent {
   splitRatios = signal<number[]>([1, 1]);
   readonly splitCount = computed(() => this.splitRatios().length);
 
+  // Cross width configuration (% of canvas height)
+  crossOuterWidthPct = signal<number>(25);
+  crossInnerWidthPct = signal<number>(13);
+
   readonly filteredItems = computed((): GridItem[] => {
     const cat = this.activeCategory();
     if (cat === 'bands')   return this.bandItems;
@@ -100,6 +104,30 @@ export class ElementsModalComponent {
     return this.selectedItem()?.kind === 'band';
   }
 
+  isCrossSelected(): boolean {
+    return this.selectedItem()?.kind === 'cross';
+  }
+
+  isDoubleCrossSelected(): boolean {
+    const sel = this.selectedItem();
+    return sel?.kind === 'cross' && sel.variant === 'double';
+  }
+
+  updateCrossOuterWidth(event: Event): void {
+    const raw = Number((event.target as HTMLInputElement).value);
+    const value = Math.max(5, Math.min(40, isNaN(raw) ? 25 : raw));
+    this.crossOuterWidthPct.set(value);
+    if (this.crossInnerWidthPct() >= value) {
+      this.crossInnerWidthPct.set(Math.max(5, value - 1));
+    }
+  }
+
+  updateCrossInnerWidth(event: Event): void {
+    const raw = Number((event.target as HTMLInputElement).value);
+    const max = this.crossOuterWidthPct() - 1;
+    this.crossInnerWidthPct.set(Math.max(5, Math.min(max, isNaN(raw) ? 13 : raw)));
+  }
+
   setSplitCount(n: number): void {
     const current = this.splitRatios();
     if (n > current.length) {
@@ -125,7 +153,11 @@ export class ElementsModalComponent {
     } else if (item.kind === 'band') {
       this.splitsSelected.emit({ direction: item.direction, ratios: this.splitRatios() });
     } else {
-      this.crossSelected.emit({ variant: item.variant });
+      this.crossSelected.emit({
+        variant: item.variant,
+        outerWidthPct: this.crossOuterWidthPct(),
+        innerWidthPct: this.crossInnerWidthPct(),
+      });
     }
     this.onClose();
   }
