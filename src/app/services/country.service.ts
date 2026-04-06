@@ -25,7 +25,26 @@ export interface CrossOutlineHint {
   heightRatios: number[];
 }
 
-export type DrawingHint = BandHint | CrossHint | CrossOutlineHint;
+/**
+ * Pre-draws a flag element (from FLAG_ELEMENTS) onto the base canvas.
+ * Used for easy/medium mode to show complex symbols like the Albanian eagle.
+ * Position and size are expressed as fractions of the canvas dimensions.
+ */
+export interface ElementHint {
+  kind: 'element';
+  /** ID matching a FlagElement in FLAG_ELEMENTS */
+  elementId: string;
+  /** Fill color (hex) */
+  color: string;
+  /** Horizontal center as a fraction of canvas width (0–1) */
+  xCenter: number;
+  /** Vertical center as a fraction of canvas height (0–1) */
+  yCenter: number;
+  /** Element size as a fraction of canvas height */
+  sizeFraction: number;
+}
+
+export type DrawingHint = BandHint | CrossHint | CrossOutlineHint | ElementHint;
 
 export interface Country {
   name: string;
@@ -125,6 +144,13 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Gabon',       code: 'ga', ratio: '3:4',   svgFile: 'gabon.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
     colors: ['#009E60', '#FCD116', '#3A75C4'] },
+
+  // ── Element-based flags ───────────────────────────────────────────────────────
+  // Albania: solid red background with a centered black double-headed eagle.
+  // Easy/medium: eagle pre-drawn via element hint. Hard: eagle in elements panel.
+  { name: 'Albania',     code: 'al', ratio: '5:7',   svgFile: 'albania.svg',
+    hints: [{ kind: 'element', elementId: 'albania-eagle', color: '#000000', xCenter: 0.5, yCenter: 0.55, sizeFraction: 0.78 }],
+    colors: ['#FF0000', '#000000'] },
 
   // ── Bicolors ─────────────────────────────────────────────────────────────────
   { name: 'Monaco',      code: 'mc', ratio: '4:5',   svgFile: 'monaco.svg',

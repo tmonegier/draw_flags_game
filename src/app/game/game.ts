@@ -65,7 +65,13 @@ export class GameComponent implements AfterViewInit {
 
   onElementSelected(selection: ElementSelection): void {
     this.isElementsModalOpen.set(false);
-    this.drawingCanvas.startElementPlacement(selection.element, selection.size, this.activeColor());
+    const { element } = selection;
+    if (element.autoPlace) {
+      const { xCenter, yCenter, sizeFraction } = element.autoPlace;
+      this.drawingCanvas.placeElementDirectly(element, this.activeColor(), xCenter, yCenter, sizeFraction);
+    } else {
+      this.drawingCanvas.startElementPlacement(element, selection.size, this.activeColor());
+    }
   }
 
   onSplitsSelected(config: SplitConfig): void {

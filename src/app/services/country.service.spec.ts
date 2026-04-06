@@ -12,8 +12,8 @@ describe('CountryService', () => {
   // ── getCountries ─────────────────────────────────────────────────────────────
 
   describe('getCountries', () => {
-    it('returns 40 countries', () => {
-      expect(service.getCountries().length).toBe(40);
+    it('returns 41 countries', () => {
+      expect(service.getCountries().length).toBe(41);
     });
 
     it('returns a new array each call (not the same reference)', () => {
@@ -23,7 +23,7 @@ describe('CountryService', () => {
     it('does not mutate internal data when the returned array is modified', () => {
       const a = service.getCountries();
       a.push({ name: 'Test', code: 'xx', ratio: '1:1', svgFile: 'test.svg', hints: [], colors: [] });
-      expect(service.getCountries().length).toBe(40);
+      expect(service.getCountries().length).toBe(41);
     });
 
     it('every country has a non-empty name', () => {
@@ -104,6 +104,37 @@ describe('CountryService', () => {
           }
         })
       );
+    });
+
+    it('element hints have a non-empty elementId, a hex color, and valid center/size fractions', () => {
+      service.getCountries().forEach(c =>
+        c.hints.forEach(h => {
+          if (h.kind === 'element') {
+            expect(h.elementId.length).toBeGreaterThan(0);
+            expect(h.color).toMatch(/^#[0-9a-fA-F]{6}$/);
+            expect(h.xCenter).toBeGreaterThanOrEqual(0);
+            expect(h.xCenter).toBeLessThanOrEqual(1);
+            expect(h.yCenter).toBeGreaterThanOrEqual(0);
+            expect(h.yCenter).toBeLessThanOrEqual(1);
+            expect(h.sizeFraction).toBeGreaterThan(0);
+            expect(h.sizeFraction).toBeLessThanOrEqual(1);
+          }
+        })
+      );
+    });
+
+    it('includes Albania', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Albania');
+    });
+
+    it('Albania has an element hint for the double-headed eagle', () => {
+      const albania = service.getCountries().find(c => c.name === 'Albania')!;
+      expect(albania).toBeTruthy();
+      const elementHint = albania.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('albania-eagle');
+      }
     });
   });
 

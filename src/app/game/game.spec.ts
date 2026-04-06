@@ -113,7 +113,7 @@ describe('GameComponent', () => {
     expect(component.isElementsModalOpen()).toBeFalse();
   });
 
-  it('onElementSelected calls startElementPlacement with element, size and active color', () => {
+  it('onElementSelected calls startElementPlacement when element has no autoPlace', () => {
     component.activeColor.set('#ff0000');
     spyOn(component.drawingCanvas, 'startElementPlacement');
     component.onElementSelected({ element: MOCK_ELEMENT, size: 80 });
@@ -127,6 +127,31 @@ describe('GameComponent', () => {
     component.onElementSelected({ element: MOCK_ELEMENT, size: 80 });
     expect(component.drawingCanvas.startElementPlacement)
       .toHaveBeenCalledWith(jasmine.anything(), jasmine.anything(), '#00ff00');
+  });
+
+  it('onElementSelected calls placeElementDirectly when element has autoPlace', () => {
+    const autoElement: FlagElement = {
+      ...MOCK_ELEMENT,
+      autoPlace: { xCenter: 0.5, yCenter: 0.55, sizeFraction: 0.78 },
+    };
+    component.activeColor.set('#000000');
+    spyOn(component.drawingCanvas, 'placeElementDirectly');
+    spyOn(component.drawingCanvas, 'startElementPlacement');
+    component.onElementSelected({ element: autoElement, size: 80 });
+    expect(component.drawingCanvas.placeElementDirectly)
+      .toHaveBeenCalledWith(autoElement, '#000000', 0.5, 0.55, 0.78);
+    expect(component.drawingCanvas.startElementPlacement).not.toHaveBeenCalled();
+  });
+
+  it('onElementSelected with autoPlace also closes the modal', () => {
+    const autoElement: FlagElement = {
+      ...MOCK_ELEMENT,
+      autoPlace: { xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 },
+    };
+    component.isElementsModalOpen.set(true);
+    spyOn(component.drawingCanvas, 'placeElementDirectly');
+    component.onElementSelected({ element: autoElement, size: 80 });
+    expect(component.isElementsModalOpen()).toBeFalse();
   });
 
   // ── onSplitsSelected ──────────────────────────────────────────────────────────

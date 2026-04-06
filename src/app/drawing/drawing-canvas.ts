@@ -4,8 +4,8 @@ import {
   computed, input, output, signal
 } from '@angular/core';
 import { DrawingTool, CrossConfig } from './toolbar';
-import { DrawingHint } from '../services/country.service';
-import { FlagElement } from './flag-elements';
+import { DrawingHint, ElementHint } from '../services/country.service';
+import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
 
 export const CANVAS_HEIGHT = 400;
 
@@ -75,6 +75,25 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
 
+  /**
+   * Stamps an element directly onto baseCanvas at the given fractional position
+   * without entering interactive placement mode.
+   */
+  placeElementDirectly(element: FlagElement, color: string, xCenter: number, yCenter: number, sizeFraction: number): void {
+    const W = this.canvasWidth();
+    const H = this.canvasHeight;
+    const content = element.svgContent.replace(/currentColor/g, color);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${content}</svg>`;
+    const s = H * sizeFraction;
+    const x = W * xCenter;
+    const y = H * yCenter;
+    const img = new Image();
+    img.onload = () => {
+      this.baseCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+
   cancelPlacement(): void {
     this.isPlacingElement.set(false);
     this.placementImg = null;
@@ -114,10 +133,29 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
         this.applySplits(hint.direction, hint.ratios);
       } else if (hint.kind === 'cross') {
         this.applyNordicCross({ variant: hint.variant, widthRatios: hint.widthRatios, heightRatios: hint.heightRatios });
-      } else {
+      } else if (hint.kind === 'crossOutline') {
         this.drawCrossOutline(hint.widthRatios, hint.heightRatios);
+      } else if (hint.kind === 'element') {
+        this.applyElementHint(hint);
       }
     }
+  }
+
+  private applyElementHint(hint: ElementHint): void {
+    const element = FLAG_ELEMENTS.find(e => e.id === hint.elementId);
+    if (!element) return;
+    const W = this.canvasWidth();
+    const H = this.canvasHeight;
+    const content = element.svgContent.replace(/currentColor/g, hint.color);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${content}</svg>`;
+    const s = H * hint.sizeFraction;
+    const x = W * hint.xCenter;
+    const y = H * hint.yCenter;
+    const img = new Image();
+    img.onload = () => {
+      this.baseCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
 
   /**

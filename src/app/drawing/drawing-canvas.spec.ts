@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { DrawingCanvasComponent, CANVAS_HEIGHT } from './drawing-canvas';
-import { FlagElement } from './flag-elements';
+import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
 
 const MOCK_ELEMENT: FlagElement = {
   id: 'test-star',
@@ -135,6 +135,52 @@ describe('DrawingCanvasComponent', () => {
     });
   });
 
+  // ── placeElementDirectly ─────────────────────────────────────────────────────
+
+  describe('placeElementDirectly()', () => {
+    let originalImage: typeof Image;
+
+    beforeEach(() => { originalImage = window.Image; });
+    afterEach(() => { (window as any).Image = originalImage; });
+
+    it('does not enter placement mode', () => {
+      component.placeElementDirectly(MOCK_ELEMENT, '#000000', 0.5, 0.5, 0.5);
+      expect(component.isPlacingElement()).toBeFalse();
+    });
+
+    it('requests an SVG data URL with color substituted', () => {
+      let capturedSrc = '';
+      (window as any).Image = class {
+        onload: any = null;
+        set src(v: string) { capturedSrc = v; }
+      };
+      component.placeElementDirectly(
+        { ...MOCK_ELEMENT, svgContent: '<circle fill="currentColor"/>' },
+        '#aabbcc',
+        0.5, 0.5, 0.5,
+      );
+      expect(capturedSrc).toContain(encodeURIComponent('#aabbcc'));
+      expect(capturedSrc).not.toContain('currentColor');
+    });
+
+    it('draws the image onto baseCanvas at the correct position when loaded', () => {
+      const drawSpy = spyOn(
+        (component as any).baseCtx, 'drawImage',
+      );
+      let capturedOnload: (() => void) | null = null;
+      (window as any).Image = class {
+        set onload(fn: () => void) { capturedOnload = fn; }
+        set src(_: string) {}
+      };
+      fixture.componentRef.setInput('ratio', '2:3');
+      fixture.detectChanges();
+      // canvas is 600×400; xCenter=0.5→x=300, yCenter=0.5→y=200, sizeFraction=0.5→s=200
+      component.placeElementDirectly(MOCK_ELEMENT, '#000', 0.5, 0.5, 0.5);
+      capturedOnload!();
+      expect(drawSpy).toHaveBeenCalledWith(jasmine.anything(), 200, 100, 200, 200);
+    });
+  });
+
   // ── cancelPlacement ───────────────────────────────────────────────────────────
 
   it('cancelPlacement sets isPlacingElement to false', () => {
@@ -177,6 +223,66 @@ describe('DrawingCanvasComponent', () => {
     const url = component.getDrawingDataUrl();
     const base64 = url.replace('data:image/png;base64,', '');
     expect(base64.length).toBeGreaterThan(0);
+  });
+
+  // ── applyHints (element kind) ─────────────────────────────────────────────────
+
+  describe('applyHints with element hint', () => {
+    let originalImage: typeof Image;
+
+    beforeEach(() => { originalImage = window.Image; });
+    afterEach(() => { (window as any).Image = originalImage; });
+
+    it('does not throw when elementId is unknown', () => {
+      expect(() => component.applyHints([
+        { kind: 'element', elementId: 'nonexistent', color: '#000000', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 }
+      ])).not.toThrow();
+    });
+
+    it('creates an Image with a data URI when the element is found', () => {
+      if (FLAG_ELEMENTS.length === 0) { pending('no FLAG_ELEMENTS defined'); return; }
+      const el = FLAG_ELEMENTS[0];
+      let capturedSrc = '';
+      (window as any).Image = class {
+        onload: any = null;
+        set src(v: string) { capturedSrc = v; }
+      };
+      component.applyHints([
+        { kind: 'element', elementId: el.id, color: el.defaultColor, xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 }
+      ]);
+      expect(capturedSrc).toMatch(/^data:image\/svg\+xml/);
+    });
+
+    it('substitutes the hint color for currentColor in the element SVG', () => {
+      if (FLAG_ELEMENTS.length === 0) { pending('no FLAG_ELEMENTS defined'); return; }
+      const el = FLAG_ELEMENTS[0];
+      let capturedSrc = '';
+      (window as any).Image = class {
+        onload: any = null;
+        set src(v: string) { capturedSrc = v; }
+      };
+      component.applyHints([
+        { kind: 'element', elementId: el.id, color: '#ff0000', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 }
+      ]);
+      const decoded = decodeURIComponent(capturedSrc);
+      expect(decoded).not.toContain('currentColor');
+    });
+
+    it('draws on the base canvas when the image loads', () => {
+      if (FLAG_ELEMENTS.length === 0) { pending('no FLAG_ELEMENTS defined'); return; }
+      const el = FLAG_ELEMENTS[0];
+      let loadCallback: (() => void) | null = null;
+      (window as any).Image = class {
+        onload: (() => void) | null = null;
+        set src(_: string) { loadCallback = this.onload; }
+      };
+      spyOn(component.baseCanvasRef.nativeElement.getContext('2d')!, 'drawImage');
+      component.applyHints([
+        { kind: 'element', elementId: el.id, color: el.defaultColor, xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 }
+      ]);
+      (loadCallback as (() => void) | null)?.();
+      expect(component.baseCanvasRef.nativeElement.getContext('2d')!.drawImage).toHaveBeenCalled();
+    });
   });
 
   // ── applySplits ───────────────────────────────────────────────────────────────
