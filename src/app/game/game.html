@@ -1,5 +1,6 @@
 <div class="game-screen">
   <div class="header">
+    <button class="home-btn" (click)="goHome()">🏠 Home</button>
     <div class="country-info">
       <span class="label">Draw the flag of</span>
       <h1 class="country-name">{{ gameState.currentCountry()?.name }}</h1>

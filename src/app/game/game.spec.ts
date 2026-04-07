@@ -223,6 +223,13 @@ describe('GameComponent', () => {
     expect(() => component.onPlacementCancelled()).not.toThrow();
   });
 
+  // ── goHome ────────────────────────────────────────────────────────────────────
+
+  it('goHome navigates to /', () => {
+    component.goHome();
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
+  });
+
   // ── submit ────────────────────────────────────────────────────────────────────
 
   it('submit navigates to /compare', () => {

@@ -104,6 +104,10 @@ export class GameComponent implements AfterViewInit {
     // canvas already cleaned up; nothing extra needed here
   }
 
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
+
   submit(): void {
     if (this.drawingCanvas.isPlacingElement()) {
       this.drawingCanvas.cancelPlacement();
