@@ -2,7 +2,7 @@ import { Component, ViewChild, AfterViewInit, inject, signal, computed } from '@
 import { Router } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { DrawingCanvasComponent } from '../drawing/drawing-canvas';
-import { ToolbarComponent, DrawingTool } from '../drawing/toolbar';
+import { ToolbarComponent } from '../drawing/toolbar';
 import { ElementsModalComponent, ElementSelection } from '../drawing/elements-modal';
 import { SplitConfig, CrossConfig } from '../drawing/toolbar';
 
@@ -18,17 +18,31 @@ export class GameComponent implements AfterViewInit {
   private readonly router = inject(Router);
   readonly gameState = inject(GameStateService);
 
-  activeTool = signal<DrawingTool>('fill');
   activeColor = signal<string>('#000000');
   isElementsModalOpen = signal(false);
 
-  /** In easy mode, restrict the palette to the current flag's colors. */
+  /** In easy mode, restrict the palette to a shuffled copy of the current flag's colors. */
   readonly allowedColors = computed<string[] | null>(() => {
     if (this.gameState.difficulty() === 'easy') {
-      return this.gameState.currentCountry()?.colors ?? null;
+      const colors = this.gameState.currentCountry()?.colors;
+      if (!colors) return null;
+      const arr = [...colors];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
     return null;
   });
+
+  /** Label for the toolbar's clear button: restore hints on easy/medium, full clear on hard. */
+  readonly clearLabel = computed<string>(() =>
+    this.gameState.difficulty() === 'hard' ? '🗑️ Clear' : '↩️ Cancel Changes'
+  );
+
+  /** Elements picker is only available in hard mode. */
+  readonly showElements = computed<boolean>(() => this.gameState.difficulty() === 'hard');
 
   ngAfterViewInit(): void {
     const country = this.gameState.currentCountry();
@@ -42,13 +56,10 @@ export class GameComponent implements AfterViewInit {
       });
     }
 
-    if (difficulty === 'easy' && country.colors.length > 0) {
-      this.activeColor.set(country.colors[0]);
+    if (difficulty === 'easy') {
+      const palette = this.allowedColors();
+      if (palette && palette.length > 0) this.activeColor.set(palette[0]);
     }
-  }
-
-  onToolChange(tool: DrawingTool): void {
-    this.activeTool.set(tool);
   }
 
   onColorChange(color: string): void {
@@ -57,6 +68,11 @@ export class GameComponent implements AfterViewInit {
 
   onClearCanvas(): void {
     this.drawingCanvas.clearCanvas();
+    const difficulty = this.gameState.difficulty();
+    if (difficulty === 'easy' || difficulty === 'medium') {
+      const country = this.gameState.currentCountry();
+      if (country) this.drawingCanvas.applyHints(country.hints);
+    }
   }
 
   onOpenElements(): void {

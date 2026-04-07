@@ -73,7 +73,6 @@ describe('DrawingCanvasComponent', () => {
   });
 
   it('clearCanvas fills the base canvas with white', () => {
-    // Paint something non-white first
     fixture.componentRef.setInput('color', '#ff0000');
     fixture.detectChanges();
     (component as any).floodFill(5, 5);
@@ -379,9 +378,6 @@ describe('DrawingCanvasComponent', () => {
 
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(0, splitY, 1, 1).data;
-    // floodFill returns early for a split-line starting pixel, so the base canvas
-    // is never painted with the fill colour (#ff0000 = R:255, G:0, B:0).
-    // The pixel remains white or grey — either way it is NOT pure red.
     const isRed = pixel[0] === 255 && pixel[1] === 0 && pixel[2] === 0;
     expect(isRed).toBeFalse();
   });
@@ -429,7 +425,6 @@ describe('DrawingCanvasComponent', () => {
   // ── Mouse event handlers ──────────────────────────────────────────────────────
 
   it('onMouseDown with fill tool paints the canvas at the click position', () => {
-    fixture.componentRef.setInput('tool', 'fill');
     fixture.componentRef.setInput('color', '#ff0000');
     fixture.detectChanges();
 
@@ -448,39 +443,6 @@ describe('DrawingCanvasComponent', () => {
     expect(pixel[0]).toBe(255);
     expect(pixel[1]).toBe(0);
     expect(pixel[2]).toBe(0);
-  });
-
-  it('onMouseDown with eraser tool sets isDrawing to true', () => {
-    fixture.componentRef.setInput('tool', 'eraser');
-    fixture.detectChanges();
-
-    const overlay = component.overlayCanvasRef.nativeElement;
-    spyOn(overlay, 'getBoundingClientRect').and.returnValue({
-      left: 0, top: 0,
-      width: component.canvasWidth(), height: component.canvasHeight,
-      right: component.canvasWidth(), bottom: component.canvasHeight,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
-    expect((component as any).isDrawing).toBeTrue();
-  });
-
-  it('onMouseUp stops drawing', () => {
-    (component as any).isDrawing = true;
-    component.onMouseUp(new MouseEvent('mouseup'));
-    expect((component as any).isDrawing).toBeFalse();
-  });
-
-  it('onMouseLeave stops drawing when active', () => {
-    (component as any).isDrawing = true;
-    component.onMouseLeave();
-    expect((component as any).isDrawing).toBeFalse();
-  });
-
-  it('onMouseLeave does nothing when not drawing', () => {
-    (component as any).isDrawing = false;
-    expect(() => component.onMouseLeave()).not.toThrow();
   });
 
   it('onMouseDown right-click in placement mode cancels placement', () => {

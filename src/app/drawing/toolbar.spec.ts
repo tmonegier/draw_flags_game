@@ -1,5 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { ToolbarComponent, DrawingTool } from './toolbar';
+import { ToolbarComponent } from './toolbar';
 
 describe('ToolbarComponent', () => {
   let component: ToolbarComponent;
@@ -12,7 +12,6 @@ describe('ToolbarComponent', () => {
 
     fixture   = TestBed.createComponent(ToolbarComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('activeTool', 'fill');
     fixture.componentRef.setInput('activeColor', '#000000');
     fixture.detectChanges();
   });
@@ -21,50 +20,28 @@ describe('ToolbarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // ── tools array ───────────────────────────────────────────────────────────────
+  // ── clearLabel input ──────────────────────────────────────────────────────────
 
-  it('has exactly 2 tools', () => {
-    expect(component.tools.length).toBe(2);
+  it('clearLabel defaults to "🗑️ Clear"', () => {
+    expect(component.clearLabel()).toBe('🗑️ Clear');
   });
 
-  it('tools contains a fill entry', () => {
-    expect(component.tools.map(t => t.key)).toContain('fill');
+  it('clearLabel reflects a custom value', () => {
+    fixture.componentRef.setInput('clearLabel', '↩️ Cancel Changes');
+    fixture.detectChanges();
+    expect(component.clearLabel()).toBe('↩️ Cancel Changes');
   });
 
-  it('tools contains an eraser entry', () => {
-    expect(component.tools.map(t => t.key)).toContain('eraser');
+  // ── showElements input ────────────────────────────────────────────────────────
+
+  it('showElements defaults to true', () => {
+    expect(component.showElements()).toBeTrue();
   });
 
-  it('each tool has a non-empty icon', () => {
-    component.tools.forEach(t => expect(t.icon.length).toBeGreaterThan(0));
-  });
-
-  it('each tool has a non-empty title', () => {
-    component.tools.forEach(t => expect(t.title.length).toBeGreaterThan(0));
-  });
-
-  // ── selectTool ────────────────────────────────────────────────────────────────
-
-  it('selectTool emits fill via toolChange', () => {
-    const emitted: DrawingTool[] = [];
-    component.toolChange.subscribe(v => emitted.push(v));
-    component.selectTool('fill');
-    expect(emitted).toEqual(['fill']);
-  });
-
-  it('selectTool emits eraser via toolChange', () => {
-    const emitted: DrawingTool[] = [];
-    component.toolChange.subscribe(v => emitted.push(v));
-    component.selectTool('eraser');
-    expect(emitted).toEqual(['eraser']);
-  });
-
-  it('selectTool emits once per call', () => {
-    const emitted: DrawingTool[] = [];
-    component.toolChange.subscribe(v => emitted.push(v));
-    component.selectTool('eraser');
-    component.selectTool('fill');
-    expect(emitted.length).toBe(2);
+  it('showElements can be set to false', () => {
+    fixture.componentRef.setInput('showElements', false);
+    fixture.detectChanges();
+    expect(component.showElements()).toBeFalse();
   });
 
   // ── onColorInput ──────────────────────────────────────────────────────────────
@@ -102,17 +79,13 @@ describe('ToolbarComponent', () => {
 
   // ── input signals ─────────────────────────────────────────────────────────────
 
-  it('activeTool input is readable as a signal', () => {
-    expect(component.activeTool()).toBe('fill');
-  });
-
   it('activeColor input is readable as a signal', () => {
     expect(component.activeColor()).toBe('#000000');
   });
 
-  it('activeTool reflects a new value set from outside', () => {
-    fixture.componentRef.setInput('activeTool', 'eraser');
+  it('activeColor reflects a new value set from outside', () => {
+    fixture.componentRef.setInput('activeColor', '#ff0000');
     fixture.detectChanges();
-    expect(component.activeTool()).toBe('eraser');
+    expect(component.activeColor()).toBe('#ff0000');
   });
 });

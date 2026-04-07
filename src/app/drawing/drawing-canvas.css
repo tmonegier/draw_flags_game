@@ -34,14 +34,6 @@
   cursor: crosshair;
 }
 
-.overlay-canvas.eraser-cursor {
-  cursor: cell;
-}
-
-.overlay-canvas.crosshair-cursor {
-  cursor: crosshair;
-}
-
 .overlay-canvas.placement-cursor {
   cursor: copy;
 }

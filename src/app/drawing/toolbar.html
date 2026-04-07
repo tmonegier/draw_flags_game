@@ -1,18 +1,4 @@
 <div class="toolbar">
-  <!-- Drawing tools -->
-  <div class="tool-group">
-    @for (t of tools; track t.key) {
-      <button
-        class="tool-btn"
-        [class.active]="activeTool() === t.key"
-        [title]="t.title"
-        (click)="selectTool(t.key)"
-      >{{ t.icon }}</button>
-    }
-  </div>
-
-  <div class="divider"></div>
-
   <!-- Color picker or restricted palette -->
   @if (allowedColors(); as palette) {
     <div class="color-palette">
@@ -40,9 +26,11 @@
 
   <div class="divider"></div>
 
-  <!-- Elements library -->
-  <button class="elements-btn" title="Flag elements library" (click)="openElements.emit()">⭐ Elements</button>
+  <!-- Elements library (hard mode only) -->
+  @if (showElements()) {
+    <button class="elements-btn" title="Flag elements library" (click)="openElements.emit()">⭐ Elements</button>
+  }
 
-  <!-- Clear -->
-  <button class="clear-btn" title="Clear canvas" (click)="onClear()">🗑️ Clear</button>
+  <!-- Clear / Cancel Changes -->
+  <button class="clear-btn" [title]="clearLabel()" (click)="onClear()">{{ clearLabel() }}</button>
 </div>

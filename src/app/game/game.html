@@ -12,10 +12,10 @@
   </div>
 
   <app-toolbar
-    [activeTool]="activeTool()"
     [activeColor]="activeColor()"
     [allowedColors]="allowedColors()"
-    (toolChange)="onToolChange($event)"
+    [clearLabel]="clearLabel()"
+    [showElements]="showElements()"
     (colorChange)="onColorChange($event)"
     (clearCanvas)="onClearCanvas()"
     (openElements)="onOpenElements()"
@@ -31,7 +31,6 @@
 
   <div class="canvas-area">
     <app-drawing-canvas
-      [tool]="activeTool()"
       [color]="activeColor()"
       [ratio]="gameState.currentCountry()?.ratio ?? '2:3'"
       (placementCancelled)="onPlacementCancelled()"

@@ -24,7 +24,7 @@ To download/refresh flag SVGs: `python3 scripts/download_flags.py` (requires `re
 ### Game flow (route order)
 
 1. `/` — `HomeComponent`: pick difficulty (easy/medium/hard), call `GameStateService.startGame()`
-2. `/game` — `GameComponent`: draw on a canvas whose ratio matches the current country's flag; on submit, stores the data URL in `GameStateService` and navigates to `/compare`
+2. `/game` — `GameComponent`: applies difficulty hints in `ngAfterViewInit()` (bands/cross on `splitsCanvas`, elements auto-placed on `baseCanvas`); on easy restricts colour picker to a **shuffled** copy of `country.colors` and pre-selects the first shuffled colour; toolbar shows "↩️ Cancel Changes" on easy/medium (clears canvas then re-applies hints) and "🗑️ Clear" on hard; Elements picker is only shown on hard; on submit stores the data URL in `GameStateService` and navigates to `/compare`
 3. `/compare` — `CompareComponent`: on init calls `ScoringService.computeScore()` which loads the local SVG from `/flags/${svgFile}`, renders both images onto off-screen canvases, and computes a pixel-match percentage (tolerance = 60/255 per channel); stores `RoundScore` in `GameStateService`, then routes to `/game` (next round) or `/end`
 4. `/end` — `EndComponent`: shows each round as a card with the user's drawing alongside the real flag
 
@@ -34,10 +34,18 @@ All routes use lazy-loaded standalone components (`loadComponent`).
 
 `Country` interface (`country.service.ts`):
 ```ts
-{ name: string; code: string; ratio: string; svgFile: string }
+{ name: string; code: string; ratio: string; svgFile: string; hints: DrawingHint[]; colors: string[] }
 ```
 - `ratio` — Wikipedia height:width format, e.g. `"2:3"` means height=2, width=3
 - `svgFile` — filename inside `public/flags/`, e.g. `"france.svg"`
+- `hints` — pre-drawn guide structures rendered on easy/medium difficulty
+- `colors` — hex palette for that flag; shown as restricted picker on easy difficulty
+
+**Hint types** (union `DrawingHint`, all in `country.service.ts`):
+- `BandHint` — `{ kind: 'bands'; direction: 'horizontal'|'vertical'; ratios: number[] }` — split guide lines
+- `CrossHint` — `{ kind: 'cross'; variant: 'simple'|'double'; widthRatios: number[]; heightRatios: number[] }` — Nordic cross guide lines
+- `CrossOutlineHint` — `{ kind: 'crossOutline'; widthRatios: number[]; heightRatios: number[] }` — filled plus-sign on baseCanvas (e.g. Switzerland)
+- `ElementHint` — `{ kind: 'element'; elementId: string; xCenter: number; yCenter: number; sizeFraction: number; color?: string }` — auto-placed SVG stamp
 
 SVG flags live in `public/flags/` (served as static assets). The download script writes them to `scripts/flags/` first; copy with `cp scripts/flags/*.svg public/flags/`.
 
@@ -52,7 +60,7 @@ This means the canvas is always 400 px tall and as wide as the flag's proportion
 `GameStateService` (singleton, `providedIn: 'root'`) holds all game state as Angular signals:
 - `difficulty`, `currentCountry`, `queue`, `drawingDataUrl`, `drawingWidth`, `drawingHeight`, `roundScores`
 - `isGameOver`, `averageScore`, `overallGrade` are computed signals
-- `RoundScore` carries `drawingDataUrl`, `svgFile`, and `ratio` so the end screen can display each drawing alongside the real flag
+- `RoundScore` carries `country`, `code`, `score`, `grade`, `drawingDataUrl`, `svgFile`, and `ratio` so the end screen can display each drawing alongside the real flag
 
 No persistence — state resets on page refresh.
 
@@ -66,26 +74,43 @@ No persistence — state resets on page refresh.
 | `splitsCanvas` | Guide lines from splits tool | ❌ no |
 | `overlayCanvas` | Element placement preview + mouse events | ❌ no |
 
-- **Flood fill** reads `baseCanvas` pixel data for colour matching but also reads `splitsCanvas` alpha to treat guide lines as boundaries. When the fill reaches a split-line pixel it paints it on `baseCanvas` (so no white gap appears after submission) but does not propagate through.
+- **Flood fill** — clicking the canvas always flood-fills the clicked region. Reads `splitsCanvas` alpha as boundaries; split-line pixels are painted with the fill colour but don't propagate through. `color: input<string>` supplies the fill colour.
 - `getDrawingDataUrl()` exports only `baseCanvas`.
 - `clearCanvas()` resets all three canvases.
+- `applyHints(hints[])` — called by `GameComponent.ngAfterViewInit()` on easy/medium; dispatches to `applySplits` / `applyNordicCross` / `drawCrossOutline` / `placeElementDirectly`.
+- `applyNordicCross(config)` — draws cross guide lines on `splitsCanvas` using symmetric skip logic to preserve flood-fill regions.
+- `drawCrossOutline(widthRatios, heightRatios)` — paints a filled plus-sign directly on `baseCanvas` (used for Switzerland-style crosses, not guide lines).
+- `placeElementDirectly(element, color, xCenter, yCenter, sizeFraction)` — auto-stamps an SVG element on `baseCanvas` without user interaction.
+- `startElementPlacement(element, size, color)` / `cancelPlacement()` — enter/exit interactive placement mode; sets `isPlacingElement` signal and uses `overlayCanvas` for preview.
+- `isPlacingElement: Signal<boolean>` — true while the user is interactively placing an element.
+- `placementCancelled: output<void>()` — emitted when placement is cancelled via Escape or `cancelPlacement()`.
 
 ### Tools (toolbar.ts)
 
-`DrawingTool = 'fill' | 'eraser'`
+There are no freehand drawing tools. Clicking the canvas always flood-fills the clicked region with the active colour. Bands, crosses, and SVG stamps are added via the **Elements modal** (hard mode only).
 
-The toolbar exposes: tool buttons, colour picker, Elements button, Clear button.  
-Splits / bands are configured inside the **Elements modal** (not the toolbar).
+The toolbar exposes: colour picker (or restricted palette when `allowedColors` is set), optionally the Elements button, and a Clear/Cancel button.
+
+**Types exported from `toolbar.ts`:** `SplitDirection`, `SplitConfig`, `CrossVariant`, `CrossConfig`.
+
+`ToolbarComponent` inputs:
+- `activeColor: input.required<string>`
+- `allowedColors: input<string[] | null>` — replaces the free colour picker with a fixed palette when non-null
+- `clearLabel: input<string>` — defaults to `'🗑️ Clear'`; `GameComponent` sets `'↩️ Cancel Changes'` on easy/medium
+- `showElements: input<boolean>` — defaults to `true`; `GameComponent` sets `false` on easy/medium so the Elements button is hidden
 
 ### Elements modal
 
-`ElementsModalComponent` (`drawing/elements-modal.ts`) handles two item kinds:
+`ElementsModalComponent` (`drawing/elements-modal.ts`) handles three item kinds:
 
-- **`'element'`** — SVG stamp placed on the canvas at a fixed 80 px size via `startElementPlacement()`
-- **`'band'`** — horizontal or vertical split lines applied via `applySplits(direction, ratios)`
+- **`'element'`** — SVG stamp; interactive placement via `startElementPlacement()`, or auto-placed via `placeElementDirectly()` when an `autoPlace` config is defined
+- **`'band'`** — horizontal or vertical split guide lines applied via `applySplits(direction, ratios)`
+- **`'cross'`** — Nordic cross guide lines applied via `applyNordicCross(config)`
 
-Emits `elementSelected: ElementSelection` or `splitsSelected: SplitConfig` depending on which kind is confirmed with "OK!".  
-`FLAG_ELEMENTS` in `flag-elements.ts` is currently empty; add entries there to populate the elements library.
+Outputs: `elementSelected: ElementSelection`, `splitsSelected: SplitConfig`, `crossSelected: CrossConfig`, `closed`.  
+`FLAG_ELEMENTS` in `flag-elements.ts` currently contains the **Albania eagle** (`id: 'albania-eagle'`, category `coat_of_arms`, with an `autoPlace` config for easy/medium hints). Add further entries there to expand the elements library.
+
+`FlagElement` in `flag-elements.ts` has an optional `autoPlace: { xCenter, yCenter, sizeFraction }` field — when present, easy/medium modes stamp the element automatically via `placeElementDirectly()` rather than waiting for user interaction.
 
 ### Scoring
 
@@ -97,7 +122,7 @@ Emits `elementSelected: ElementSelection` or `splitsSelected: SplitConfig` depen
 
 ## Testing
 
-Every service, component, and utility has a corresponding `*.spec.ts` file. **284 tests** covering all methods and behaviours. Run with `npm test`.
+Every service, component, and utility has a corresponding `*.spec.ts` file. **298 tests** covering all methods and behaviours. Run with `npm test`.
 
 ### Spec file locations
 
@@ -107,12 +132,12 @@ Every service, component, and utility has a corresponding `*.spec.ts` file. **28
 | `services/game-state.service.spec.ts` | `scoreToGrade()`, all signals, all methods |
 | `services/scoring.service.spec.ts` | Pixel tolerance, error handling, URL construction |
 | `home/home.spec.ts` | Difficulty selection, `startGame()` navigation |
-| `game/game.spec.ts` | Signal defaults, tool/color/modal handlers, `submit()` |
+| `game/game.spec.ts` | Signal defaults, color/modal handlers, `allowedColors`, `clearLabel`, `showElements`, hint application, `submit()` |
 | `compare/compare.spec.ts` | Redirect guard, scoring flow, `getScoreMessage()`, navigation |
 | `end/end.spec.ts` | `gradeColor()`, `aspectRatio()`, `playAgain()` |
-| `drawing/toolbar.spec.ts` | Outputs (`toolChange`, `colorChange`, `clearCanvas`) |
-| `drawing/elements-modal.spec.ts` | Category filter, band config, `updateRatio()` clamping, OK/close |
-| `drawing/drawing-canvas.spec.ts` | Canvas dimensions, flood fill, split boundaries, mouse events |
+| `drawing/toolbar.spec.ts` | `clearLabel`, `showElements` inputs, `colorChange`, `clearCanvas` outputs |
+| `drawing/elements-modal.spec.ts` | Category filter, band/cross config, `updateRatio()` clamping, OK/close |
+| `drawing/drawing-canvas.spec.ts` | Canvas dimensions, split/cross boundaries, element placement, mouse events |
 
 ### Testing patterns
 

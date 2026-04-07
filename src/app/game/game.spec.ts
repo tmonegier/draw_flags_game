@@ -50,31 +50,51 @@ describe('GameComponent', () => {
 
   // ── Signal defaults ───────────────────────────────────────────────────────────
 
-  it('activeTool defaults to fill', () => {
-    expect(component.activeTool()).toBe('fill');
-  });
-
-  it('activeColor is set to the first flag color in easy mode after init', () => {
-    const country = gameState.currentCountry()!;
-    expect(country.colors.length).toBeGreaterThan(0);
-    expect(component.activeColor()).toBe(country.colors[0]);
+  it('activeColor is set to the first color of the shuffled palette in easy mode after init', () => {
+    const palette = component.allowedColors();
+    expect(palette).not.toBeNull();
+    expect(palette!.length).toBeGreaterThan(0);
+    expect(component.activeColor()).toBe(palette![0]);
   });
 
   it('isElementsModalOpen defaults to false', () => {
     expect(component.isElementsModalOpen()).toBeFalse();
   });
 
-  // ── onToolChange ──────────────────────────────────────────────────────────────
+  // ── clearLabel computed signal ────────────────────────────────────────────────
 
-  it('onToolChange updates activeTool to eraser', () => {
-    component.onToolChange('eraser');
-    expect(component.activeTool()).toBe('eraser');
+  it('clearLabel is "↩️ Cancel Changes" on easy mode', () => {
+    expect(component.clearLabel()).toBe('↩️ Cancel Changes');
   });
 
-  it('onToolChange can switch back to fill', () => {
-    component.onToolChange('eraser');
-    component.onToolChange('fill');
-    expect(component.activeTool()).toBe('fill');
+  it('clearLabel is "↩️ Cancel Changes" on medium mode', () => {
+    gameState.startGame('medium');
+    fixture.detectChanges();
+    expect(component.clearLabel()).toBe('↩️ Cancel Changes');
+  });
+
+  it('clearLabel is "🗑️ Clear" on hard mode', () => {
+    gameState.startGame('hard');
+    fixture.detectChanges();
+    expect(component.clearLabel()).toBe('🗑️ Clear');
+  });
+
+  // ── showElements computed signal ──────────────────────────────────────────────
+
+  it('showElements is false on easy mode', () => {
+    expect(component.showElements()).toBeFalse();
+  });
+
+  it('showElements is false on medium mode', () => {
+    gameState.startGame('medium');
+    fixture.detectChanges();
+    expect(component.showElements()).toBeFalse();
+  });
+
+  it('showElements is true on hard mode', () => {
+    gameState.startGame('hard');
+    fixture.detectChanges();
+    expect(component.showElements()).toBeTrue();
   });
 
   // ── onColorChange ─────────────────────────────────────────────────────────────
@@ -91,10 +111,38 @@ describe('GameComponent', () => {
 
   // ── onClearCanvas ─────────────────────────────────────────────────────────────
 
-  it('onClearCanvas delegates to drawingCanvas.clearCanvas()', () => {
+  it('onClearCanvas calls clearCanvas', () => {
     spyOn(component.drawingCanvas, 'clearCanvas');
+    spyOn(component.drawingCanvas, 'applyHints');
     component.onClearCanvas();
     expect(component.drawingCanvas.clearCanvas).toHaveBeenCalledTimes(1);
+  });
+
+  it('onClearCanvas re-applies hints on easy mode', () => {
+    spyOn(component.drawingCanvas, 'clearCanvas');
+    spyOn(component.drawingCanvas, 'applyHints');
+    component.onClearCanvas();
+    const country = gameState.currentCountry()!;
+    expect(component.drawingCanvas.applyHints).toHaveBeenCalledWith(country.hints);
+  });
+
+  it('onClearCanvas re-applies hints on medium mode', () => {
+    gameState.startGame('medium');
+    fixture.detectChanges();
+    spyOn(component.drawingCanvas, 'clearCanvas');
+    spyOn(component.drawingCanvas, 'applyHints');
+    component.onClearCanvas();
+    const country = gameState.currentCountry()!;
+    expect(component.drawingCanvas.applyHints).toHaveBeenCalledWith(country.hints);
+  });
+
+  it('onClearCanvas does not re-apply hints on hard mode', () => {
+    gameState.startGame('hard');
+    fixture.detectChanges();
+    spyOn(component.drawingCanvas, 'clearCanvas');
+    spyOn(component.drawingCanvas, 'applyHints');
+    component.onClearCanvas();
+    expect(component.drawingCanvas.applyHints).not.toHaveBeenCalled();
   });
 
   // ── onOpenElements ────────────────────────────────────────────────────────────

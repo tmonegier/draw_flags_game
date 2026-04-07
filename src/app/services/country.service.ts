@@ -62,7 +62,7 @@ const ALL_COUNTRIES: Country[] = [
   // ── Vertical tricolors ───────────────────────────────────────────────────────
   { name: 'France',      code: 'fr', ratio: '2:3',   svgFile: 'france.svg',
     hints: [{ kind: 'bands', direction: 'vertical', ratios: [1, 1, 1] }],
-    colors: ['#002395', '#ffffff', '#ED2939'] },
+    colors: ['#002654', '#ffffff', '#CE1126'] },
 
   { name: 'Ireland',     code: 'ie', ratio: '1:2',   svgFile: 'ireland.svg',
     hints: [{ kind: 'bands', direction: 'vertical', ratios: [1, 1, 1] }],
@@ -70,7 +70,7 @@ const ALL_COUNTRIES: Country[] = [
 
   { name: 'Belgium',     code: 'be', ratio: '13:15', svgFile: 'belgium.svg',
     hints: [{ kind: 'bands', direction: 'vertical', ratios: [1, 1, 1] }],
-    colors: ['#000000', '#FAE042', '#EF3340'] },
+    colors: ['#000000', '#FDDA25', '#EF3340'] },
 
   { name: 'Romania',     code: 'ro', ratio: '2:3',   svgFile: 'romania.svg',
     hints: [{ kind: 'bands', direction: 'vertical', ratios: [1, 1, 1] }],
@@ -98,7 +98,7 @@ const ALL_COUNTRIES: Country[] = [
 
   { name: 'Andorra',     code: 'ad', ratio: '7:10',  svgFile: 'andorra.svg',
     hints: [{ kind: 'bands', direction: 'vertical', ratios: [1, 1, 1] }],
-    colors: ['#0032A0', '#FECC00', '#D01030'] },
+    colors: ['#0018A8', '#FEDF00', '#D0103A'] },
 
   { name: 'Guatemala',   code: 'gt', ratio: '5:8',   svgFile: 'guatemala.svg',
     hints: [{ kind: 'bands', direction: 'vertical', ratios: [1, 1, 1] }],
@@ -111,7 +111,7 @@ const ALL_COUNTRIES: Country[] = [
 
   { name: 'Austria',     code: 'at', ratio: '2:3',   svgFile: 'austria.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
-    colors: ['#ED2939', '#ffffff'] },
+    colors: ['#C8102E', '#ffffff'] },
 
   { name: 'Russia',      code: 'ru', ratio: '2:3',   svgFile: 'russia.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
@@ -119,7 +119,7 @@ const ALL_COUNTRIES: Country[] = [
 
   { name: 'Armenia',     code: 'am', ratio: '1:2',   svgFile: 'armenia.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
-    colors: ['#D90012', '#0033A0', '#FF8C00'] },
+    colors: ['#D90012', '#0033A0', '#F2A800'] },
 
   { name: 'Bulgaria',    code: 'bg', ratio: '3:5',   svgFile: 'bulgaria.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
@@ -127,13 +127,13 @@ const ALL_COUNTRIES: Country[] = [
 
   { name: 'Luxembourg',  code: 'lu', ratio: '3:5',   svgFile: 'luxembourg.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
-    colors: ['#EF3340', '#ffffff', '#00A1DE'] },
+    colors: ['#EF3340', '#ffffff', '#00A3E0'] },
 
   { name: 'Sierra Leone', code: 'sl', ratio: '2:3',  svgFile: 'sierra_leone.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
     colors: ['#1EB53A', '#ffffff', '#0072C6'] },
 
-  { name: 'Yemen',       code: 'ye', ratio: '1:2',   svgFile: 'yemen.svg',
+  { name: 'Yemen',       code: 'ye', ratio: '2:3',   svgFile: 'yemen.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
     colors: ['#CE1126', '#ffffff', '#000000'] },
 
@@ -168,11 +168,11 @@ const ALL_COUNTRIES: Country[] = [
 
   { name: 'Latvia',      code: 'lv', ratio: '1:2',   svgFile: 'latvia.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [2, 1, 2] }],
-    colors: ['#9E3039', '#ffffff'] },
+    colors: ['#9D2235', '#ffffff'] },
 
   { name: 'Spain',       code: 'es', ratio: '2:3',   svgFile: 'spain.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 2, 1] }],
-    colors: ['#AA151B', '#F1BF00'] },
+    colors: ['#C60B1E', '#FFC400'] },
 
   { name: 'Argentina',   code: 'ar', ratio: '5:8',   svgFile: 'argentina.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] }],
@@ -180,15 +180,15 @@ const ALL_COUNTRIES: Country[] = [
 
   { name: 'Costa Rica',  code: 'cr', ratio: '3:5',   svgFile: 'costa_rica.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1, 2, 1, 1] }],
-    colors: ['#002B7F', '#ffffff', '#CE1126'] },
+    colors: ['#001489', '#ffffff', '#DA291C'] },
 
   { name: 'Botswana',    code: 'bw', ratio: '2:3',   svgFile: 'botswana.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [9, 1, 4, 1, 9] }],
-    colors: ['#75AADB', '#ffffff', '#000000'] },
+    colors: ['#6DA9D2', '#ffffff', '#000000'] },
 
   { name: 'The Gambia',  code: 'gm', ratio: '2:3',   svgFile: 'the_gambia.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [6, 1, 4, 1, 6] }],
-    colors: ['#CE1126', '#ffffff', '#3A75C4', '#3A7728'] },
+    colors: ['#CE1126', '#ffffff', '#0C1C8C', '#3A7728'] },
 
   // ── Multi-axis layouts ────────────────────────────────────────────────────────
   { name: 'Benin',       code: 'bj', ratio: '2:3',   svgFile: 'benin.svg',
@@ -210,36 +210,36 @@ const ALL_COUNTRIES: Country[] = [
       { kind: 'bands', direction: 'vertical',   ratios: [1, 2] },
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1] },
     ],
-    colors: ['#ffffff', '#f9423a', '#007e3a'] },
+    colors: ['#ffffff', '#f9423a', '#00843D'] },
 
   // ── Simple Nordic cross ───────────────────────────────────────────────────────
   { name: 'Denmark',     code: 'dk', ratio: '28:37', svgFile: 'denmark.svg',
     hints: [{ kind: 'cross', variant: 'simple', widthRatios: [12, 4, 21], heightRatios: [12, 4, 12] }],
-    colors: ['#C60C30', '#ffffff'] },
+    colors: ['#C8102E', '#ffffff'] },
 
   { name: 'Sweden',      code: 'se', ratio: '5:8',   svgFile: 'sweden.svg',
     hints: [{ kind: 'cross', variant: 'simple', widthRatios: [5, 2, 9], heightRatios: [4, 2, 4] }],
-    colors: ['#006AA7', '#FECC02'] },
+    colors: ['#005293', '#FECB00'] },
 
   { name: 'Finland',     code: 'fi', ratio: '11:18', svgFile: 'finland.svg',
     hints: [{ kind: 'cross', variant: 'simple', widthRatios: [5, 3, 10], heightRatios: [4, 3, 4] }],
-    colors: ['#003580', '#ffffff'] },
+    colors: ['#002F6C', '#ffffff'] },
 
   // Swiss cross: centered, NOT touching flag edges.
   // widthRatios [6,7,6,7,6] (sum 32) → outer edge at 6/32, arm at 13/32, 19/32, outer at 26/32.
   // Draws a plus-sign outline on baseCanvas; background fills red with one click.
   { name: 'Switzerland', code: 'ch', ratio: '1:1',   svgFile: 'switzerland.svg',
     hints: [{ kind: 'crossOutline', widthRatios: [6, 7, 6, 7, 6], heightRatios: [6, 7, 6, 7, 6] }],
-    colors: ['#FF0000', '#ffffff'] },
+    colors: ['#DA291C', '#ffffff'] },
 
   // ── Double Nordic cross ───────────────────────────────────────────────────────
   { name: 'Norway',      code: 'no', ratio: '8:11',  svgFile: 'norway.svg',
     hints: [{ kind: 'cross', variant: 'double', widthRatios: [6, 1, 2, 1, 12], heightRatios: [6, 1, 2, 1, 6] }],
-    colors: ['#EF2B2D', '#ffffff', '#002868'] },
+    colors: ['#BA0C2F', '#ffffff', '#00205B'] },
 
   { name: 'Iceland',     code: 'is', ratio: '18:25', svgFile: 'iceland.svg',
     hints: [{ kind: 'cross', variant: 'double', widthRatios: [7, 1, 2, 1, 14], heightRatios: [7, 1, 2, 1, 7] }],
-    colors: ['#003897', '#ffffff', '#D72828'] },
+    colors: ['#02529C', '#ffffff', '#DC1E35'] },
 
   // ── Mixed bands + cross ───────────────────────────────────────────────────────
   // Greece: 9 equal horizontal bands guide the stripes. The canton cross must be

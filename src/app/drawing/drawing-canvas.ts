@@ -3,7 +3,7 @@ import {
   AfterViewInit, AfterViewChecked,
   computed, input, output, signal
 } from '@angular/core';
-import { DrawingTool, CrossConfig } from './toolbar';
+import { CrossConfig } from './toolbar';
 import { DrawingHint, ElementHint } from '../services/country.service';
 import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
 
@@ -21,7 +21,6 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   @ViewChild('splitsCanvas') splitsCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvasRef!: ElementRef<HTMLCanvasElement>;
 
-  tool = input<DrawingTool>('fill');
   color = input<string>('#000000');
   /** height:width ratio string, e.g. "2:3" or "1:2" */
   ratio = input<string>('2:3');
@@ -38,8 +37,6 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   private baseCtx!: CanvasRenderingContext2D;
   private splitsCtx!: CanvasRenderingContext2D;
   private overlayCtx!: CanvasRenderingContext2D;
-
-  private isDrawing = false;
 
   private placementImg: HTMLImageElement | null = null;
   private pendingSize = 80;
@@ -312,58 +309,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
       return;
     }
     const pos = this.getPos(event);
-    const tool = this.tool();
-    if (tool === 'eraser') {
-      this.isDrawing = true;
-      this.configureEraser();
-      this.baseCtx.beginPath();
-      this.baseCtx.moveTo(pos.x, pos.y);
-    } else if (tool === 'fill') {
-      this.floodFill(Math.round(pos.x), Math.round(pos.y));
-    }
-  }
-
-  onMouseMove(event: MouseEvent): void {
-    if (this.isPlacingElement()) {
-      const pos = this.getPos(event);
-      const W = this.canvasWidth();
-      const H = this.canvasHeight;
-      this.overlayCtx.clearRect(0, 0, W, H);
-      if (this.placementImg) {
-        const s = this.pendingSize;
-        this.overlayCtx.globalAlpha = 0.72;
-        this.overlayCtx.drawImage(this.placementImg, pos.x - s / 2, pos.y - s / 2, s, s);
-        this.overlayCtx.globalAlpha = 1;
-      }
-      return;
-    }
-    if (!this.isDrawing) return;
-    event.preventDefault();
-    const pos = this.getPos(event);
-    this.configureEraser();
-    this.baseCtx.lineTo(pos.x, pos.y);
-    this.baseCtx.stroke();
-  }
-
-  onMouseUp(event: MouseEvent): void {
-    if (!this.isDrawing) return;
-    event.preventDefault();
-    this.baseCtx.closePath();
-    this.isDrawing = false;
-  }
-
-  onMouseLeave(): void {
-    if (this.isDrawing) this.onMouseUp(new MouseEvent('mouseup'));
-  }
-
-  // ── Private helpers ─────────────────────────────────────────────────────────
-
-  private configureEraser(): void {
-    this.baseCtx.globalCompositeOperation = 'source-over';
-    this.baseCtx.strokeStyle = '#ffffff';
-    this.baseCtx.lineWidth = 12;
-    this.baseCtx.lineCap = 'round';
-    this.baseCtx.lineJoin = 'round';
+    this.floodFill(Math.round(pos.x), Math.round(pos.y));
   }
 
   private floodFill(startX: number, startY: number): void {
@@ -419,5 +365,19 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const clean = hex.replace('#', '');
     const num = parseInt(clean, 16);
     return [(num >> 16) & 0xff, (num >> 8) & 0xff, num & 0xff, 255];
+  }
+
+  onMouseMove(event: MouseEvent): void {
+    if (!this.isPlacingElement()) return;
+    const pos = this.getPos(event);
+    const W = this.canvasWidth();
+    const H = this.canvasHeight;
+    this.overlayCtx.clearRect(0, 0, W, H);
+    if (this.placementImg) {
+      const s = this.pendingSize;
+      this.overlayCtx.globalAlpha = 0.72;
+      this.overlayCtx.drawImage(this.placementImg, pos.x - s / 2, pos.y - s / 2, s, s);
+      this.overlayCtx.globalAlpha = 1;
+    }
   }
 }

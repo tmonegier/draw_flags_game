@@ -21,38 +21,6 @@
   flex-shrink: 0;
 }
 
-/* Tools */
-.tool-group {
-  display: flex;
-  gap: 0.3rem;
-}
-
-.tool-btn {
-  width: 38px;
-  height: 38px;
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: 8px;
-  background: rgba(255,255,255,0.05);
-  color: #ccc;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tool-btn:hover {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.3);
-}
-
-.tool-btn.active {
-  background: rgba(99, 179, 237, 0.25);
-  border-color: #63b3ed;
-  color: #fff;
-}
-
 /* Color picker */
 .color-picker-wrapper {
   position: relative;

@@ -23,13 +23,9 @@
     [width]="canvasWidth()"
     [height]="canvasHeight"
     class="overlay-canvas"
-    [class.eraser-cursor]="tool() === 'eraser' && !isPlacingElement()"
-    [class.crosshair-cursor]="tool() === 'fill' && !isPlacingElement()"
     [class.placement-cursor]="isPlacingElement()"
     (mousedown)="onMouseDown($event)"
     (mousemove)="onMouseMove($event)"
-    (mouseup)="onMouseUp($event)"
-    (mouseleave)="onMouseLeave()"
     (contextmenu)="$event.preventDefault()"
   ></canvas>
 </div>
