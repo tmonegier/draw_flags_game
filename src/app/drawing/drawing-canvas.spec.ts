@@ -263,7 +263,7 @@ describe('DrawingCanvasComponent', () => {
       expect(capturedSrc).toMatch(/^data:image\/svg\+xml/);
     });
 
-    it('substitutes the hint color for currentColor in the element SVG', () => {
+    it('always places the element in black regardless of hint color', () => {
       if (FLAG_ELEMENTS.length === 0) { pending('no FLAG_ELEMENTS defined'); return; }
       const el = FLAG_ELEMENTS[0];
       let capturedSrc = '';
@@ -275,6 +275,7 @@ describe('DrawingCanvasComponent', () => {
         { kind: 'element', elementId: el.id, color: '#ff0000', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 }
       ]);
       const decoded = decodeURIComponent(capturedSrc);
+      expect(decoded).toContain('#000000');
       expect(decoded).not.toContain('currentColor');
     });
 

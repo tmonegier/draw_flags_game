@@ -151,7 +151,9 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   private applyElementHint(hint: ElementHint): void {
     const element = FLAG_ELEMENTS.find(e => e.id === hint.elementId);
     if (!element) return;
-    this.placeElementDirectly(element, hint.color, hint.xCenter, hint.yCenter, hint.sizeFraction);
+    // Always place in black: the shape is a guide but the colour is for the
+    // player to discover.
+    this.placeElementDirectly(element, '#000000', hint.xCenter, hint.yCenter, hint.sizeFraction);
   }
 
   private buildSvgDataUrl(element: FlagElement, color: string): string {

@@ -59,8 +59,6 @@ export class GameComponent implements AfterViewInit {
     if (difficulty === 'easy') {
       const palette = this.allowedColors();
       if (palette && palette.length > 0) this.activeColor.set(palette[0]);
-    } else if (difficulty === 'medium') {
-      if (country.colors.length > 0) this.activeColor.set(country.colors[0]);
     }
   }
 
