@@ -179,6 +179,39 @@ const ALL_COUNTRIES: Country[] = [
     ],
     colors: ['#ffffff', '#254aa5', '#ed1c24'] },
 
+  // Morocco: solid red background with a centered green pentagram outline.
+  // Easy/medium: star pre-drawn via element hint.
+  { name: 'Morocco',     code: 'ma', ratio: '2:3',   svgFile: 'morocco.svg',
+    hints: [
+      { kind: 'element', elementId: 'morocco-star', color: '#006233', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.45 },
+    ],
+    colors: ['#c1272d', '#006233'] },
+
+  // Algeria: vertical green-white bicolor with a red crescent and star.
+  // Easy/medium: band guide + crescent-star pre-drawn.
+  { name: 'Algeria',     code: 'dz', ratio: '2:3',   svgFile: 'algeria.svg',
+    hints: [
+      { kind: 'bands', direction: 'vertical', ratios: [1, 1] },
+      { kind: 'element', elementId: 'algeria-crescent-star', color: '#d21034', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.55 },
+    ],
+    colors: ['#006633', '#ffffff', '#d21034'] },
+
+  // Tunisia: solid red background with a centered white-disk crescent-star emblem.
+  // Easy/medium: emblem pre-drawn via element hint.
+  { name: 'Tunisia',     code: 'tn', ratio: '2:3',   svgFile: 'tunisia.svg',
+    hints: [
+      { kind: 'element', elementId: 'tunisia-crescent-star', color: '#e70013', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 },
+    ],
+    colors: ['#e70013', '#ffffff'] },
+
+  // Turkey: solid red background with a white crescent and star.
+  // Easy/medium: crescent-star pre-drawn via element hint.
+  { name: 'Turkey',      code: 'tr', ratio: '2:3',   svgFile: 'turkey.svg',
+    hints: [
+      { kind: 'element', elementId: 'turkey-crescent-star', color: '#ffffff', xCenter: 0.38, yCenter: 0.5, sizeFraction: 0.55 },
+    ],
+    colors: ['#e30a17', '#ffffff'] },
+
   // ── Bicolors ─────────────────────────────────────────────────────────────────
   { name: 'Monaco',      code: 'mc', ratio: '4:5',   svgFile: 'monaco.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1] }],

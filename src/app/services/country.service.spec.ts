@@ -12,8 +12,8 @@ describe('CountryService', () => {
   // ── getCountries ─────────────────────────────────────────────────────────────
 
   describe('getCountries', () => {
-    it('returns 44 countries', () => {
-      expect(service.getCountries().length).toBe(44);
+    it('returns 48 countries', () => {
+      expect(service.getCountries().length).toBe(48);
     });
 
     it('returns a new array each call (not the same reference)', () => {
@@ -23,7 +23,7 @@ describe('CountryService', () => {
     it('does not mutate internal data when the returned array is modified', () => {
       const a = service.getCountries();
       a.push({ name: 'Test', code: 'xx', ratio: '1:1', svgFile: 'test.svg', hints: [], colors: [] });
-      expect(service.getCountries().length).toBe(44);
+      expect(service.getCountries().length).toBe(48);
     });
 
     it('every country has a non-empty name', () => {
@@ -211,6 +211,67 @@ describe('CountryService', () => {
       expect(elementHint).toBeTruthy();
       if (elementHint?.kind === 'element') {
         expect(elementHint.elementId).toBe('slovakia-coat-of-arms');
+      }
+    });
+
+    it('includes Morocco', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Morocco');
+    });
+
+    it('Morocco has ratio 2:3 and a star element hint', () => {
+      const morocco = service.getCountries().find(c => c.name === 'Morocco')!;
+      expect(morocco.ratio).toBe('2:3');
+      const elementHint = morocco.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('morocco-star');
+      }
+    });
+
+    it('includes Algeria', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Algeria');
+    });
+
+    it('Algeria has a vertical bands hint and a crescent-star element hint', () => {
+      const algeria = service.getCountries().find(c => c.name === 'Algeria')!;
+      const bandsHint = algeria.hints.find(h => h.kind === 'bands');
+      expect(bandsHint).toBeTruthy();
+      if (bandsHint?.kind === 'bands') {
+        expect(bandsHint.direction).toBe('vertical');
+        expect(bandsHint.ratios).toEqual([1, 1]);
+      }
+      const elementHint = algeria.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('algeria-crescent-star');
+      }
+    });
+
+    it('includes Tunisia', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Tunisia');
+    });
+
+    it('Tunisia has ratio 2:3 and a crescent-star element hint', () => {
+      const tunisia = service.getCountries().find(c => c.name === 'Tunisia')!;
+      expect(tunisia.ratio).toBe('2:3');
+      const elementHint = tunisia.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('tunisia-crescent-star');
+      }
+    });
+
+    it('includes Turkey', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Turkey');
+    });
+
+    it('Turkey has ratio 2:3 and a crescent-star element hint', () => {
+      const turkey = service.getCountries().find(c => c.name === 'Turkey')!;
+      expect(turkey.ratio).toBe('2:3');
+      const elementHint = turkey.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('turkey-crescent-star');
       }
     });
   });
