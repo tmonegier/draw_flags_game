@@ -156,7 +156,10 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   private buildSvgDataUrl(element: FlagElement, color: string): string {
     const content = element.svgContent.replace(/currentColor/g, color);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${content}</svg>`;
+    // Set `color` on the outer SVG so that any residual `currentColor` keyword
+    // in the inner SVG resolves to the intended colour rather than the browser
+    // default (black).
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="color:${color}">${content}</svg>`;
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
 

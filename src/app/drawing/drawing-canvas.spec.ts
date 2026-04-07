@@ -123,6 +123,17 @@ describe('DrawingCanvasComponent', () => {
       expect(decoded).not.toContain('currentColor');
     });
 
+    it('sets the CSS color property on the outer SVG so currentColor resolves correctly', () => {
+      let capturedSrc = '';
+      (window as any).Image = class {
+        onload: any = null;
+        set src(v: string) { capturedSrc = v; }
+      };
+      component.startElementPlacement(MOCK_ELEMENT, 80, '#ff6600');
+      const decoded = decodeURIComponent(capturedSrc);
+      expect(decoded).toContain('style="color:#ff6600"');
+    });
+
     it('encodes the SVG as a data URI', () => {
       let capturedSrc = '';
       (window as any).Image = class {

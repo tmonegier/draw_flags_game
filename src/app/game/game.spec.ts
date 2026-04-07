@@ -57,6 +57,27 @@ describe('GameComponent', () => {
     expect(component.activeColor()).toBe(palette![0]);
   });
 
+  it('activeColor is set to the first flag color in medium mode after init', async () => {
+    gameState.startGame('medium');
+    const medFixture = TestBed.createComponent(GameComponent);
+    const medComponent = medFixture.componentInstance;
+    medFixture.detectChanges();
+    await medFixture.whenStable();
+    const country = gameState.currentCountry()!;
+    expect(medComponent.activeColor()).toBe(country.colors[0]);
+  });
+
+  it('activeColor is not black by default in medium mode', async () => {
+    gameState.startGame('medium');
+    const medFixture = TestBed.createComponent(GameComponent);
+    const medComponent = medFixture.componentInstance;
+    medFixture.detectChanges();
+    await medFixture.whenStable();
+    // Flags with a black first color are not in the country list, so this is
+    // always a non-black flag color.
+    expect(medComponent.activeColor()).not.toBe('#000000');
+  });
+
   it('isElementsModalOpen defaults to false', () => {
     expect(component.isElementsModalOpen()).toBeFalse();
   });
