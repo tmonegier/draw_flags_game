@@ -12,8 +12,8 @@ describe('CountryService', () => {
   // ── getCountries ─────────────────────────────────────────────────────────────
 
   describe('getCountries', () => {
-    it('returns 42 countries', () => {
-      expect(service.getCountries().length).toBe(42);
+    it('returns 44 countries', () => {
+      expect(service.getCountries().length).toBe(44);
     });
 
     it('returns a new array each call (not the same reference)', () => {
@@ -23,7 +23,7 @@ describe('CountryService', () => {
     it('does not mutate internal data when the returned array is modified', () => {
       const a = service.getCountries();
       a.push({ name: 'Test', code: 'xx', ratio: '1:1', svgFile: 'test.svg', hints: [], colors: [] });
-      expect(service.getCountries().length).toBe(42);
+      expect(service.getCountries().length).toBe(44);
     });
 
     it('every country has a non-empty name', () => {
@@ -164,6 +164,54 @@ describe('CountryService', () => {
     it('Canada colors include the flag red', () => {
       const canada = service.getCountries().find(c => c.name === 'Canada')!;
       expect(canada.colors).toContain('#d52b1e');
+    });
+
+    it('includes Slovenia', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Slovenia');
+    });
+
+    it('Slovenia has ratio 1:2', () => {
+      const slovenia = service.getCountries().find(c => c.name === 'Slovenia')!;
+      expect(slovenia.ratio).toBe('1:2');
+    });
+
+    it('Slovenia has a horizontal bands hint and a coat of arms element hint', () => {
+      const slovenia = service.getCountries().find(c => c.name === 'Slovenia')!;
+      const bandsHint = slovenia.hints.find(h => h.kind === 'bands');
+      expect(bandsHint).toBeTruthy();
+      if (bandsHint?.kind === 'bands') {
+        expect(bandsHint.direction).toBe('horizontal');
+        expect(bandsHint.ratios).toEqual([1, 1, 1]);
+      }
+      const elementHint = slovenia.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('slovenia-coat-of-arms');
+      }
+    });
+
+    it('includes Slovakia', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Slovakia');
+    });
+
+    it('Slovakia has ratio 2:3', () => {
+      const slovakia = service.getCountries().find(c => c.name === 'Slovakia')!;
+      expect(slovakia.ratio).toBe('2:3');
+    });
+
+    it('Slovakia has a horizontal bands hint and a coat of arms element hint', () => {
+      const slovakia = service.getCountries().find(c => c.name === 'Slovakia')!;
+      const bandsHint = slovakia.hints.find(h => h.kind === 'bands');
+      expect(bandsHint).toBeTruthy();
+      if (bandsHint?.kind === 'bands') {
+        expect(bandsHint.direction).toBe('horizontal');
+        expect(bandsHint.ratios).toEqual([1, 1, 1]);
+      }
+      const elementHint = slovakia.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('slovakia-coat-of-arms');
+      }
     });
   });
 

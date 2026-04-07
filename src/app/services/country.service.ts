@@ -161,6 +161,24 @@ const ALL_COUNTRIES: Country[] = [
     ],
     colors: ['#d52b1e', '#ffffff'] },
 
+  // Slovenia: horizontal tricolor with coat of arms in upper-left quadrant.
+  // Easy/medium: band guides + coat of arms pre-drawn.
+  { name: 'Slovenia',    code: 'si', ratio: '1:2',   svgFile: 'slovenia.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
+      { kind: 'element', elementId: 'slovenia-coat-of-arms', color: '#0000ff', xCenter: 0.25, yCenter: 0.346, sizeFraction: 0.35 },
+    ],
+    colors: ['#ffffff', '#0000ff', '#ff0000'] },
+
+  // Slovakia: horizontal tricolor with coat of arms slightly left of center.
+  // Easy/medium: band guides + coat of arms pre-drawn.
+  { name: 'Slovakia',    code: 'sk', ratio: '2:3',   svgFile: 'slovakia.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
+      { kind: 'element', elementId: 'slovakia-coat-of-arms', color: '#ed1c24', xCenter: 0.3, yCenter: 0.5, sizeFraction: 0.52 },
+    ],
+    colors: ['#ffffff', '#254aa5', '#ed1c24'] },
+
   // ── Bicolors ─────────────────────────────────────────────────────────────────
   { name: 'Monaco',      code: 'mc', ratio: '4:5',   svgFile: 'monaco.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1] }],
