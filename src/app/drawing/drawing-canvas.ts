@@ -10,6 +10,13 @@ import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
 export const CANVAS_HEIGHT = 400;
 
 interface Point { x: number; y: number; }
+interface PlacedElement {
+  element: FlagElement;
+  color: string;
+  xCenter: number;   // fraction of canvas width
+  yCenter: number;   // fraction of canvas height
+  sizeFraction: number; // fraction of canvas height
+}
 
 @Component({
   selector: 'app-drawing-canvas',
@@ -40,8 +47,12 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   private elementsCtx!: CanvasRenderingContext2D;
   private overlayCtx!: CanvasRenderingContext2D;
 
+  private placedElements: PlacedElement[] = [];
+
   private placementImg: HTMLImageElement | null = null;
   private pendingSize = 80;
+  private pendingElement: FlagElement | null = null;
+  private pendingColor = '';
 
   private lastRenderedWidth = 0;
 
@@ -66,32 +77,24 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   startElementPlacement(element: FlagElement, size: number, color: string): void {
     this.pendingSize = size;
+    this.pendingElement = element;
+    this.pendingColor = color;
     this.placementImg = null;
     this.isPlacingElement.set(true);
-    const content = element.svgContent.replace(/currentColor/g, color);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${content}</svg>`;
     const img = new Image();
     img.onload = () => { this.placementImg = img; };
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    img.src = this.buildSvgDataUrl(element, color);
   }
 
   /**
-   * Stamps an element directly onto baseCanvas at the given fractional position
-   * without entering interactive placement mode.
+   * Stamps an element onto elementsCanvas at the given fractional position
+   * without entering interactive placement mode. Tracks the placement so the
+   * element can be recolored later via a clean SVG re-render.
    */
   placeElementDirectly(element: FlagElement, color: string, xCenter: number, yCenter: number, sizeFraction: number): void {
-    const W = this.canvasWidth();
-    const H = this.canvasHeight;
-    const content = element.svgContent.replace(/currentColor/g, color);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${content}</svg>`;
-    const s = H * sizeFraction;
-    const x = W * xCenter;
-    const y = H * yCenter;
-    const img = new Image();
-    img.onload = () => {
-      this.elementsCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
-    };
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    const pe: PlacedElement = { element, color, xCenter, yCenter, sizeFraction };
+    this.placedElements.push(pe);
+    this.renderPlacedElement(pe);
   }
 
   cancelPlacement(): void {
@@ -128,6 +131,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     this.splitsCtx.clearRect(0, 0, W, H);
     this.elementsCtx.clearRect(0, 0, W, H);
     this.overlayCtx.clearRect(0, 0, W, H);
+    this.placedElements = [];
   }
 
   applyHints(hints: DrawingHint[]): void {
@@ -147,18 +151,51 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   private applyElementHint(hint: ElementHint): void {
     const element = FLAG_ELEMENTS.find(e => e.id === hint.elementId);
     if (!element) return;
+    this.placeElementDirectly(element, hint.color, hint.xCenter, hint.yCenter, hint.sizeFraction);
+  }
+
+  private buildSvgDataUrl(element: FlagElement, color: string): string {
+    const content = element.svgContent.replace(/currentColor/g, color);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${content}</svg>`;
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+
+  private renderPlacedElement(pe: PlacedElement): void {
     const W = this.canvasWidth();
     const H = this.canvasHeight;
-    const content = element.svgContent.replace(/currentColor/g, hint.color);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${content}</svg>`;
-    const s = H * hint.sizeFraction;
-    const x = W * hint.xCenter;
-    const y = H * hint.yCenter;
+    const s = H * pe.sizeFraction;
+    const x = W * pe.xCenter;
+    const y = H * pe.yCenter;
     const img = new Image();
     img.onload = () => {
       this.elementsCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
     };
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    img.src = this.buildSvgDataUrl(pe.element, pe.color);
+  }
+
+  private redrawAllElements(): void {
+    this.elementsCtx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight);
+    for (const pe of this.placedElements) {
+      this.renderPlacedElement(pe);
+    }
+  }
+
+  /** Finds the topmost placed element whose bounding box contains (x, y),
+   *  updates its color, and redraws the elements canvas from SVG source. */
+  private recolorElement(x: number, y: number): void {
+    const W = this.canvasWidth();
+    const H = this.canvasHeight;
+    for (let i = this.placedElements.length - 1; i >= 0; i--) {
+      const pe = this.placedElements[i];
+      const cx = W * pe.xCenter;
+      const cy = H * pe.yCenter;
+      const s = H * pe.sizeFraction;
+      if (x >= cx - s / 2 && x <= cx + s / 2 && y >= cy - s / 2 && y <= cy + s / 2) {
+        this.placedElements[i] = { ...pe, color: this.color() };
+        this.redrawAllElements();
+        return;
+      }
+    }
   }
 
   /**
@@ -308,49 +345,30 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     if (this.isPlacingElement()) {
       if (event.button === 2) { this.cancelPlacement(); return; }
       const pos = this.getPos(event);
-      if (this.placementImg) {
+      if (this.placementImg && this.pendingElement) {
         const s = this.pendingSize;
         this.elementsCtx.drawImage(this.placementImg, pos.x - s / 2, pos.y - s / 2, s, s);
+        this.placedElements.push({
+          element: this.pendingElement,
+          color: this.pendingColor,
+          xCenter: pos.x / this.canvasWidth(),
+          yCenter: pos.y / this.canvasHeight,
+          sizeFraction: s / this.canvasHeight,
+        });
       }
       return;
     }
     const pos = this.getPos(event);
     const x = Math.round(pos.x);
     const y = Math.round(pos.y);
-    // If the click lands on an element pixel, recolor that element region.
+    // If the click lands on an element pixel, recolor via SVG re-render.
     // Otherwise, flood-fill the base canvas (bounded by split lines).
     const elemData = this.elementsCtx.getImageData(0, 0, this.canvasWidth(), this.canvasHeight).data;
     if (elemData[(y * this.canvasWidth() + x) * 4 + 3] > 0) {
-      this.floodFillElements(x, y);
+      this.recolorElement(x, y);
     } else {
       this.floodFill(x, y);
     }
-  }
-
-  private floodFillElements(startX: number, startY: number): void {
-    const canvas = this.elementsCanvasRef.nativeElement;
-    const ctx = this.elementsCtx;
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    const targetColor = this.getPixelColor(data, startX, startY, canvas.width);
-    const fillColor = this.hexToRgba(this.color());
-    if (targetColor[0] === fillColor[0] && targetColor[1] === fillColor[1] && targetColor[2] === fillColor[2]) return;
-
-    const stack: Point[] = [{ x: startX, y: startY }];
-    const visited = new Uint8Array(canvas.width * canvas.height);
-    while (stack.length) {
-      const { x, y } = stack.pop()!;
-      if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) continue;
-      const idx = y * canvas.width + x;
-      if (visited[idx]) continue;
-      visited[idx] = 1;
-      const c = this.getPixelColor(data, x, y, canvas.width);
-      if (c[3] === 0) continue; // transparent — stop at element boundary
-      if (!this.colorMatch(c, targetColor)) continue;
-      this.setPixelColor(data, x, y, canvas.width, fillColor);
-      stack.push({ x: x + 1, y }, { x: x - 1, y }, { x, y: y + 1 }, { x, y: y - 1 });
-    }
-    ctx.putImageData(imageData, 0, 0);
   }
 
   private floodFill(startX: number, startY: number): void {

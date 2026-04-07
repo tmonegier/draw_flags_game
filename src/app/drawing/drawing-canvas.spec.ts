@@ -447,14 +447,27 @@ describe('DrawingCanvasComponent', () => {
     expect(pixel[2]).toBe(0);
   });
 
-  it('onMouseDown on an element pixel fills elementsCanvas, not baseCanvas', () => {
+  it('onMouseDown on an element pixel recolors via SVG re-render (not pixel fill)', () => {
     fixture.componentRef.setInput('color', '#ff0000');
     fixture.detectChanges();
 
-    // Paint a blue pixel directly on elementsCanvas to simulate a placed element
+    // Register a placed element in the tracking array so recolorElement can find it
+    const pe = {
+      element: FLAG_ELEMENTS[0],
+      color: '#0000ff',
+      xCenter: 15 / component.canvasWidth(),
+      yCenter: 15 / component.canvasHeight,
+      sizeFraction: 100 / component.canvasHeight, // large box: ±50px around center
+    };
+    (component as any).placedElements = [pe];
+
+    // Paint a non-transparent pixel on elementsCanvas at the click point so the
+    // alpha check in onMouseDown routes to recolorElement instead of floodFill
     const elemCtx = component.elementsCanvasRef.nativeElement.getContext('2d')!;
     elemCtx.fillStyle = '#0000ff';
-    elemCtx.fillRect(10, 10, 1, 1);
+    elemCtx.fillRect(15, 15, 1, 1);
+
+    spyOn(component as any, 'redrawAllElements');
 
     const overlay = component.overlayCanvasRef.nativeElement;
     spyOn(overlay, 'getBoundingClientRect').and.returnValue({
@@ -464,17 +477,45 @@ describe('DrawingCanvasComponent', () => {
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect);
 
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
+    component.onMouseDown(new MouseEvent('mousedown', { clientX: 15, clientY: 15, button: 0 }));
 
-    // elementsCanvas pixel should be recolored red
-    const elemPixel = elemCtx.getImageData(10, 10, 1, 1).data;
-    expect(elemPixel[0]).toBe(255);
-    expect(elemPixel[1]).toBe(0);
-    expect(elemPixel[2]).toBe(0);
+    // The placed element's color should be updated to the active color
+    expect((component as any).placedElements[0].color).toBe('#ff0000');
+    // The canvas should be redrawn from SVG source (not pixel-manipulated)
+    expect((component as any).redrawAllElements).toHaveBeenCalled();
+  });
 
-    // baseCanvas should remain white (untouched)
+  it('onMouseDown on an element pixel does not touch baseCanvas', () => {
+    fixture.componentRef.setInput('color', '#ff0000');
+    fixture.detectChanges();
+
+    (component as any).placedElements = [{
+      element: FLAG_ELEMENTS[0],
+      color: '#0000ff',
+      xCenter: 15 / component.canvasWidth(),
+      yCenter: 15 / component.canvasHeight,
+      sizeFraction: 100 / component.canvasHeight,
+    }];
+
+    const elemCtx = component.elementsCanvasRef.nativeElement.getContext('2d')!;
+    elemCtx.fillStyle = '#0000ff';
+    elemCtx.fillRect(15, 15, 1, 1);
+
+    spyOn(component as any, 'redrawAllElements'); // suppress re-render side effects
+
+    const overlay = component.overlayCanvasRef.nativeElement;
+    spyOn(overlay, 'getBoundingClientRect').and.returnValue({
+      left: 0, top: 0,
+      width: component.canvasWidth(), height: component.canvasHeight,
+      right: component.canvasWidth(), bottom: component.canvasHeight,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect);
+
+    component.onMouseDown(new MouseEvent('mousedown', { clientX: 15, clientY: 15, button: 0 }));
+
+    // baseCanvas untouched — remains white
     const basePixel = component.baseCanvasRef.nativeElement.getContext('2d')!
-      .getImageData(10, 10, 1, 1).data;
+      .getImageData(15, 15, 1, 1).data;
     expect(basePixel[0]).toBe(255);
     expect(basePixel[1]).toBe(255);
     expect(basePixel[2]).toBe(255);

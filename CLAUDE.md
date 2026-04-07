@@ -75,7 +75,8 @@ No persistence — state resets on page refresh.
 | `elementsCanvas` | SVG element stamps (above fill layer) | ✅ yes |
 | `overlayCanvas` | Element placement preview + mouse events | ❌ no |
 
-- **Flood fill** — clicking the canvas flood-fills the clicked region. If the clicked pixel has alpha > 0 on `elementsCanvas`, `floodFillElements()` recolors that element in-place (stops at transparent boundaries). Otherwise `floodFill()` fills `baseCanvas`, using `splitsCanvas` alpha as boundaries. `color: input<string>` supplies the fill colour.
+- **Flood fill** — clicking the canvas flood-fills the clicked region. If the clicked pixel has alpha > 0 on `elementsCanvas`, `recolorElement()` finds the topmost `PlacedElement` by bounding box, updates its stored color, clears `elementsCanvas`, and redraws all elements from SVG source (preserving quality). Otherwise `floodFill()` fills `baseCanvas` using `splitsCanvas` alpha as boundaries. `color: input<string>` supplies the fill colour.
+- `placedElements` — private array tracking every element stamped on `elementsCanvas` (element ref, color, fractional position/size). Populated by `placeElementDirectly` and interactive placement; cleared by `clearCanvas()`.
 - `getDrawingDataUrl()` composites `baseCanvas` then `elementsCanvas` onto an off-screen canvas for export.
 - `clearCanvas()` resets all four canvases.
 - `applyHints(hints[])` — called by `GameComponent.ngAfterViewInit()` on easy/medium; dispatches to `applySplits` / `applyNordicCross` / `drawCrossOutline` / `placeElementDirectly`.
@@ -127,7 +128,7 @@ Add further entries there to expand the elements library.
 
 ## Testing
 
-Every service, component, and utility has a corresponding `*.spec.ts` file. **336 tests** covering all methods and behaviours. Run with `npm test`.
+Every service, component, and utility has a corresponding `*.spec.ts` file. **337 tests** covering all methods and behaviours. Run with `npm test`.
 
 ### Spec file locations
 
@@ -150,4 +151,4 @@ Every service, component, and utility has a corresponding `*.spec.ts` file. **33
 - **Components with `Router`**: provide with `provideRouter([])` + `provideLocationMocks()`, then `spyOn(router, 'navigate')`.
 - **Signal inputs** (`input.required<T>()`): set via `fixture.componentRef.setInput('name', value)` before `detectChanges()`.
 - **Signal outputs** (`output<T>()`): subscribe directly — `component.myOutput.subscribe(spy)`.
-- **Private canvas methods** (`floodFill`, `floodFillElements`, `hexToRgba`, `colorMatch`): call via `(component as any).methodName()`.
+- **Private canvas methods** (`floodFill`, `recolorElement`, `redrawAllElements`, `hexToRgba`, `colorMatch`): call via `(component as any).methodName()`.
