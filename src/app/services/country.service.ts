@@ -152,6 +152,15 @@ const ALL_COUNTRIES: Country[] = [
     hints: [{ kind: 'element', elementId: 'albania-eagle', color: '#000000', xCenter: 0.5, yCenter: 0.55, sizeFraction: 0.78 }],
     colors: ['#FF0000', '#000000'] },
 
+  // Canada: vertical 1:2:1 bands with a centered red maple leaf.
+  // Easy/medium: band guides + leaf pre-drawn. Hard: bands + leaf in elements panel.
+  { name: 'Canada',      code: 'ca', ratio: '1:2',   svgFile: 'canada.svg',
+    hints: [
+      { kind: 'bands', direction: 'vertical', ratios: [1, 2, 1] },
+      { kind: 'element', elementId: 'canada-maple-leaf', color: '#d52b1e', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.88 },
+    ],
+    colors: ['#d52b1e', '#ffffff'] },
+
   // ── Bicolors ─────────────────────────────────────────────────────────────────
   { name: 'Monaco',      code: 'mc', ratio: '4:5',   svgFile: 'monaco.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1] }],

@@ -12,8 +12,8 @@ describe('CountryService', () => {
   // ── getCountries ─────────────────────────────────────────────────────────────
 
   describe('getCountries', () => {
-    it('returns 41 countries', () => {
-      expect(service.getCountries().length).toBe(41);
+    it('returns 42 countries', () => {
+      expect(service.getCountries().length).toBe(42);
     });
 
     it('returns a new array each call (not the same reference)', () => {
@@ -23,7 +23,7 @@ describe('CountryService', () => {
     it('does not mutate internal data when the returned array is modified', () => {
       const a = service.getCountries();
       a.push({ name: 'Test', code: 'xx', ratio: '1:1', svgFile: 'test.svg', hints: [], colors: [] });
-      expect(service.getCountries().length).toBe(41);
+      expect(service.getCountries().length).toBe(42);
     });
 
     it('every country has a non-empty name', () => {
@@ -135,6 +135,35 @@ describe('CountryService', () => {
       if (elementHint?.kind === 'element') {
         expect(elementHint.elementId).toBe('albania-eagle');
       }
+    });
+
+    it('includes Canada', () => {
+      expect(service.getCountries().map(c => c.name)).toContain('Canada');
+    });
+
+    it('Canada has ratio 1:2', () => {
+      const canada = service.getCountries().find(c => c.name === 'Canada')!;
+      expect(canada.ratio).toBe('1:2');
+    });
+
+    it('Canada has a vertical bands hint and a maple leaf element hint', () => {
+      const canada = service.getCountries().find(c => c.name === 'Canada')!;
+      const bandsHint = canada.hints.find(h => h.kind === 'bands');
+      expect(bandsHint).toBeTruthy();
+      if (bandsHint?.kind === 'bands') {
+        expect(bandsHint.direction).toBe('vertical');
+        expect(bandsHint.ratios).toEqual([1, 2, 1]);
+      }
+      const elementHint = canada.hints.find(h => h.kind === 'element');
+      expect(elementHint).toBeTruthy();
+      if (elementHint?.kind === 'element') {
+        expect(elementHint.elementId).toBe('canada-maple-leaf');
+      }
+    });
+
+    it('Canada colors include the flag red', () => {
+      const canada = service.getCountries().find(c => c.name === 'Canada')!;
+      expect(canada.colors).toContain('#d52b1e');
     });
   });
 

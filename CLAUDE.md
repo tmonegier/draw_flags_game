@@ -109,7 +109,11 @@ The toolbar exposes: colour picker (or restricted palette when `allowedColors` i
 - **`'cross'`** — Nordic cross guide lines applied via `applyNordicCross(config)`
 
 Outputs: `elementSelected: ElementSelection`, `splitsSelected: SplitConfig`, `crossSelected: CrossConfig`, `closed`.  
-`FLAG_ELEMENTS` in `flag-elements.ts` currently contains the **Albania eagle** (`id: 'albania-eagle'`, category `coat_of_arms`, with an `autoPlace` config for easy/medium hints). Add further entries there to expand the elements library.
+`FLAG_ELEMENTS` in `flag-elements.ts` currently contains:
+- **Canada maple leaf** (`id: 'canada-maple-leaf'`, category `plants`, `autoPlace` for easy/medium)
+- **Albania eagle** (`id: 'albania-eagle'`, category `coat_of_arms`, `autoPlace` for easy/medium)
+
+Add further entries there to expand the elements library.
 
 `FlagElement` in `flag-elements.ts` has an optional `autoPlace: { xCenter, yCenter, sizeFraction }` field — when present, easy/medium modes stamp the element automatically via `placeElementDirectly()` rather than waiting for user interaction.
 
@@ -123,7 +127,7 @@ Outputs: `elementSelected: ElementSelection`, `splitsSelected: SplitConfig`, `cr
 
 ## Testing
 
-Every service, component, and utility has a corresponding `*.spec.ts` file. **299 tests** covering all methods and behaviours. Run with `npm test`.
+Every service, component, and utility has a corresponding `*.spec.ts` file. **336 tests** covering all methods and behaviours. Run with `npm test`.
 
 ### Spec file locations
 
