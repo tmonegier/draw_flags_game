@@ -1,0 +1,50 @@
+@if (isOpen()) {
+  <div class="backdrop" (click)="skip()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="skip()" aria-label="Close">✕</button>
+
+      @if (!showSteps()) {
+        <!-- Confirmation screen -->
+        <div class="confirm-screen">
+          <div class="mode-badge">
+            <span>{{ difficultyEmoji() }}</span>
+            <span>{{ difficultyLabel() }} Mode</span>
+          </div>
+          <h2>Want a quick tutorial?</h2>
+          <p>Learn the key mechanics before you start drawing.</p>
+          <div class="confirm-actions">
+            <button class="skip-btn" (click)="skip()">No thanks, let's play</button>
+            <button class="show-btn" (click)="startTutorial()">Show me how ▸</button>
+          </div>
+        </div>
+      } @else {
+        <!-- Steps screen -->
+        <div class="steps-screen">
+          <div class="step-header">
+            <span class="step-count">{{ currentStep() + 1 }} / {{ steps().length }}</span>
+          </div>
+          <div class="step-body">
+            <div class="step-emoji">{{ currentStepData().emoji }}</div>
+            <h3>{{ currentStepData().title }}</h3>
+            <p>{{ currentStepData().body }}</p>
+          </div>
+          <div class="dots">
+            @for (s of steps(); track $index) {
+              <span class="dot" [class.active]="$index === currentStep()"></span>
+            }
+          </div>
+          <div class="step-actions">
+            @if (currentStep() > 0) {
+              <button class="prev-btn" (click)="prev()">← Back</button>
+            } @else {
+              <span></span>
+            }
+            <button class="next-btn" (click)="next()">
+              {{ isLastStep() ? "🚩 Let's Play!" : 'Next →' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

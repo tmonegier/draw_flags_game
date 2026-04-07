@@ -92,20 +92,36 @@ describe('HomeComponent', () => {
       expect(gameState.startGame).toHaveBeenCalledWith('easy');
     });
 
-    it('navigates to /game', () => {
+    it('sets showTutorial to true instead of navigating immediately', () => {
       component.startGame();
-      expect(router.navigate).toHaveBeenCalledWith(['/game']);
+      expect(component.showTutorial()).toBeTrue();
+      expect(router.navigate).not.toHaveBeenCalled();
     });
 
-    it('navigates to /game regardless of the selected difficulty', () => {
+    it('sets showTutorial to true regardless of selected difficulty', () => {
       component.select('hard');
       component.startGame();
-      expect(router.navigate).toHaveBeenCalledWith(['/game']);
+      expect(component.showTutorial()).toBeTrue();
     });
 
     it('initialises game state so currentCountry is set', () => {
       component.startGame();
       expect(gameState.currentCountry()).not.toBeNull();
+    });
+  });
+
+  // ── onTutorialClosed() ────────────────────────────────────────────────────────
+
+  describe('onTutorialClosed()', () => {
+    it('navigates to /game', () => {
+      component.onTutorialClosed();
+      expect(router.navigate).toHaveBeenCalledWith(['/game']);
+    });
+
+    it('sets showTutorial to false', () => {
+      component.showTutorial.set(true);
+      component.onTutorialClosed();
+      expect(component.showTutorial()).toBeFalse();
     });
   });
 });

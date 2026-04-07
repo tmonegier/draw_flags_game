@@ -26,3 +26,9 @@
     🚩 Start Drawing!
   </button>
 </div>
+
+<app-tutorial-modal
+  [difficulty]="selected()"
+  [isOpen]="showTutorial()"
+  (closed)="onTutorialClosed()"
+/>

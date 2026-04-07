@@ -2,17 +2,20 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { Difficulty } from '../services/country.service';
+import { TutorialModalComponent } from './tutorial-modal';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
   styleUrl: './home.css',
+  imports: [TutorialModalComponent],
 })
 export class HomeComponent {
   private readonly router = inject(Router);
   private readonly gameState = inject(GameStateService);
 
   selected = signal<Difficulty>('easy');
+  showTutorial = signal(false);
 
   readonly difficulties: { key: Difficulty; label: string; description: string; emoji: string }[] = [
     { key: 'easy',   label: 'Easy',   description: 'Bands pre-drawn — pick from flag colors only', emoji: '🟢' },
@@ -26,6 +29,11 @@ export class HomeComponent {
 
   startGame(): void {
     this.gameState.startGame(this.selected());
+    this.showTutorial.set(true);
+  }
+
+  onTutorialClosed(): void {
+    this.showTutorial.set(false);
     this.router.navigate(['/game']);
   }
 }
