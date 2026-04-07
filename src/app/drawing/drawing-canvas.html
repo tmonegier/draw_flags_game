@@ -17,6 +17,14 @@
     class="splits-canvas"
   ></canvas>
 
+  <!-- Elements canvas: SVG stamps above the fill layer — included in submission -->
+  <canvas
+    #elementsCanvas
+    [width]="canvasWidth()"
+    [height]="canvasHeight"
+    class="elements-canvas"
+  ></canvas>
+
   <!-- Overlay canvas: shape preview + event capture -->
   <canvas
     #overlayCanvas

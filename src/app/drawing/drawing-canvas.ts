@@ -19,6 +19,7 @@ interface Point { x: number; y: number; }
 export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   @ViewChild('baseCanvas') baseCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('splitsCanvas') splitsCanvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('elementsCanvas') elementsCanvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overlayCanvas') overlayCanvasRef!: ElementRef<HTMLCanvasElement>;
 
   color = input<string>('#000000');
@@ -36,6 +37,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   private baseCtx!: CanvasRenderingContext2D;
   private splitsCtx!: CanvasRenderingContext2D;
+  private elementsCtx!: CanvasRenderingContext2D;
   private overlayCtx!: CanvasRenderingContext2D;
 
   private placementImg: HTMLImageElement | null = null;
@@ -46,6 +48,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   ngAfterViewInit(): void {
     this.baseCtx = this.baseCanvasRef.nativeElement.getContext('2d')!;
     this.splitsCtx = this.splitsCanvasRef.nativeElement.getContext('2d')!;
+    this.elementsCtx = this.elementsCanvasRef.nativeElement.getContext('2d')!;
     this.overlayCtx = this.overlayCanvasRef.nativeElement.getContext('2d')!;
     this.lastRenderedWidth = this.canvasWidth();
     this.clearCanvas();
@@ -86,7 +89,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const y = H * yCenter;
     const img = new Image();
     img.onload = () => {
-      this.baseCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
+      this.elementsCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
     };
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
@@ -111,7 +114,9 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const temp = document.createElement('canvas');
     temp.width = W;
     temp.height = H;
-    temp.getContext('2d')!.drawImage(this.baseCanvasRef.nativeElement, 0, 0);
+    const ctx = temp.getContext('2d')!;
+    ctx.drawImage(this.baseCanvasRef.nativeElement, 0, 0);
+    ctx.drawImage(this.elementsCanvasRef.nativeElement, 0, 0);
     return temp.toDataURL('image/png');
   }
 
@@ -121,6 +126,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     this.baseCtx.fillStyle = '#ffffff';
     this.baseCtx.fillRect(0, 0, W, H);
     this.splitsCtx.clearRect(0, 0, W, H);
+    this.elementsCtx.clearRect(0, 0, W, H);
     this.overlayCtx.clearRect(0, 0, W, H);
   }
 
@@ -150,7 +156,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const y = H * hint.yCenter;
     const img = new Image();
     img.onload = () => {
-      this.baseCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
+      this.elementsCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
     };
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
@@ -304,12 +310,47 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
       const pos = this.getPos(event);
       if (this.placementImg) {
         const s = this.pendingSize;
-        this.baseCtx.drawImage(this.placementImg, pos.x - s / 2, pos.y - s / 2, s, s);
+        this.elementsCtx.drawImage(this.placementImg, pos.x - s / 2, pos.y - s / 2, s, s);
       }
       return;
     }
     const pos = this.getPos(event);
-    this.floodFill(Math.round(pos.x), Math.round(pos.y));
+    const x = Math.round(pos.x);
+    const y = Math.round(pos.y);
+    // If the click lands on an element pixel, recolor that element region.
+    // Otherwise, flood-fill the base canvas (bounded by split lines).
+    const elemData = this.elementsCtx.getImageData(0, 0, this.canvasWidth(), this.canvasHeight).data;
+    if (elemData[(y * this.canvasWidth() + x) * 4 + 3] > 0) {
+      this.floodFillElements(x, y);
+    } else {
+      this.floodFill(x, y);
+    }
+  }
+
+  private floodFillElements(startX: number, startY: number): void {
+    const canvas = this.elementsCanvasRef.nativeElement;
+    const ctx = this.elementsCtx;
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    const targetColor = this.getPixelColor(data, startX, startY, canvas.width);
+    const fillColor = this.hexToRgba(this.color());
+    if (targetColor[0] === fillColor[0] && targetColor[1] === fillColor[1] && targetColor[2] === fillColor[2]) return;
+
+    const stack: Point[] = [{ x: startX, y: startY }];
+    const visited = new Uint8Array(canvas.width * canvas.height);
+    while (stack.length) {
+      const { x, y } = stack.pop()!;
+      if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) continue;
+      const idx = y * canvas.width + x;
+      if (visited[idx]) continue;
+      visited[idx] = 1;
+      const c = this.getPixelColor(data, x, y, canvas.width);
+      if (c[3] === 0) continue; // transparent — stop at element boundary
+      if (!this.colorMatch(c, targetColor)) continue;
+      this.setPixelColor(data, x, y, canvas.width, fillColor);
+      stack.push({ x: x + 1, y }, { x: x - 1, y }, { x, y: y + 1 }, { x, y: y - 1 });
+    }
+    ctx.putImageData(imageData, 0, 0);
   }
 
   private floodFill(startX: number, startY: number): void {

@@ -162,9 +162,9 @@ describe('DrawingCanvasComponent', () => {
       expect(capturedSrc).not.toContain('currentColor');
     });
 
-    it('draws the image onto baseCanvas at the correct position when loaded', () => {
+    it('draws the image onto elementsCanvas at the correct position when loaded', () => {
       const drawSpy = spyOn(
-        (component as any).baseCtx, 'drawImage',
+        (component as any).elementsCtx, 'drawImage',
       );
       let capturedOnload: (() => void) | null = null;
       (window as any).Image = class {
@@ -267,7 +267,7 @@ describe('DrawingCanvasComponent', () => {
       expect(decoded).not.toContain('currentColor');
     });
 
-    it('draws on the base canvas when the image loads', () => {
+    it('draws on the elements canvas (not base canvas) when the image loads', () => {
       if (FLAG_ELEMENTS.length === 0) { pending('no FLAG_ELEMENTS defined'); return; }
       const el = FLAG_ELEMENTS[0];
       let loadCallback: (() => void) | null = null;
@@ -275,12 +275,14 @@ describe('DrawingCanvasComponent', () => {
         onload: (() => void) | null = null;
         set src(_: string) { loadCallback = this.onload; }
       };
-      spyOn(component.baseCanvasRef.nativeElement.getContext('2d')!, 'drawImage');
+      const elementsDrawSpy = spyOn((component as any).elementsCtx, 'drawImage');
+      const baseDrawSpy = spyOn((component as any).baseCtx, 'drawImage');
       component.applyHints([
         { kind: 'element', elementId: el.id, color: el.defaultColor, xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 }
       ]);
       (loadCallback as (() => void) | null)?.();
-      expect(component.baseCanvasRef.nativeElement.getContext('2d')!.drawImage).toHaveBeenCalled();
+      expect(elementsDrawSpy).toHaveBeenCalled();
+      expect(baseDrawSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -424,7 +426,7 @@ describe('DrawingCanvasComponent', () => {
 
   // ── Mouse event handlers ──────────────────────────────────────────────────────
 
-  it('onMouseDown with fill tool paints the canvas at the click position', () => {
+  it('onMouseDown on background fills baseCanvas', () => {
     fixture.componentRef.setInput('color', '#ff0000');
     fixture.detectChanges();
 
@@ -443,6 +445,39 @@ describe('DrawingCanvasComponent', () => {
     expect(pixel[0]).toBe(255);
     expect(pixel[1]).toBe(0);
     expect(pixel[2]).toBe(0);
+  });
+
+  it('onMouseDown on an element pixel fills elementsCanvas, not baseCanvas', () => {
+    fixture.componentRef.setInput('color', '#ff0000');
+    fixture.detectChanges();
+
+    // Paint a blue pixel directly on elementsCanvas to simulate a placed element
+    const elemCtx = component.elementsCanvasRef.nativeElement.getContext('2d')!;
+    elemCtx.fillStyle = '#0000ff';
+    elemCtx.fillRect(10, 10, 1, 1);
+
+    const overlay = component.overlayCanvasRef.nativeElement;
+    spyOn(overlay, 'getBoundingClientRect').and.returnValue({
+      left: 0, top: 0,
+      width: component.canvasWidth(), height: component.canvasHeight,
+      right: component.canvasWidth(), bottom: component.canvasHeight,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect);
+
+    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
+
+    // elementsCanvas pixel should be recolored red
+    const elemPixel = elemCtx.getImageData(10, 10, 1, 1).data;
+    expect(elemPixel[0]).toBe(255);
+    expect(elemPixel[1]).toBe(0);
+    expect(elemPixel[2]).toBe(0);
+
+    // baseCanvas should remain white (untouched)
+    const basePixel = component.baseCanvasRef.nativeElement.getContext('2d')!
+      .getImageData(10, 10, 1, 1).data;
+    expect(basePixel[0]).toBe(255);
+    expect(basePixel[1]).toBe(255);
+    expect(basePixel[2]).toBe(255);
   });
 
   it('onMouseDown right-click in placement mode cancels placement', () => {

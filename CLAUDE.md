@@ -24,7 +24,7 @@ To download/refresh flag SVGs: `python3 scripts/download_flags.py` (requires `re
 ### Game flow (route order)
 
 1. `/` — `HomeComponent`: pick difficulty (easy/medium/hard), call `GameStateService.startGame()`
-2. `/game` — `GameComponent`: applies difficulty hints in `ngAfterViewInit()` (bands/cross on `splitsCanvas`, elements auto-placed on `baseCanvas`); on easy restricts colour picker to a **shuffled** copy of `country.colors` and pre-selects the first shuffled colour; toolbar shows "↩️ Cancel Changes" on easy/medium (clears canvas then re-applies hints) and "🗑️ Clear" on hard; Elements picker is only shown on hard; on submit stores the data URL in `GameStateService` and navigates to `/compare`
+2. `/game` — `GameComponent`: applies difficulty hints in `ngAfterViewInit()` (bands/cross on `splitsCanvas`, elements auto-placed on `elementsCanvas`); on easy restricts colour picker to a **shuffled** copy of `country.colors` and pre-selects the first shuffled colour; toolbar shows "↩️ Cancel Changes" on easy/medium (clears canvas then re-applies hints) and "🗑️ Clear" on hard; Elements picker is only shown on hard; on submit stores the data URL in `GameStateService` and navigates to `/compare`
 3. `/compare` — `CompareComponent`: on init calls `ScoringService.computeScore()` which loads the local SVG from `/flags/${svgFile}`, renders both images onto off-screen canvases, and computes a pixel-match percentage (tolerance = 60/255 per channel); stores `RoundScore` in `GameStateService`, then routes to `/game` (next round) or `/end`
 4. `/end` — `EndComponent`: shows each round as a card with the user's drawing alongside the real flag
 
@@ -64,24 +64,25 @@ This means the canvas is always 400 px tall and as wide as the flag's proportion
 
 No persistence — state resets on page refresh.
 
-### Drawing canvas — three stacked canvases
+### Drawing canvas — four stacked canvases
 
-`DrawingCanvasComponent` (`drawing/drawing-canvas.ts`) uses three `position: absolute` canvases:
+`DrawingCanvasComponent` (`drawing/drawing-canvas.ts`) uses four `position: absolute` canvases stacked in order:
 
 | Canvas | Purpose | Included in submission |
 |---|---|---|
-| `baseCanvas` | User's permanent drawings | ✅ yes |
-| `splitsCanvas` | Guide lines from splits tool | ❌ no |
+| `baseCanvas` | User's flood-fill drawings | ✅ yes |
+| `splitsCanvas` | Guide lines from splits/cross tools | ❌ no |
+| `elementsCanvas` | SVG element stamps (above fill layer) | ✅ yes |
 | `overlayCanvas` | Element placement preview + mouse events | ❌ no |
 
-- **Flood fill** — clicking the canvas always flood-fills the clicked region. Reads `splitsCanvas` alpha as boundaries; split-line pixels are painted with the fill colour but don't propagate through. `color: input<string>` supplies the fill colour.
-- `getDrawingDataUrl()` exports only `baseCanvas`.
-- `clearCanvas()` resets all three canvases.
+- **Flood fill** — clicking the canvas flood-fills the clicked region. If the clicked pixel has alpha > 0 on `elementsCanvas`, `floodFillElements()` recolors that element in-place (stops at transparent boundaries). Otherwise `floodFill()` fills `baseCanvas`, using `splitsCanvas` alpha as boundaries. `color: input<string>` supplies the fill colour.
+- `getDrawingDataUrl()` composites `baseCanvas` then `elementsCanvas` onto an off-screen canvas for export.
+- `clearCanvas()` resets all four canvases.
 - `applyHints(hints[])` — called by `GameComponent.ngAfterViewInit()` on easy/medium; dispatches to `applySplits` / `applyNordicCross` / `drawCrossOutline` / `placeElementDirectly`.
 - `applyNordicCross(config)` — draws cross guide lines on `splitsCanvas` using symmetric skip logic to preserve flood-fill regions.
 - `drawCrossOutline(widthRatios, heightRatios)` — paints a filled plus-sign directly on `baseCanvas` (used for Switzerland-style crosses, not guide lines).
-- `placeElementDirectly(element, color, xCenter, yCenter, sizeFraction)` — auto-stamps an SVG element on `baseCanvas` without user interaction.
-- `startElementPlacement(element, size, color)` / `cancelPlacement()` — enter/exit interactive placement mode; sets `isPlacingElement` signal and uses `overlayCanvas` for preview.
+- `placeElementDirectly(element, color, xCenter, yCenter, sizeFraction)` — auto-stamps an SVG element on `elementsCanvas` without user interaction.
+- `startElementPlacement(element, size, color)` / `cancelPlacement()` — enter/exit interactive placement mode; sets `isPlacingElement` signal and uses `overlayCanvas` for preview; on confirm, stamps onto `elementsCanvas`.
 - `isPlacingElement: Signal<boolean>` — true while the user is interactively placing an element.
 - `placementCancelled: output<void>()` — emitted when placement is cancelled via Escape or `cancelPlacement()`.
 
@@ -122,7 +123,7 @@ Outputs: `elementSelected: ElementSelection`, `splitsSelected: SplitConfig`, `cr
 
 ## Testing
 
-Every service, component, and utility has a corresponding `*.spec.ts` file. **298 tests** covering all methods and behaviours. Run with `npm test`.
+Every service, component, and utility has a corresponding `*.spec.ts` file. **299 tests** covering all methods and behaviours. Run with `npm test`.
 
 ### Spec file locations
 
@@ -145,4 +146,4 @@ Every service, component, and utility has a corresponding `*.spec.ts` file. **29
 - **Components with `Router`**: provide with `provideRouter([])` + `provideLocationMocks()`, then `spyOn(router, 'navigate')`.
 - **Signal inputs** (`input.required<T>()`): set via `fixture.componentRef.setInput('name', value)` before `detectChanges()`.
 - **Signal outputs** (`output<T>()`): subscribe directly — `component.myOutput.subscribe(spy)`.
-- **Private canvas methods** (`floodFill`, `hexToRgba`, `colorMatch`): call via `(component as any).methodName()`.
+- **Private canvas methods** (`floodFill`, `floodFillElements`, `hexToRgba`, `colorMatch`): call via `(component as any).methodName()`.
