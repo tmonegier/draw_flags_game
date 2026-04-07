@@ -29,11 +29,24 @@ export class HomeComponent {
 
   startGame(): void {
     this.gameState.startGame(this.selected());
-    this.showTutorial.set(true);
+    if (this.hasTutorialBeenSeen(this.selected())) {
+      this.router.navigate(['/game']);
+    } else {
+      this.showTutorial.set(true);
+    }
   }
 
   onTutorialClosed(): void {
+    this.markTutorialSeen(this.selected());
     this.showTutorial.set(false);
     this.router.navigate(['/game']);
+  }
+
+  private hasTutorialBeenSeen(difficulty: Difficulty): boolean {
+    return localStorage.getItem(`tutorial-seen-${difficulty}`) === '1';
+  }
+
+  private markTutorialSeen(difficulty: Difficulty): void {
+    localStorage.setItem(`tutorial-seen-${difficulty}`, '1');
   }
 }

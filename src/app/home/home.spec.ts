@@ -12,6 +12,8 @@ describe('HomeComponent', () => {
   let gameState: GameStateService;
 
   beforeEach(async () => {
+    localStorage.clear();
+
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
       providers: [provideRouter([]), provideLocationMocks()],
@@ -23,6 +25,10 @@ describe('HomeComponent', () => {
     gameState = TestBed.inject(GameStateService);
     spyOn(router, 'navigate');
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   it('creates the component', () => {
@@ -92,14 +98,36 @@ describe('HomeComponent', () => {
       expect(gameState.startGame).toHaveBeenCalledWith('easy');
     });
 
-    it('sets showTutorial to true instead of navigating immediately', () => {
+    it('shows tutorial when not yet seen for this difficulty', () => {
       component.startGame();
       expect(component.showTutorial()).toBeTrue();
       expect(router.navigate).not.toHaveBeenCalled();
     });
 
-    it('sets showTutorial to true regardless of selected difficulty', () => {
+    it('shows tutorial regardless of selected difficulty when not yet seen', () => {
       component.select('hard');
+      component.startGame();
+      expect(component.showTutorial()).toBeTrue();
+    });
+
+    it('navigates directly to /game when tutorial already seen for this difficulty', () => {
+      localStorage.setItem('tutorial-seen-easy', '1');
+      component.startGame();
+      expect(component.showTutorial()).toBeFalse();
+      expect(router.navigate).toHaveBeenCalledWith(['/game']);
+    });
+
+    it('navigates directly to /game when tutorial already seen for hard', () => {
+      localStorage.setItem('tutorial-seen-hard', '1');
+      component.select('hard');
+      component.startGame();
+      expect(component.showTutorial()).toBeFalse();
+      expect(router.navigate).toHaveBeenCalledWith(['/game']);
+    });
+
+    it('shows tutorial for medium when only easy was seen before', () => {
+      localStorage.setItem('tutorial-seen-easy', '1');
+      component.select('medium');
       component.startGame();
       expect(component.showTutorial()).toBeTrue();
     });
@@ -122,6 +150,19 @@ describe('HomeComponent', () => {
       component.showTutorial.set(true);
       component.onTutorialClosed();
       expect(component.showTutorial()).toBeFalse();
+    });
+
+    it('marks the current difficulty as seen in localStorage', () => {
+      component.select('medium');
+      component.onTutorialClosed();
+      expect(localStorage.getItem('tutorial-seen-medium')).toBe('1');
+    });
+
+    it('subsequent startGame() for the same difficulty skips the tutorial', () => {
+      component.onTutorialClosed();       // marks easy as seen
+      component.startGame();              // starts a new game on easy
+      expect(component.showTutorial()).toBeFalse();
+      expect(router.navigate).toHaveBeenCalledWith(['/game']);
     });
   });
 });
