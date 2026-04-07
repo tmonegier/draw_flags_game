@@ -128,7 +128,7 @@ Add further entries there to expand the elements library.
 
 ## Testing
 
-Every service, component, and utility has a corresponding `*.spec.ts` file. **343 tests** covering all methods and behaviours. Run with `npm test`.
+Every service, component, and utility has a corresponding `*.spec.ts` file. **372 tests** covering all methods and behaviours. Run with `npm test`.
 
 ### Spec file locations
 

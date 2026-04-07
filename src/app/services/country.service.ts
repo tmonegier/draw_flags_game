@@ -212,6 +212,60 @@ const ALL_COUNTRIES: Country[] = [
     ],
     colors: ['#e30a17', '#ffffff'] },
 
+  // Vietnam: solid red background with centered yellow star.
+  { name: 'Vietnam',     code: 'vn', ratio: '2:3',   svgFile: 'vietnam.svg',
+    hints: [
+      { kind: 'element', elementId: 'vietnam-star', color: '#ffff00', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 },
+    ],
+    colors: ['#da251d', '#ffff00'] },
+
+  // China: solid red background with a large yellow star (upper-left) + 4 small stars.
+  { name: 'China',       code: 'cn', ratio: '2:3',   svgFile: 'china.svg',
+    hints: [
+      { kind: 'element', elementId: 'china-star', color: '#ffff00', xCenter: 0.167, yCenter: 0.25, sizeFraction: 0.27 },
+    ],
+    colors: ['#EE1C25', '#FFFF00'] },
+
+  // Mongolia: vertical red-blue-red tricolor with the gold Soyombo in the left band.
+  { name: 'Mongolia',    code: 'mn', ratio: '1:2',   svgFile: 'mongolia.svg',
+    hints: [
+      { kind: 'bands', direction: 'vertical', ratios: [1, 1, 1] },
+      { kind: 'element', elementId: 'mongolia-soyombo', color: '#ffd300', xCenter: 0.167, yCenter: 0.475, sizeFraction: 0.75 },
+    ],
+    colors: ['#da2031', '#0066b2', '#ffd300'] },
+
+  // Nepal: non-rectangular double-pennant flag (treated as 4:3 canvas).
+  // Upper pennant has white moon symbol; lower pennant has white sun.
+  { name: 'Nepal',       code: 'np', ratio: '4:3',   svgFile: 'nepal.svg',
+    hints: [
+      { kind: 'element', elementId: 'nepal-moon', color: '#ffffff', xCenter: 0.25, yCenter: 0.325, sizeFraction: 0.3 },
+      { kind: 'element', elementId: 'nepal-sun',  color: '#ffffff', xCenter: 0.25, yCenter: 0.735, sizeFraction: 0.32 },
+    ],
+    colors: ['#DC143C', '#003893', '#ffffff'] },
+
+  // Liechtenstein: horizontal blue-red bicolor with a gold crown in the upper-left.
+  { name: 'Liechtenstein', code: 'li', ratio: '3:5', svgFile: 'liechtenstein.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1] },
+      { kind: 'element', elementId: 'liechtenstein-crown', color: '#ffd83d', xCenter: 0.222, yCenter: 0.227, sizeFraction: 0.277 },
+    ],
+    colors: ['#002b7f', '#ce1126', '#ffd83d'] },
+
+  // Bhutan: diagonal yellow/orange split with a white dragon.
+  { name: 'Bhutan',      code: 'bt', ratio: '2:3',   svgFile: 'bhutan.svg',
+    hints: [
+      { kind: 'element', elementId: 'bhutan-dragon', color: '#ffffff', xCenter: 0.55, yCenter: 0.554, sizeFraction: 0.7 },
+    ],
+    colors: ['#ffcd00', '#ff671f', '#ffffff'] },
+
+  // Vatican: vertical yellow-white bicolor with simplified coat of arms in the white half.
+  { name: 'Vatican',     code: 'va', ratio: '1:1',   svgFile: 'vatican_city.svg',
+    hints: [
+      { kind: 'bands', direction: 'vertical', ratios: [1, 1] },
+      { kind: 'element', elementId: 'vatican-coat-of-arms', color: '#ffe000', xCenter: 0.75, yCenter: 0.5, sizeFraction: 0.6 },
+    ],
+    colors: ['#ffe000', '#ffffff'] },
+
   // ── Bicolors ─────────────────────────────────────────────────────────────────
   { name: 'Monaco',      code: 'mc', ratio: '4:5',   svgFile: 'monaco.svg',
     hints: [{ kind: 'bands', direction: 'horizontal', ratios: [1, 1] }],
