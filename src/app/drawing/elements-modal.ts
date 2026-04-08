@@ -59,7 +59,7 @@ export class ElementsModalComponent {
     { kind: 'cross', variant: 'double', label: 'Double Cross' },
   ];
 
-  activeCategory = signal<ActiveCategory>('all');
+  activeCategory = signal<ActiveCategory>('bands');
   selectedItem = signal<GridItem | null>(null);
 
   // Band configuration

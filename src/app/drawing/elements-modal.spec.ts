@@ -35,7 +35,7 @@ describe('ElementsModalComponent', () => {
 
   // ── Initial state ─────────────────────────────────────────────────────────────
 
-  it('activeCategory defaults to all',   () => expect(component.activeCategory()).toBe('all'));
+  it('activeCategory defaults to bands',  () => expect(component.activeCategory()).toBe('bands'));
   it('selectedItem defaults to null',     () => expect(component.selectedItem()).toBeNull());
   it('splitRatios defaults to [1, 1]',   () => expect(component.splitRatios()).toEqual([1, 1]));
   it('splitCount defaults to 2',          () => expect(component.splitCount()).toBe(2));
