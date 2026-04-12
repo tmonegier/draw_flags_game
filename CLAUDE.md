@@ -23,7 +23,7 @@ To download/refresh flag SVGs: `python3 scripts/download_flags.py` (requires `re
 
 ### Game flow (route order)
 
-1. `/` — `HomeComponent`: pick difficulty (easy/medium/hard), call `GameStateService.startGame()`
+1. `/` — `HomeComponent`: pick difficulty (easy/medium/hard), call `GameStateService.startGame()`; if the tutorial for that difficulty has not been seen, `showTutorial` is set and `TutorialModalComponent` is shown before navigating; on close `markTutorialSeen()` writes `tutorial-seen-{difficulty}=1` to localStorage and navigates to `/game`
 2. `/game` — `GameComponent`: applies difficulty hints in `ngAfterViewInit()` (bands/cross on `splitsCanvas`, elements auto-placed on `elementsCanvas`); on easy restricts colour picker to a **shuffled** copy of `country.colors` and pre-selects the first shuffled colour; toolbar shows "↩️ Cancel Changes" on easy/medium (clears canvas then re-applies hints) and "🗑️ Clear" on hard; Elements picker is only shown on hard; on submit stores the data URL in `GameStateService` and navigates to `/compare`
 3. `/compare` — `CompareComponent`: on init calls `ScoringService.computeScore()` which loads the local SVG from `/flags/${svgFile}`, renders both images onto off-screen canvases, and computes a pixel-match percentage (tolerance = 60/255 per channel); stores `RoundScore` in `GameStateService`, then routes to `/game` (next round) or `/end`
 4. `/end` — `EndComponent`: shows each round as a card with the user's drawing alongside the real flag
@@ -45,7 +45,7 @@ All routes use lazy-loaded standalone components (`loadComponent`).
 - `BandHint` — `{ kind: 'bands'; direction: 'horizontal'|'vertical'; ratios: number[] }` — split guide lines
 - `CrossHint` — `{ kind: 'cross'; variant: 'simple'|'double'; widthRatios: number[]; heightRatios: number[] }` — Nordic cross guide lines
 - `CrossOutlineHint` — `{ kind: 'crossOutline'; widthRatios: number[]; heightRatios: number[] }` — filled plus-sign on baseCanvas (e.g. Switzerland)
-- `ElementHint` — `{ kind: 'element'; elementId: string; xCenter: number; yCenter: number; sizeFraction: number; color?: string }` — auto-placed SVG stamp
+- `ElementHint` — `{ kind: 'element'; elementId: string; color: string; xCenter: number; yCenter: number; sizeFraction: number }` — auto-placed SVG stamp
 
 SVG flags live in `public/flags/` (served as static assets). The download script writes them to `scripts/flags/` first; copy with `cp scripts/flags/*.svg public/flags/`.
 
@@ -87,6 +87,15 @@ No persistence — state resets on page refresh.
 - `isPlacingElement: Signal<boolean>` — true while the user is interactively placing an element.
 - `placementCancelled: output<void>()` — emitted when placement is cancelled via Escape or `cancelPlacement()`.
 
+### Tutorial modal
+
+`TutorialModalComponent` (`home/tutorial-modal.ts`) is a multi-step onboarding modal shown once per difficulty.
+
+- **Inputs:** `difficulty: input.required<Difficulty>()`, `isOpen: input<boolean>(false)`
+- **Output:** `closed: output<void>()`
+- **Flow:** Opens on a confirmation screen; user can skip (closes immediately) or start the walkthrough. Steps are defined per-difficulty in the `STEPS` constant (4 steps for easy/medium, 5 for hard). Navigating past the last step emits `closed`.
+- **Integration:** `HomeComponent.startGame()` checks `localStorage.getItem('tutorial-seen-{difficulty}')`. If `null`, sets `showTutorial` signal to show the modal; otherwise navigates straight to `/game`. On `(closed)`, `onTutorialClosed()` calls `markTutorialSeen()` (writes `'1'`) then navigates to `/game`.
+
 ### Tools (toolbar.ts)
 
 There are no freehand drawing tools. Clicking the canvas always flood-fills the clicked region with the active colour. Bands, crosses, and SVG stamps are added via the **Elements modal** (hard mode only).
@@ -110,9 +119,26 @@ The toolbar exposes: colour picker (or restricted palette when `allowedColors` i
 - **`'cross'`** — Nordic cross guide lines applied via `applyNordicCross(config)`
 
 Outputs: `elementSelected: ElementSelection`, `splitsSelected: SplitConfig`, `crossSelected: CrossConfig`, `closed`.  
-`FLAG_ELEMENTS` in `flag-elements.ts` currently contains:
-- **Canada maple leaf** (`id: 'canada-maple-leaf'`, category `plants`, `autoPlace` for easy/medium)
-- **Albania eagle** (`id: 'albania-eagle'`, category `coat_of_arms`, `autoPlace` for easy/medium)
+`FLAG_ELEMENTS` in `flag-elements.ts` currently contains (all have `autoPlace` for easy/medium):
+
+| ID | Category |
+|---|---|
+| `morocco-star` | `symbols` |
+| `algeria-crescent-star` | `symbols` |
+| `tunisia-crescent-star` | `symbols` |
+| `turkey-crescent-star` | `symbols` |
+| `slovenia-coat-of-arms` | `coat_of_arms` |
+| `slovakia-coat-of-arms` | `coat_of_arms` |
+| `canada-maple-leaf` | `plants` |
+| `albania-eagle` | `coat_of_arms` |
+| `vietnam-star` | `symbols` |
+| `china-star` | `symbols` |
+| `mongolia-soyombo` | `symbols` |
+| `nepal-moon` | `symbols` |
+| `nepal-sun` | `symbols` |
+| `liechtenstein-crown` | `symbols` |
+| `bhutan-dragon` | `symbols` |
+| `vatican-coat-of-arms` | `coat_of_arms` |
 
 Add further entries there to expand the elements library.
 
@@ -137,7 +163,8 @@ Every service, component, and utility has a corresponding `*.spec.ts` file. **37
 | `services/country.service.spec.ts` | `getCountries()`, `shuffle()` |
 | `services/game-state.service.spec.ts` | `scoreToGrade()`, all signals, all methods |
 | `services/scoring.service.spec.ts` | Pixel tolerance, error handling, URL construction |
-| `home/home.spec.ts` | Difficulty selection, `startGame()` navigation |
+| `home/home.spec.ts` | Difficulty selection, `startGame()` navigation, tutorial localStorage flow |
+| `home/tutorial-modal.spec.ts` | Step navigation, skip/close, difficulty-specific steps |
 | `game/game.spec.ts` | Signal defaults, color/modal handlers, `allowedColors`, `clearLabel`, `showElements`, hint application, `submit()` |
 | `compare/compare.spec.ts` | Redirect guard, scoring flow, `getScoreMessage()`, navigation |
 | `end/end.spec.ts` | `gradeColor()`, `aspectRatio()`, `playAgain()` |
