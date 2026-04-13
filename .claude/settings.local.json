@@ -14,7 +14,17 @@
       "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/4/4c/Flag_of_Sweden.svg\" -o /home/m78730/projects/flag_draws/public/flags/sweden.svg)",
       "Bash(npm run:*)",
       "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Greece.svg\" -o /home/m78730/projects/flag_draws/public/flags/greece.svg)",
-      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --watch=false)"
+      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --watch=false)",
+      "Read(//usr/bin/**)",
+      "Read(//snap/**)",
+      "Bash(CHROME_BIN=/usr/bin/google-chrome npm test -- --watch=false)",
+      "Bash(ls:*)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --no-progress)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --no-progress --single-run)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --no-progress --watch=false)",
+      "Bash(CHROME_BIN=/usr/bin/google-chrome npm test -- --no-progress --watch=false)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npx ng test --watch=false --browsers=ChromeHeadless)",
+      "Bash(CHROME_BIN=/usr/bin/google-chrome npx ng test --watch=false --browsers=ChromeHeadless)"
     ]
   }
 }
