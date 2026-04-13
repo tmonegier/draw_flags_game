@@ -364,6 +364,78 @@ const ALL_COUNTRIES: Country[] = [
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1, 1, 1, 1, 1, 1, 1] },
     ],
     colors: ['#0D5EAF', '#ffffff'] },
+
+  // ── New additions ─────────────────────────────────────────────────────────────
+  // Angola: red over black with centered yellow emblem (half-gear, machete, star).
+  { name: 'Angola',      code: 'ao', ratio: '2:3',   svgFile: 'angola.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1] },
+      { kind: 'element', elementId: 'angola-emblem', color: '#ffcb00', xCenter: 0.5176, yCenter: 0.5069, sizeFraction: 0.653 },
+    ],
+    colors: ['#cc092f', '#000000', '#ffcb00'] },
+
+  // Singapore: red over white with white crescent + 5-star pentagon in upper-left.
+  { name: 'Singapore',   code: 'sg', ratio: '2:3',   svgFile: 'singapore.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1] },
+      { kind: 'element', elementId: 'singapore-crescent-stars', color: '#ffffff', xCenter: 0.1708, yCenter: 0.28, sizeFraction: 0.45 },
+    ],
+    colors: ['#EF3340', '#ffffff'] },
+
+  // Honduras: blue-white-blue horizontal tricolor with 5 blue stars in a quincunx.
+  { name: 'Honduras',    code: 'hn', ratio: '1:2',   svgFile: 'honduras.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
+      { kind: 'element', elementId: 'honduras-stars', color: '#0d3b99', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.711 },
+    ],
+    colors: ['#0d3b99', '#ffffff'] },
+
+  // Colombia: horizontal bands yellow (50%), blue (25%), red (25%).
+  { name: 'Colombia',    code: 'co', ratio: '2:3',   svgFile: 'colombia.svg',
+    hints: [{ kind: 'bands', direction: 'horizontal', ratios: [2, 1, 1] }],
+    colors: ['#FCD116', '#003893', '#CE1126'] },
+
+  // Venezuela: yellow-blue-red horizontal tricolor with 8 white stars arcing in the blue band.
+  { name: 'Venezuela',   code: 've', ratio: '2:3',   svgFile: 'venezuela.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
+      { kind: 'element', elementId: 'venezuela-stars', color: '#ffffff', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.66 },
+    ],
+    colors: ['#FCD116', '#00247D', '#CF142B', '#ffffff'] },
+
+  // Aruba: light blue field with two yellow stripes near the bottom and a red/white 4-point star.
+  { name: 'Aruba',       code: 'aw', ratio: '2:3',   svgFile: 'aruba.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [9, 1, 1, 1] },
+      { kind: 'element', elementId: 'aruba-star', color: '#CF142B', xCenter: 0.2, yCenter: 0.3, sizeFraction: 0.22 },
+    ],
+    colors: ['#418FDE', '#FBD116', '#CF142B', '#ffffff'] },
+
+  // Panama: quartered white/red/blue/white with a blue star (upper-left) and red star (lower-right).
+  { name: 'Panama',      code: 'pa', ratio: '2:3',   svgFile: 'panama.svg',
+    hints: [
+      { kind: 'bands', direction: 'horizontal', ratios: [1, 1] },
+      { kind: 'bands', direction: 'vertical',   ratios: [1, 1] },
+      { kind: 'element', elementId: 'panama-star', color: '#072357', xCenter: 0.25, yCenter: 0.25, sizeFraction: 0.22 },
+      { kind: 'element', elementId: 'panama-star', color: '#D21034', xCenter: 0.75, yCenter: 0.75, sizeFraction: 0.22 },
+    ],
+    colors: ['#D21034', '#072357', '#ffffff'] },
+
+  // Montenegro: red field with thick gold border and a centered gold double-headed eagle.
+  // Border is drawn in the SVG for scoring; not representable as a band hint.
+  { name: 'Montenegro',  code: 'me', ratio: '1:2',   svgFile: 'montenegro.svg',
+    hints: [
+      { kind: 'element', elementId: 'montenegro-eagle', color: '#D5A937', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.7 },
+    ],
+    colors: ['#C40308', '#D5A937'] },
+
+  // Pakistan: white 1/4 hoist + green 3/4 with white crescent and star in the green band.
+  { name: 'Pakistan',    code: 'pk', ratio: '2:3',   svgFile: 'pakistan.svg',
+    hints: [
+      { kind: 'bands', direction: 'vertical', ratios: [1, 3] },
+      { kind: 'element', elementId: 'pakistan-crescent-star', color: '#ffffff', xCenter: 0.625, yCenter: 0.5, sizeFraction: 0.6 },
+    ],
+    colors: ['#01411C', '#ffffff'] },
 ];
 
 @Injectable({ providedIn: 'root' })

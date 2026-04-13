@@ -24,7 +24,27 @@
       "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --no-progress --watch=false)",
       "Bash(CHROME_BIN=/usr/bin/google-chrome npm test -- --no-progress --watch=false)",
       "Bash(CHROME_BIN=/snap/bin/chromium npx ng test --watch=false --browsers=ChromeHeadless)",
-      "Bash(CHROME_BIN=/usr/bin/google-chrome npx ng test --watch=false --browsers=ChromeHeadless)"
+      "Bash(CHROME_BIN=/usr/bin/google-chrome npx ng test --watch=false --browsers=ChromeHeadless)",
+      "Bash(ssh-add -l)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npm test -- --watch=false --browsers=ChromeHeadless)",
+      "Bash(CHROME_BIN=/usr/bin/google-chrome npm test -- --watch=false --browsers=ChromeHeadless)",
+      "Bash(CHROME_BIN=/usr/bin/google-chrome npx ng test --watch=false --browsers=ChromeHeadless --include='**/home.spec.ts')",
+      "Bash(npx ng:*)",
+      "Bash(CHROME_BIN=/snap/bin/chromium timeout 120 npx ng test --watch=false --browsers=ChromeHeadless)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/6/64/Coat_of_arms_of_Montenegro.svg\" -o /tmp/montenegro_coa.svg)",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/2/23/Coat_of_arms_of_Montenegro.svg\" -o /tmp/montenegro_coa.svg -A \"Mozilla/5.0\")",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/6/64/Coat_of_arms_of_Montenegro.svg\" -o /tmp/mne_coa.svg)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/2/23/Coat_of_arms_of_Montenegro.svg\" -o /tmp/mne_coa.svg)",
+      "Bash(npx --version)",
+      "Bash(npx --yes svgo@3 --multipass mne_coa.svg -o mne_coa.min.svg)",
+      "Bash(awk 'NR==461' /home/thiba/projects/draw_flags_game/src/app/drawing/flag-elements.ts)",
+      "Bash(grep -oE 'fill=\"#[A-Fa-f0-9]{3,6}\"')",
+      "Bash(awk 'NR==406' /home/thiba/projects/draw_flags_game/src/app/drawing/flag-elements.ts)",
+      "Bash(awk 'NR>=387 && NR<=398' /home/thiba/projects/draw_flags_game/src/app/drawing/flag-elements.ts)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(awk NR>=420 && NR<=470:*)"
     ]
   }
 }
