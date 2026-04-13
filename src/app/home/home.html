@@ -28,40 +28,81 @@
     <p class="subtitle">Test your vexillology skills! Draw country flags from memory.</p>
   </div>
 
-  <div class="mode-sections">
-    <div class="mode-section">
-      <h2 class="section-title">Free Drawing</h2>
-      <button
-        class="card card-free"
-        [class.selected]="selected() === freeDifficulty.key"
-        (click)="select(freeDifficulty.key)"
-      >
-        <span class="card-emoji">{{ freeDifficulty.emoji }}</span>
-        <span class="card-label">{{ freeDifficulty.label }}</span>
-        <span class="card-desc">{{ freeDifficulty.description }}</span>
-      </button>
-    </div>
+  <div class="carousel">
+    <button
+      class="carousel-arrow carousel-arrow-prev"
+      type="button"
+      aria-label="Previous mode"
+      (click)="prevPage()"
+    >‹</button>
 
-    <div class="mode-divider">
-      <span class="mode-divider-label">or</span>
-    </div>
-
-    <div class="mode-section">
-      <h2 class="section-title">Guided Modes</h2>
-      <div class="cards">
-        @for (d of guidedDifficulties; track d.key) {
+    <div
+      class="carousel-viewport"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)"
+    >
+      <div class="carousel-track" [class.carousel-track-guided]="page() === 'guided'">
+        <div class="carousel-page" [attr.aria-hidden]="page() !== 'free'">
+          <h2 class="section-title">Free Drawing</h2>
           <button
-            class="card"
-            [class.selected]="selected() === d.key"
-            (click)="select(d.key)"
+            class="card card-free"
+            [class.selected]="selected() === freeDifficulty.key"
+            [attr.tabindex]="page() === 'free' ? 0 : -1"
+            (click)="select(freeDifficulty.key)"
           >
-            <span class="card-emoji">{{ d.emoji }}</span>
-            <span class="card-label">{{ d.label }}</span>
-            <span class="card-desc">{{ d.description }}</span>
+            <span class="card-emoji">{{ freeDifficulty.emoji }}</span>
+            <span class="card-label">{{ freeDifficulty.label }}</span>
+            <span class="card-desc">{{ freeDifficulty.description }}</span>
           </button>
-        }
+        </div>
+
+        <div class="carousel-page" [attr.aria-hidden]="page() !== 'guided'">
+          <h2 class="section-title">Guided Modes</h2>
+          <div class="cards">
+            @for (d of guidedDifficulties; track d.key) {
+              <button
+                class="card"
+                [class.selected]="selected() === d.key"
+                [attr.tabindex]="page() === 'guided' ? 0 : -1"
+                (click)="select(d.key)"
+              >
+                <span class="card-emoji">{{ d.emoji }}</span>
+                <span class="card-label">{{ d.label }}</span>
+                <span class="card-desc">{{ d.description }}</span>
+              </button>
+            }
+          </div>
+        </div>
       </div>
     </div>
+
+    <button
+      class="carousel-arrow carousel-arrow-next"
+      type="button"
+      aria-label="Next mode"
+      (click)="nextPage()"
+    >›</button>
+  </div>
+
+  <div class="carousel-dots" role="tablist" aria-label="Select mode">
+    <button
+      class="carousel-dot"
+      type="button"
+      role="tab"
+      [class.active]="page() === 'free'"
+      [attr.aria-selected]="page() === 'free'"
+      aria-label="Free Drawing"
+      (click)="showPage('free')"
+    ></button>
+    <button
+      class="carousel-dot"
+      type="button"
+      role="tab"
+      [class.active]="page() === 'guided'"
+      [attr.aria-selected]="page() === 'guided'"
+      aria-label="Guided Modes"
+      (click)="showPage('guided')"
+    ></button>
   </div>
 
   <button class="start-btn" (click)="startGame()">

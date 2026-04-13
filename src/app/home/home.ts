@@ -4,6 +4,10 @@ import { GameStateService } from '../services/game-state.service';
 import { Difficulty } from '../services/country.service';
 import { TutorialModalComponent } from './tutorial-modal';
 
+type ModePage = 'free' | 'guided';
+
+export const SWIPE_THRESHOLD_PX = 40;
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
@@ -16,6 +20,9 @@ export class HomeComponent {
 
   selected = signal<Difficulty>('easy');
   showTutorial = signal(false);
+  page = signal<ModePage>('guided');
+
+  private touchStartX: number | null = null;
 
   readonly guidedDifficulties: { key: Difficulty; label: string; description: string; emoji: string }[] = [
     { key: 'easy',   label: 'Easy',   description: 'Bands pre-drawn — pick from flag colors only', emoji: '🟢' },
@@ -27,6 +34,37 @@ export class HomeComponent {
 
   select(difficulty: Difficulty): void {
     this.selected.set(difficulty);
+  }
+
+  showPage(page: ModePage): void {
+    this.page.set(page);
+    if (page === 'free') {
+      this.selected.set('free');
+    } else if (this.selected() === 'free') {
+      this.selected.set('easy');
+    }
+  }
+
+  nextPage(): void {
+    this.showPage(this.page() === 'free' ? 'guided' : 'free');
+  }
+
+  prevPage(): void {
+    this.showPage(this.page() === 'guided' ? 'free' : 'guided');
+  }
+
+  onTouchStart(event: TouchEvent): void {
+    this.touchStartX = event.changedTouches[0]?.clientX ?? null;
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    if (this.touchStartX === null) return;
+    const endX = event.changedTouches[0]?.clientX ?? this.touchStartX;
+    const dx = endX - this.touchStartX;
+    this.touchStartX = null;
+    if (Math.abs(dx) < SWIPE_THRESHOLD_PX) return;
+    if (dx < 0) this.nextPage();
+    else this.prevPage();
   }
 
   startGame(): void {

@@ -2,7 +2,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { provideLocationMocks } from '@angular/common/testing';
-import { HomeComponent } from './home';
+import { HomeComponent, SWIPE_THRESHOLD_PX } from './home';
 import { GameStateService } from '../services/game-state.service';
 
 describe('HomeComponent', () => {
@@ -154,6 +154,80 @@ describe('HomeComponent', () => {
     it('initialises game state so currentCountry is set', () => {
       component.startGame();
       expect(gameState.currentCountry()).not.toBeNull();
+    });
+  });
+
+  // ── carousel paging ───────────────────────────────────────────────────────────
+
+  describe('carousel paging', () => {
+    it('defaults page to guided so it matches the default easy selection', () => {
+      expect(component.page()).toBe('guided');
+    });
+
+    it('showPage(free) selects the free difficulty', () => {
+      component.showPage('free');
+      expect(component.page()).toBe('free');
+      expect(component.selected()).toBe('free');
+    });
+
+    it('showPage(guided) from free defaults selection back to easy', () => {
+      component.showPage('free');
+      component.showPage('guided');
+      expect(component.page()).toBe('guided');
+      expect(component.selected()).toBe('easy');
+    });
+
+    it('showPage(guided) preserves a guided selection that was already made', () => {
+      component.select('hard');
+      component.showPage('guided');
+      expect(component.selected()).toBe('hard');
+    });
+
+    it('nextPage toggles from guided to free', () => {
+      component.nextPage();
+      expect(component.page()).toBe('free');
+    });
+
+    it('prevPage toggles from free back to guided', () => {
+      component.showPage('free');
+      component.prevPage();
+      expect(component.page()).toBe('guided');
+    });
+
+    it('nextPage wraps when already on free (still works, stays on guided)', () => {
+      component.showPage('free');
+      component.nextPage();
+      expect(component.page()).toBe('guided');
+    });
+  });
+
+  // ── swipe gestures ────────────────────────────────────────────────────────────
+
+  describe('touch swipe', () => {
+    const touch = (x: number) => ({ changedTouches: [{ clientX: x }] } as unknown as TouchEvent);
+
+    it('swipe left (negative dx beyond threshold) moves to next page', () => {
+      component.onTouchStart(touch(200));
+      component.onTouchEnd(touch(200 - SWIPE_THRESHOLD_PX - 1));
+      expect(component.page()).toBe('free');
+    });
+
+    it('swipe right (positive dx beyond threshold) moves to previous page', () => {
+      component.showPage('free');
+      component.onTouchStart(touch(50));
+      component.onTouchEnd(touch(50 + SWIPE_THRESHOLD_PX + 1));
+      expect(component.page()).toBe('guided');
+    });
+
+    it('small movement below threshold does not change page', () => {
+      component.onTouchStart(touch(100));
+      component.onTouchEnd(touch(110));
+      expect(component.page()).toBe('guided');
+    });
+
+    it('touchend without prior touchstart is a no-op', () => {
+      component.onTouchEnd(touch(500));
+      expect(component.page()).toBe('guided');
     });
   });
 
