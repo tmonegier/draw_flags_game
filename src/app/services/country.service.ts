@@ -157,7 +157,7 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Canada',      code: 'ca', ratio: '1:2',   svgFile: 'canada.svg',
     hints: [
       { kind: 'bands', direction: 'vertical', ratios: [1, 2, 1] },
-      { kind: 'element', elementId: 'canada-maple-leaf', color: '#d52b1e', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.88 },
+      { kind: 'element', elementId: 'canada-maple-leaf', color: '#d52b1e', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.924 },
     ],
     colors: ['#d52b1e', '#ffffff'] },
 
@@ -166,7 +166,7 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Slovenia',    code: 'si', ratio: '1:2',   svgFile: 'slovenia.svg',
     hints: [
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
-      { kind: 'element', elementId: 'slovenia-coat-of-arms', color: '#0000ff', xCenter: 0.25, yCenter: 0.346, sizeFraction: 0.35 },
+      { kind: 'element', elementId: 'slovenia-coat-of-arms', color: '#0000ff', xCenter: 0.25, yCenter: 0.338, sizeFraction: 0.350 },
     ],
     colors: ['#ffffff', '#0000ff', '#ff0000'] },
 
@@ -175,7 +175,7 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Slovakia',    code: 'sk', ratio: '2:3',   svgFile: 'slovakia.svg',
     hints: [
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
-      { kind: 'element', elementId: 'slovakia-coat-of-arms', color: '#ed1c24', xCenter: 0.3, yCenter: 0.5, sizeFraction: 0.52 },
+      { kind: 'element', elementId: 'slovakia-coat-of-arms', color: '#ed1c24', xCenter: 0.3, yCenter: 0.5, sizeFraction: 0.532 },
     ],
     colors: ['#ffffff', '#254aa5', '#ed1c24'] },
 
@@ -183,7 +183,7 @@ const ALL_COUNTRIES: Country[] = [
   // Easy/medium: star pre-drawn via element hint.
   { name: 'Morocco',     code: 'ma', ratio: '2:3',   svgFile: 'morocco.svg',
     hints: [
-      { kind: 'element', elementId: 'morocco-star', color: '#006233', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.45 },
+      { kind: 'element', elementId: 'morocco-star', color: '#006233', xCenter: 0.5, yCenter: 0.4798, sizeFraction: 0.4474 },
     ],
     colors: ['#c1272d', '#006233'] },
 
@@ -192,7 +192,7 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Algeria',     code: 'dz', ratio: '2:3',   svgFile: 'algeria.svg',
     hints: [
       { kind: 'bands', direction: 'vertical', ratios: [1, 1] },
-      { kind: 'element', elementId: 'algeria-crescent-star', color: '#d21034', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.55 },
+      { kind: 'element', elementId: 'algeria-crescent-star', color: '#d21034', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.525 },
     ],
     colors: ['#006633', '#ffffff', '#d21034'] },
 
@@ -200,7 +200,7 @@ const ALL_COUNTRIES: Country[] = [
   // Easy/medium: emblem pre-drawn via element hint.
   { name: 'Tunisia',     code: 'tn', ratio: '2:3',   svgFile: 'tunisia.svg',
     hints: [
-      { kind: 'element', elementId: 'tunisia-crescent-star', color: '#e70013', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 },
+      { kind: 'element', elementId: 'tunisia-crescent-star', color: '#e70013', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.625 },
     ],
     colors: ['#e70013', '#ffffff'] },
 
@@ -208,21 +208,21 @@ const ALL_COUNTRIES: Country[] = [
   // Easy/medium: crescent-star pre-drawn via element hint.
   { name: 'Turkey',      code: 'tr', ratio: '2:3',   svgFile: 'turkey.svg',
     hints: [
-      { kind: 'element', elementId: 'turkey-crescent-star', color: '#ffffff', xCenter: 0.38, yCenter: 0.5, sizeFraction: 0.55 },
+      { kind: 'element', elementId: 'turkey-crescent-star', color: '#ffffff', xCenter: 0.39, yCenter: 0.5, sizeFraction: 0.71 },
     ],
     colors: ['#e30a17', '#ffffff'] },
 
   // Vietnam: solid red background with centered yellow star.
   { name: 'Vietnam',     code: 'vn', ratio: '2:3',   svgFile: 'vietnam.svg',
     hints: [
-      { kind: 'element', elementId: 'vietnam-star', color: '#ffff00', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.5 },
+      { kind: 'element', elementId: 'vietnam-star', color: '#ffff00', xCenter: 0.5, yCenter: 0.471, sizeFraction: 0.6 },
     ],
     colors: ['#da251d', '#ffff00'] },
 
   // China: solid red background with a large yellow star (upper-left) + 4 small stars.
   { name: 'China',       code: 'cn', ratio: '2:3',   svgFile: 'china.svg',
     hints: [
-      { kind: 'element', elementId: 'china-star', color: '#ffff00', xCenter: 0.167, yCenter: 0.25, sizeFraction: 0.27 },
+      { kind: 'element', elementId: 'china-star', color: '#ffff00', xCenter: 0.25, yCenter: 0.275, sizeFraction: 0.5833 },
     ],
     colors: ['#EE1C25', '#FFFF00'] },
 
@@ -238,8 +238,8 @@ const ALL_COUNTRIES: Country[] = [
   // Upper pennant has white moon symbol; lower pennant has white sun.
   { name: 'Nepal',       code: 'np', ratio: '4:3',   svgFile: 'nepal.svg',
     hints: [
-      { kind: 'element', elementId: 'nepal-moon', color: '#ffffff', xCenter: 0.25, yCenter: 0.325, sizeFraction: 0.3 },
-      { kind: 'element', elementId: 'nepal-sun',  color: '#ffffff', xCenter: 0.25, yCenter: 0.735, sizeFraction: 0.32 },
+      { kind: 'element', elementId: 'nepal-moon', color: '#ffffff', xCenter: 0.246, yCenter: 0.386, sizeFraction: 0.344 },
+      { kind: 'element', elementId: 'nepal-sun',  color: '#ffffff', xCenter: 0.246, yCenter: 0.727, sizeFraction: 0.344 },
     ],
     colors: ['#DC143C', '#003893', '#ffffff'] },
 
@@ -247,14 +247,14 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Liechtenstein', code: 'li', ratio: '3:5', svgFile: 'liechtenstein.svg',
     hints: [
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1] },
-      { kind: 'element', elementId: 'liechtenstein-crown', color: '#ffd83d', xCenter: 0.222, yCenter: 0.227, sizeFraction: 0.277 },
+      { kind: 'element', elementId: 'liechtenstein-crown', color: '#ffd83d', xCenter: 0.222, yCenter: 0.237, sizeFraction: 0.337 },
     ],
     colors: ['#002b7f', '#ce1126', '#ffd83d'] },
 
   // Bhutan: diagonal yellow/orange split with a white dragon.
   { name: 'Bhutan',      code: 'bt', ratio: '2:3',   svgFile: 'bhutan.svg',
     hints: [
-      { kind: 'element', elementId: 'bhutan-dragon', color: '#ffffff', xCenter: 0.55, yCenter: 0.554, sizeFraction: 0.7 },
+      { kind: 'element', elementId: 'bhutan-dragon', color: '#ffffff', xCenter: 0.55, yCenter: 0.554, sizeFraction: 0.743 },
     ],
     colors: ['#ffcd00', '#ff671f', '#ffffff'] },
 
@@ -262,7 +262,7 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Vatican',     code: 'va', ratio: '1:1',   svgFile: 'vatican_city.svg',
     hints: [
       { kind: 'bands', direction: 'vertical', ratios: [1, 1] },
-      { kind: 'element', elementId: 'vatican-coat-of-arms', color: '#ffe000', xCenter: 0.75, yCenter: 0.5, sizeFraction: 0.6 },
+      { kind: 'element', elementId: 'vatican-coat-of-arms', color: '#ffe000', xCenter: 0.75, yCenter: 0.5, sizeFraction: 0.55 },
     ],
     colors: ['#ffe000', '#ffffff'] },
 
