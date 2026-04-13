@@ -30,28 +30,6 @@ const STEPS: Record<Difficulty, TutorialStep[]> = {
       body: 'Made a mistake? Hit "↩️ Cancel Changes" to instantly restore the canvas to its original pre-drawn state.',
     },
   ],
-  medium: [
-    {
-      emoji: '📐',
-      title: 'Guide Lines Are Pre-Drawn',
-      body: "The flag's structure is sketched for you — but choosing the right colors is entirely up to you.",
-    },
-    {
-      emoji: '🎨',
-      title: 'Full Color Picker',
-      body: "The full color picker is available. Try to recall the flag's exact colors from memory.",
-    },
-    {
-      emoji: '🪣',
-      title: 'Click to Flood-Fill',
-      body: 'Click anywhere on the canvas to flood-fill that region with your active color. Guide lines act as boundaries.',
-    },
-    {
-      emoji: '↩️',
-      title: 'Cancel Changes',
-      body: 'Hit "↩️ Cancel Changes" to restore the canvas to its original pre-drawn state and try again.',
-    },
-  ],
   hard: [
     {
       emoji: '🏁',
@@ -113,12 +91,12 @@ export class TutorialModalComponent {
   currentStep = signal(0);
 
   readonly difficultyLabel = computed(() => {
-    const map: Record<Difficulty, string> = { easy: 'Easy', medium: 'Medium', hard: 'Hard', free: 'Free' };
+    const map: Record<Difficulty, string> = { easy: 'Pre-fill Flags', hard: 'Free Canvas', free: 'Free' };
     return map[this.difficulty()];
   });
 
   readonly difficultyEmoji = computed(() => {
-    const map: Record<Difficulty, string> = { easy: '🟢', medium: '🟡', hard: '🔴', free: '✏️' };
+    const map: Record<Difficulty, string> = { easy: '🟢', hard: '🔴', free: '✏️' };
     return map[this.difficulty()];
   });
 

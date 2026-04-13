@@ -5,7 +5,7 @@ describe('TutorialModalComponent', () => {
   let component: TutorialModalComponent;
   let fixture: ComponentFixture<TutorialModalComponent>;
 
-  function setup(difficulty: 'easy' | 'medium' | 'hard' | 'free' = 'easy', isOpen = true): void {
+  function setup(difficulty: 'easy' | 'hard' | 'free' = 'easy', isOpen = true): void {
     fixture = TestBed.createComponent(TutorialModalComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('difficulty', difficulty);
@@ -43,19 +43,13 @@ describe('TutorialModalComponent', () => {
   it('displays the correct difficulty label in the badge (easy)', () => {
     setup('easy');
     const badge = fixture.nativeElement.querySelector('.mode-badge');
-    expect(badge.textContent).toContain('Easy Mode');
-  });
-
-  it('displays the correct difficulty label in the badge (medium)', () => {
-    setup('medium');
-    const badge = fixture.nativeElement.querySelector('.mode-badge');
-    expect(badge.textContent).toContain('Medium Mode');
+    expect(badge.textContent).toContain('Pre-fill Flags Mode');
   });
 
   it('displays the correct difficulty label in the badge (hard)', () => {
     setup('hard');
     const badge = fixture.nativeElement.querySelector('.mode-badge');
-    expect(badge.textContent).toContain('Hard Mode');
+    expect(badge.textContent).toContain('Free Canvas Mode');
   });
 
   it('displays the correct difficulty label in the badge (free)', () => {
@@ -104,11 +98,6 @@ describe('TutorialModalComponent', () => {
 
   it('easy mode has 4 steps', () => {
     setup('easy');
-    expect(component.steps().length).toBe(4);
-  });
-
-  it('medium mode has 4 steps', () => {
-    setup('medium');
     expect(component.steps().length).toBe(4);
   });
 

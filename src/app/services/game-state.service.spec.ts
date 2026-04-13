@@ -94,11 +94,6 @@ describe('GameStateService', () => {
       expect(service.queue().length + 1).toBe(10);
     });
 
-    it('queue length + 1 equals 10 for medium', () => {
-      service.startGame('medium');
-      expect(service.queue().length + 1).toBe(10);
-    });
-
     it('queue length + 1 equals 10 for hard', () => {
       service.startGame('hard');
       expect(service.queue().length + 1).toBe(10);

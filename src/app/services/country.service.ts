@@ -27,7 +27,7 @@ export interface CrossOutlineHint {
 
 /**
  * Pre-draws a flag element (from FLAG_ELEMENTS) onto the base canvas.
- * Used for easy/medium mode to show complex symbols like the Albanian eagle.
+ * Used for easy mode to show complex symbols like the Albanian eagle.
  * Position and size are expressed as fractions of the canvas dimensions.
  */
 export interface ElementHint {
@@ -55,7 +55,7 @@ export interface Country {
   colors: string[];
 }
 
-export type Difficulty = 'easy' | 'medium' | 'hard' | 'free';
+export type Difficulty = 'easy' | 'hard' | 'free';
 
 // All flags drawable with rectangular bands and/or a Nordic/centered cross.
 const ALL_COUNTRIES: Country[] = [
@@ -147,13 +147,13 @@ const ALL_COUNTRIES: Country[] = [
 
   // ── Element-based flags ───────────────────────────────────────────────────────
   // Albania: solid red background with a centered black double-headed eagle.
-  // Easy/medium: eagle pre-drawn via element hint. Hard: eagle in elements panel.
+  // Easy: eagle pre-drawn via element hint. Hard: eagle in elements panel.
   { name: 'Albania',     code: 'al', ratio: '5:7',   svgFile: 'albania.svg',
     hints: [{ kind: 'element', elementId: 'albania-eagle', color: '#000000', xCenter: 0.5, yCenter: 0.55, sizeFraction: 0.78 }],
     colors: ['#FF0000', '#000000'] },
 
   // Canada: vertical 1:2:1 bands with a centered red maple leaf.
-  // Easy/medium: band guides + leaf pre-drawn. Hard: bands + leaf in elements panel.
+  // Easy: band guides + leaf pre-drawn. Hard: bands + leaf in elements panel.
   { name: 'Canada',      code: 'ca', ratio: '1:2',   svgFile: 'canada.svg',
     hints: [
       { kind: 'bands', direction: 'vertical', ratios: [1, 2, 1] },
@@ -162,7 +162,7 @@ const ALL_COUNTRIES: Country[] = [
     colors: ['#d52b1e', '#ffffff'] },
 
   // Slovenia: horizontal tricolor with coat of arms in upper-left quadrant.
-  // Easy/medium: band guides + coat of arms pre-drawn.
+  // Easy: band guides + coat of arms pre-drawn.
   { name: 'Slovenia',    code: 'si', ratio: '1:2',   svgFile: 'slovenia.svg',
     hints: [
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
@@ -171,7 +171,7 @@ const ALL_COUNTRIES: Country[] = [
     colors: ['#ffffff', '#0000ff', '#ff0000'] },
 
   // Slovakia: horizontal tricolor with coat of arms slightly left of center.
-  // Easy/medium: band guides + coat of arms pre-drawn.
+  // Easy: band guides + coat of arms pre-drawn.
   { name: 'Slovakia',    code: 'sk', ratio: '2:3',   svgFile: 'slovakia.svg',
     hints: [
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1, 1] },
@@ -180,7 +180,7 @@ const ALL_COUNTRIES: Country[] = [
     colors: ['#ffffff', '#254aa5', '#ed1c24'] },
 
   // Morocco: solid red background with a centered green pentagram outline.
-  // Easy/medium: star pre-drawn via element hint.
+  // Easy: star pre-drawn via element hint.
   { name: 'Morocco',     code: 'ma', ratio: '2:3',   svgFile: 'morocco.svg',
     hints: [
       { kind: 'element', elementId: 'morocco-star', color: '#006233', xCenter: 0.5, yCenter: 0.4798, sizeFraction: 0.4474 },
@@ -188,7 +188,7 @@ const ALL_COUNTRIES: Country[] = [
     colors: ['#c1272d', '#006233'] },
 
   // Algeria: vertical green-white bicolor with a red crescent and star.
-  // Easy/medium: band guide + crescent-star pre-drawn.
+  // Easy: band guide + crescent-star pre-drawn.
   { name: 'Algeria',     code: 'dz', ratio: '2:3',   svgFile: 'algeria.svg',
     hints: [
       { kind: 'bands', direction: 'vertical', ratios: [1, 1] },
@@ -197,7 +197,7 @@ const ALL_COUNTRIES: Country[] = [
     colors: ['#006633', '#ffffff', '#d21034'] },
 
   // Tunisia: solid red background with a centered white-disk crescent-star emblem.
-  // Easy/medium: emblem pre-drawn via element hint.
+  // Easy: emblem pre-drawn via element hint.
   { name: 'Tunisia',     code: 'tn', ratio: '2:3',   svgFile: 'tunisia.svg',
     hints: [
       { kind: 'element', elementId: 'tunisia-crescent-star', color: '#e70013', xCenter: 0.5, yCenter: 0.5, sizeFraction: 0.625 },
@@ -205,7 +205,7 @@ const ALL_COUNTRIES: Country[] = [
     colors: ['#e70013', '#ffffff'] },
 
   // Turkey: solid red background with a white crescent and star.
-  // Easy/medium: crescent-star pre-drawn via element hint.
+  // Easy: crescent-star pre-drawn via element hint.
   { name: 'Turkey',      code: 'tr', ratio: '2:3',   svgFile: 'turkey.svg',
     hints: [
       { kind: 'element', elementId: 'turkey-crescent-star', color: '#ffffff', xCenter: 0.39, yCenter: 0.5, sizeFraction: 0.71 },

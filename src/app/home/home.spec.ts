@@ -37,14 +37,13 @@ describe('HomeComponent', () => {
 
   // ── guidedDifficulties array ──────────────────────────────────────────────────
 
-  it('guidedDifficulties has exactly 3 entries', () => {
-    expect(component.guidedDifficulties.length).toBe(3);
+  it('guidedDifficulties has exactly 2 entries', () => {
+    expect(component.guidedDifficulties.length).toBe(2);
   });
 
-  it('guidedDifficulties contains easy, medium and hard keys', () => {
+  it('guidedDifficulties contains easy and hard keys', () => {
     const keys = component.guidedDifficulties.map(d => d.key);
     expect(keys).toContain('easy');
-    expect(keys).toContain('medium');
     expect(keys).toContain('hard');
   });
 
@@ -84,11 +83,6 @@ describe('HomeComponent', () => {
   // ── select() ─────────────────────────────────────────────────────────────────
 
   describe('select()', () => {
-    it('sets selected to medium', () => {
-      component.select('medium');
-      expect(component.selected()).toBe('medium');
-    });
-
     it('sets selected to hard', () => {
       component.select('hard');
       expect(component.selected()).toBe('hard');
@@ -106,9 +100,9 @@ describe('HomeComponent', () => {
   describe('startGame()', () => {
     it('calls gameState.startGame with the currently selected difficulty', () => {
       spyOn(gameState, 'startGame').and.callThrough();
-      component.select('medium');
+      component.select('hard');
       component.startGame();
-      expect(gameState.startGame).toHaveBeenCalledWith('medium');
+      expect(gameState.startGame).toHaveBeenCalledWith('hard');
     });
 
     it('passes free by default (no prior select())', () => {
@@ -144,9 +138,9 @@ describe('HomeComponent', () => {
       expect(router.navigate).toHaveBeenCalledWith(['/game']);
     });
 
-    it('shows tutorial for medium when only easy was seen before', () => {
+    it('shows tutorial for hard when only easy was seen before', () => {
       localStorage.setItem('tutorial-seen-easy', '1');
-      component.select('medium');
+      component.select('hard');
       component.startGame();
       expect(component.showTutorial()).toBeTrue();
     });
@@ -294,9 +288,9 @@ describe('HomeComponent', () => {
     });
 
     it('marks the current difficulty as seen in localStorage', () => {
-      component.select('medium');
+      component.select('hard');
       component.onTutorialClosed();
-      expect(localStorage.getItem('tutorial-seen-medium')).toBe('1');
+      expect(localStorage.getItem('tutorial-seen-hard')).toBe('1');
     });
 
     it('subsequent startGame() for the same difficulty skips the tutorial', () => {

@@ -27,9 +27,8 @@ export class HomeComponent {
   private touchStartX: number | null = null;
 
   readonly guidedDifficulties: { key: Difficulty; label: string; description: string; emoji: string }[] = [
-    { key: 'easy',   label: 'Easy',   description: 'Bands pre-drawn — pick from flag colors only', emoji: '🟢' },
-    { key: 'medium', label: 'Medium', description: 'Bands pre-drawn — use any color you like',     emoji: '🟡' },
-    { key: 'hard',   label: 'Hard',   description: 'Blank canvas — draw everything from scratch',  emoji: '🔴' },
+    { key: 'easy', label: 'Pre-fill Flags', description: 'Bands pre-drawn — pick from flag colors only',     emoji: '🟢' },
+    { key: 'hard', label: 'Free Canvas',    description: 'Blank canvas — draw everything from scratch',      emoji: '🔴' },
   ];
 
   readonly freeDifficulty = { key: 'free' as Difficulty, label: 'Free Drawing', description: 'Freehand pen — draw freely with the flag\'s colors', emoji: '✏️' };

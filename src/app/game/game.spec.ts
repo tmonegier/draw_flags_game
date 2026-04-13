@@ -57,17 +57,6 @@ describe('GameComponent', () => {
     expect(component.activeColor()).toBe(palette![0]);
   });
 
-  it('activeColor is set to the first palette color in medium mode after init', async () => {
-    gameState.startGame('medium');
-    const medFixture = TestBed.createComponent(GameComponent);
-    const medComponent = medFixture.componentInstance;
-    medFixture.detectChanges();
-    await medFixture.whenStable();
-    const palette = medComponent.allowedColors();
-    expect(palette).not.toBeNull();
-    expect(medComponent.activeColor()).toBe(palette![0]);
-  });
-
   it('isElementsModalOpen defaults to false', () => {
     expect(component.isElementsModalOpen()).toBeFalse();
   });
@@ -75,12 +64,6 @@ describe('GameComponent', () => {
   // ── clearLabel computed signal ────────────────────────────────────────────────
 
   it('clearLabel is "↩️ Cancel Changes" on easy mode', () => {
-    expect(component.clearLabel()).toBe('↩️ Cancel Changes');
-  });
-
-  it('clearLabel is "↩️ Cancel Changes" on medium mode', () => {
-    gameState.startGame('medium');
-    fixture.detectChanges();
     expect(component.clearLabel()).toBe('↩️ Cancel Changes');
   });
 
@@ -102,12 +85,6 @@ describe('GameComponent', () => {
     expect(component.showElements()).toBeFalse();
   });
 
-  it('showElements is false on medium mode', () => {
-    gameState.startGame('medium');
-    fixture.detectChanges();
-    expect(component.showElements()).toBeFalse();
-  });
-
   it('showElements is true on hard mode', () => {
     gameState.startGame('hard');
     fixture.detectChanges();
@@ -126,12 +103,6 @@ describe('GameComponent', () => {
     expect(component.drawingMode()).toBe('fill');
   });
 
-  it('drawingMode is "fill" on medium mode', () => {
-    gameState.startGame('medium');
-    fixture.detectChanges();
-    expect(component.drawingMode()).toBe('fill');
-  });
-
   it('drawingMode is "fill" on hard mode', () => {
     gameState.startGame('hard');
     fixture.detectChanges();
@@ -147,12 +118,6 @@ describe('GameComponent', () => {
   // ── showPenSize computed signal ───────────────────────────────────────────────
 
   it('showPenSize is false on easy mode', () => {
-    expect(component.showPenSize()).toBeFalse();
-  });
-
-  it('showPenSize is false on medium mode', () => {
-    gameState.startGame('medium');
-    fixture.detectChanges();
     expect(component.showPenSize()).toBeFalse();
   });
 
@@ -206,16 +171,6 @@ describe('GameComponent', () => {
   });
 
   it('onClearCanvas re-applies hints on easy mode', () => {
-    spyOn(component.drawingCanvas, 'clearCanvas');
-    spyOn(component.drawingCanvas, 'applyHints');
-    component.onClearCanvas();
-    const country = gameState.currentCountry()!;
-    expect(component.drawingCanvas.applyHints).toHaveBeenCalledWith(country.hints);
-  });
-
-  it('onClearCanvas re-applies hints on medium mode', () => {
-    gameState.startGame('medium');
-    fixture.detectChanges();
     spyOn(component.drawingCanvas, 'clearCanvas');
     spyOn(component.drawingCanvas, 'applyHints');
     component.onClearCanvas();

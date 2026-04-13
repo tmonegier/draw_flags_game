@@ -35,10 +35,9 @@ export class GameComponent implements AfterViewInit {
     return arr;
   });
 
-  /** Label for the toolbar's clear button: restore hints on easy/medium, full clear on hard/free. */
+  /** Label for the toolbar's clear button: restore hints on easy, full clear on hard/free. */
   readonly clearLabel = computed<string>(() => {
-    const d = this.gameState.difficulty();
-    return (d === 'easy' || d === 'medium') ? '↩️ Cancel Changes' : '🗑️ Clear';
+    return this.gameState.difficulty() === 'easy' ? '↩️ Cancel Changes' : '🗑️ Clear';
   });
 
   /** Elements picker is only available in hard mode. */
@@ -66,7 +65,7 @@ export class GameComponent implements AfterViewInit {
     const difficulty = this.gameState.difficulty();
     if (!country) return;
 
-    if (difficulty === 'easy' || difficulty === 'medium') {
+    if (difficulty === 'easy') {
       // Defer one tick so DrawingCanvasComponent.ngAfterViewInit runs first.
       setTimeout(() => {
         this.drawingCanvas.applyHints(country.hints);
@@ -88,8 +87,7 @@ export class GameComponent implements AfterViewInit {
 
   onClearCanvas(): void {
     this.drawingCanvas.clearCanvas();
-    const difficulty = this.gameState.difficulty();
-    if (difficulty === 'easy' || difficulty === 'medium') {
+    if (this.gameState.difficulty() === 'easy') {
       const country = this.gameState.currentCountry();
       if (country) this.drawingCanvas.applyHints(country.hints);
     }
