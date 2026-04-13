@@ -342,7 +342,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   // ── Mouse event handlers ────────────────────────────────────────────────────
 
-  private getPos(event: MouseEvent): Point {
+  private getPos(event: { clientX: number; clientY: number }): Point {
     const rect = this.overlayCanvasRef.nativeElement.getBoundingClientRect();
     const scaleX = this.canvasWidth() / rect.width;
     const scaleY = this.canvasHeight / rect.height;
@@ -352,8 +352,12 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     };
   }
 
-  onMouseDown(event: MouseEvent): void {
+  onPointerDown(event: PointerEvent): void {
     event.preventDefault();
+    const canvas = this.overlayCanvasRef.nativeElement;
+    if (event.pointerId !== undefined && canvas.setPointerCapture) {
+      try { canvas.setPointerCapture(event.pointerId); } catch { /* no-op */ }
+    }
     if (this.isPlacingElement()) {
       if (event.button === 2) { this.cancelPlacement(); return; }
       const pos = this.getPos(event);
@@ -390,8 +394,9 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     }
   }
 
-  @HostListener('document:mouseup')
-  onMouseUp(): void {
+  @HostListener('document:pointerup')
+  @HostListener('document:pointercancel')
+  onPointerUp(): void {
     this.isPenDrawing = false;
     this.lastPenPos = null;
   }
@@ -476,7 +481,8 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     return [(num >> 16) & 0xff, (num >> 8) & 0xff, num & 0xff, 255];
   }
 
-  onMouseMove(event: MouseEvent): void {
+  onPointerMove(event: PointerEvent): void {
+    if (this.isPenDrawing) event.preventDefault();
     const pos = this.getPos(event);
     if (this.isPlacingElement()) {
       const W = this.canvasWidth();

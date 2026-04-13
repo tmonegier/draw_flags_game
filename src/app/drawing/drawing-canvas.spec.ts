@@ -450,7 +450,7 @@ describe('DrawingCanvasComponent', () => {
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect);
 
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
+    component.onPointerDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }) as PointerEvent);
 
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(10, 10, 1, 1).data;
@@ -489,7 +489,7 @@ describe('DrawingCanvasComponent', () => {
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect);
 
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 15, clientY: 15, button: 0 }));
+    component.onPointerDown(new MouseEvent('mousedown', { clientX: 15, clientY: 15, button: 0 }) as PointerEvent);
 
     // The placed element's color should be updated to the active color
     expect((component as any).placedElements[0].color).toBe('#ff0000');
@@ -523,7 +523,7 @@ describe('DrawingCanvasComponent', () => {
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect);
 
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 15, clientY: 15, button: 0 }));
+    component.onPointerDown(new MouseEvent('mousedown', { clientX: 15, clientY: 15, button: 0 }) as PointerEvent);
 
     // baseCanvas untouched — remains white
     const basePixel = component.baseCanvasRef.nativeElement.getContext('2d')!
@@ -536,7 +536,7 @@ describe('DrawingCanvasComponent', () => {
   it('onMouseDown right-click in placement mode cancels placement', () => {
     component.isPlacingElement.set(true);
     spyOn(component, 'cancelPlacement');
-    component.onMouseDown(new MouseEvent('mousedown', { button: 2 }));
+    component.onPointerDown(new MouseEvent('mousedown', { button: 2 }) as PointerEvent);
     expect(component.cancelPlacement).toHaveBeenCalledTimes(1);
   });
 
@@ -596,7 +596,7 @@ describe('DrawingCanvasComponent', () => {
     spyOn(component.overlayCanvasRef.nativeElement, 'getBoundingClientRect')
       .and.returnValue(makeBoundingRect(component));
 
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 50, clientY: 50, button: 0 }));
+    component.onPointerDown(new MouseEvent('mousedown', { clientX: 50, clientY: 50, button: 0 }) as PointerEvent);
 
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(50, 50, 1, 1).data;
@@ -615,7 +615,7 @@ describe('DrawingCanvasComponent', () => {
       .and.returnValue(makeBoundingRect(component));
     spyOn(component as any, 'floodFill');
 
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 50, clientY: 50, button: 0 }));
+    component.onPointerDown(new MouseEvent('mousedown', { clientX: 50, clientY: 50, button: 0 }) as PointerEvent);
 
     expect((component as any).floodFill).not.toHaveBeenCalled();
   });
@@ -629,8 +629,8 @@ describe('DrawingCanvasComponent', () => {
       .and.returnValue(makeBoundingRect(component));
 
     // Press at (10, 10) then drag to (200, 200)
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
-    component.onMouseMove(new MouseEvent('mousemove', { clientX: 200, clientY: 200 }));
+    component.onPointerDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }) as PointerEvent);
+    component.onPointerMove(new MouseEvent('mousemove', { clientX: 200, clientY: 200 }) as PointerEvent);
 
     // Pixel along the stroke path should be painted
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
@@ -647,7 +647,7 @@ describe('DrawingCanvasComponent', () => {
       .and.returnValue(makeBoundingRect(component));
 
     // Move without pressing first
-    component.onMouseMove(new MouseEvent('mousemove', { clientX: 100, clientY: 100 }));
+    component.onPointerMove(new MouseEvent('mousemove', { clientX: 100, clientY: 100 }) as PointerEvent);
 
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(100, 100, 1, 1).data;
@@ -665,9 +665,9 @@ describe('DrawingCanvasComponent', () => {
     spyOn(component.overlayCanvasRef.nativeElement, 'getBoundingClientRect')
       .and.returnValue(makeBoundingRect(component));
 
-    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
-    component.onMouseUp();
-    component.onMouseMove(new MouseEvent('mousemove', { clientX: 300, clientY: 300 }));
+    component.onPointerDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }) as PointerEvent);
+    component.onPointerUp();
+    component.onPointerMove(new MouseEvent('mousemove', { clientX: 300, clientY: 300 }) as PointerEvent);
 
     // Pixel at 300,300 should remain white (no stroke after mouseup)
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
