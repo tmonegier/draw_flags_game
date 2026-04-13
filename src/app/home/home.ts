@@ -7,6 +7,7 @@ import { TutorialModalComponent } from './tutorial-modal';
 type ModePage = 'free' | 'guided';
 
 export const SWIPE_THRESHOLD_PX = 40;
+export const LAST_PAGE_KEY = 'home-last-page';
 
 @Component({
   selector: 'app-home',
@@ -18,9 +19,10 @@ export class HomeComponent {
   private readonly router = inject(Router);
   private readonly gameState = inject(GameStateService);
 
-  selected = signal<Difficulty>('easy');
+  private readonly initialPage: ModePage = this.readLastPage();
+  selected = signal<Difficulty>(this.initialPage === 'free' ? 'free' : 'easy');
   showTutorial = signal(false);
-  page = signal<ModePage>('guided');
+  page = signal<ModePage>(this.initialPage);
 
   private touchStartX: number | null = null;
 
@@ -67,7 +69,9 @@ export class HomeComponent {
     else this.prevPage();
   }
 
-  startGame(): void {
+  startGame(difficulty?: Difficulty): void {
+    if (difficulty) this.selected.set(difficulty);
+    this.rememberPageFor(this.selected());
     this.gameState.startGame(this.selected());
     if (this.hasTutorialBeenSeen(this.selected())) {
       this.router.navigate(['/game']);
@@ -88,5 +92,13 @@ export class HomeComponent {
 
   private markTutorialSeen(difficulty: Difficulty): void {
     localStorage.setItem(`tutorial-seen-${difficulty}`, '1');
+  }
+
+  private readLastPage(): ModePage {
+    return localStorage.getItem(LAST_PAGE_KEY) === 'guided' ? 'guided' : 'free';
+  }
+
+  private rememberPageFor(difficulty: Difficulty): void {
+    localStorage.setItem(LAST_PAGE_KEY, difficulty === 'free' ? 'free' : 'guided');
   }
 }

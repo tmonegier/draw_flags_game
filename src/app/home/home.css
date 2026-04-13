@@ -162,12 +162,6 @@ h1 {
   transform: translateY(-2px);
 }
 
-.card.selected {
-  background: rgba(99, 179, 237, 0.18);
-  border-color: #63b3ed;
-  color: #fff;
-}
-
 .card-emoji {
   font-size: 2rem;
 }
@@ -184,48 +178,9 @@ h1 {
   line-height: 1.3;
 }
 
-.card.selected .card-desc {
-  color: #a8c8e8;
-}
-
 .card-free {
   min-width: 200px;
   border-style: dashed;
-}
-
-.card-free.selected {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: #f6ad55;
-  color: #fff;
-}
-
-.card-free.selected .card-desc {
-  color: #fbd38d;
-}
-
-/* ── Start button ──────────────────────────────────────────────────────── */
-
-.start-btn {
-  padding: 1rem 3rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-  color: #fff;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 20px rgba(66, 153, 225, 0.4);
-  letter-spacing: 0.03em;
-}
-
-.start-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(66, 153, 225, 0.6);
-}
-
-.start-btn:active {
-  transform: translateY(0);
 }
 
 /* ── Responsive ────────────────────────────────────────────────────────── */
@@ -262,11 +217,6 @@ h1 {
 
   .card-free {
     min-width: 200px;
-  }
-
-  .start-btn {
-    padding: 0.85rem 2.4rem;
-    font-size: 1.05rem;
   }
 }
 
