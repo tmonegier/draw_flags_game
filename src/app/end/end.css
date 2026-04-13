@@ -3,19 +3,20 @@
   flex-direction: column;
   align-items: center;
   gap: 1.8rem;
-  padding: 2.5rem 1rem;
+  padding: 2rem 0.75rem;
   min-height: 100vh;
 }
 
 .trophy {
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 8vw, 4rem);
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: clamp(1.6rem, 6vw, 2.5rem);
   font-weight: 800;
   color: #fff;
   margin: 0;
+  text-align: center;
 }
 
 /* Overall score */
@@ -89,9 +90,13 @@ h1 {
 
 .card-country {
   flex: 1;
+  min-width: 0;
   font-weight: 700;
   font-size: 1rem;
   color: #e2e8f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-grade {
@@ -167,4 +172,57 @@ h1 {
 .play-again-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(66, 153, 225, 0.55);
+}
+
+@media (max-width: 480px) {
+  .end-screen {
+    gap: 1.2rem;
+    padding: 1.5rem 0.75rem;
+  }
+
+  .cards {
+    max-width: 100%;
+  }
+
+  .card-header {
+    gap: 0.5rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .card-country {
+    font-size: 0.92rem;
+  }
+
+  .card-grade {
+    font-size: 1.1rem;
+  }
+
+  .card-score {
+    font-size: 0.85rem;
+    min-width: 34px;
+  }
+
+  .avg-badge {
+    width: 88px;
+    height: 88px;
+  }
+
+  .avg-number {
+    font-size: 1.15rem;
+  }
+
+  .avg-grade {
+    font-size: 1.9rem;
+  }
+
+  .flag-slot {
+    padding: 0.55rem;
+  }
+
+  .play-again-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
 }

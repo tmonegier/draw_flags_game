@@ -14,7 +14,7 @@
 }
 
 .compare-header h2 {
-  font-size: 2rem;
+  font-size: clamp(1.3rem, 5vw, 2rem);
   font-weight: 800;
   color: #fff;
   margin: 0;
@@ -81,7 +81,7 @@
   align-items: center;
   gap: 0.6rem;
   flex: 1;
-  min-width: 260px;
+  min-width: min(260px, 100%);
   max-width: 420px;
 }
 
@@ -164,4 +164,78 @@
 .btn-secondary:hover {
   background: rgba(255,255,255,0.12);
   color: #fff;
+}
+
+@media (max-width: 640px) {
+  .panels {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .panel {
+    max-width: 100%;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .vs-divider {
+    font-size: 1rem;
+    color: #8892a4;
+  }
+}
+
+@media (max-width: 480px) {
+  .compare-screen {
+    padding: 1.2rem 0.75rem;
+    gap: 1rem;
+  }
+
+  .compare-header {
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .compare-header h2 {
+    text-align: center;
+    width: 100%;
+    order: 1;
+  }
+
+  .compare-header .scoring-badge {
+    order: 2;
+  }
+
+  .scoring-badge {
+    min-width: 64px;
+    min-height: 64px;
+  }
+
+  .score-number {
+    font-size: 1rem;
+  }
+
+  .grade-letter {
+    font-size: 1.4rem;
+  }
+
+  .score-description {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .btn {
+    padding: 0.65rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions .btn {
+    width: 100%;
+  }
 }
