@@ -397,14 +397,22 @@ export const FLAG_ELEMENTS: FlagElement[] = [
   },
 
   // ── Singapore crescent + 5 stars ──────────────────────────────────────────
+  // Geometry taken from public/flags/singapore.svg (Wikimedia Commons, viewBox
+  // 0 0 54 36). Crescent = outer circle (11.405, 9) r=6.625 with inner circle
+  // (15.03, 9) r=7.25 carved via fill-rule=evenodd. Stars = rotated pentagram
+  // `#s` around (15.03, 9) every 72°. Element bbox: x∈[4.78, 20.44],
+  // y∈[3.475, 15.625] → width 15.66, height 12.15. ViewBox is a 15.66-side
+  // square centred on (12.61, 9.55) so the square placement preserves
+  // proportions. Centre fraction: (12.61/54, 9.55/36) = (0.2335, 0.2653).
+  // sizeFraction = 15.66/36 = 0.4350.
   {
     id: 'singapore-crescent-stars',
     name: 'Crescent & Stars',
     flagOf: 'Singapore',
     category: 'symbols',
     defaultColor: '#ffffff',
-    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="currentColor"><path fill-rule="evenodd" d="M 30 50 A 22 22 0 1 0 30 50.001 Z M 36 50 A 17.6 17.6 0 1 1 36 50.001 Z"/><defs><path id="sgs" d="M0.000,-4.000 L0.898,-1.236 L3.804,-1.236 L1.453,0.472 L2.351,3.236 L0.000,1.528 L-2.351,3.236 L-1.453,0.472 L-3.804,-1.236 L-0.898,-1.236 Z"/></defs><use href="#sgs" x="65.0" y="40.0"/><use href="#sgs" x="79.27" y="50.36"/><use href="#sgs" x="73.82" y="67.14"/><use href="#sgs" x="56.18" y="67.14"/><use href="#sgs" x="50.73" y="50.36"/></svg>`,
-    autoPlace: { xCenter: 0.1708, yCenter: 0.28, sizeFraction: 0.45 },
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="4.78 1.72 15.66 15.66" width="100" height="100" fill="currentColor"><path d="M 12.021 2.404 A 6.625 6.625 0 1 0 12.021 15.596 A 7.25 7.25 0 0 1 12.021 2.404 Z"/><path id="sg-s" d="m15.03 3.475-1.01393 3.120554 2.654502-1.928609h-3.281145l2.654502 1.928609z"/><use href="#sg-s" transform="rotate(72 15.03 9)"/><use href="#sg-s" transform="rotate(144 15.03 9)"/><use href="#sg-s" transform="rotate(216 15.03 9)"/><use href="#sg-s" transform="rotate(288 15.03 9)"/></svg>`,
+    autoPlace: { xCenter: 0.2335, yCenter: 0.2653, sizeFraction: 0.4350 },
   },
 
   // ── Honduras 5 stars (quincunx) ───────────────────────────────────────────

@@ -378,7 +378,7 @@ const ALL_COUNTRIES: Country[] = [
   { name: 'Singapore',   code: 'sg', ratio: '2:3',   svgFile: 'singapore.svg',
     hints: [
       { kind: 'bands', direction: 'horizontal', ratios: [1, 1] },
-      { kind: 'element', elementId: 'singapore-crescent-stars', color: '#ffffff', xCenter: 0.1708, yCenter: 0.28, sizeFraction: 0.45 },
+      { kind: 'element', elementId: 'singapore-crescent-stars', color: '#ffffff', xCenter: 0.2335, yCenter: 0.2653, sizeFraction: 0.4350 },
     ],
     colors: ['#EF3340', '#ffffff'] },
 
