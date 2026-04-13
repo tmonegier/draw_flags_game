@@ -566,4 +566,114 @@ describe('DrawingCanvasComponent', () => {
     expect(pixel[1]).toBe(255);
     expect(pixel[2]).toBe(255);
   });
+
+  // ── Pen drawing mode ──────────────────────────────────────────────────────────
+
+  function makeBoundingRect(component: DrawingCanvasComponent): DOMRect {
+    return {
+      left: 0, top: 0,
+      width: component.canvasWidth(), height: component.canvasHeight,
+      right: component.canvasWidth(), bottom: component.canvasHeight,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect;
+  }
+
+  it('penSize input defaults to 4', () => {
+    expect(component.penSize()).toBe(4);
+  });
+
+  it('penSize input reflects a value set from outside', () => {
+    fixture.componentRef.setInput('penSize', 15);
+    fixture.detectChanges();
+    expect(component.penSize()).toBe(15);
+  });
+
+  it('onMouseDown in pen mode paints a dot on baseCanvas', () => {
+    fixture.componentRef.setInput('drawingMode', 'pen');
+    fixture.componentRef.setInput('color', '#ff0000');
+    fixture.detectChanges();
+
+    spyOn(component.overlayCanvasRef.nativeElement, 'getBoundingClientRect')
+      .and.returnValue(makeBoundingRect(component));
+
+    component.onMouseDown(new MouseEvent('mousedown', { clientX: 50, clientY: 50, button: 0 }));
+
+    const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
+      .getImageData(50, 50, 1, 1).data;
+    // Center pixel should be painted red
+    expect(pixel[0]).toBe(255);
+    expect(pixel[1]).toBe(0);
+    expect(pixel[2]).toBe(0);
+  });
+
+  it('onMouseDown in pen mode does not flood-fill (only dot at click point)', () => {
+    fixture.componentRef.setInput('drawingMode', 'pen');
+    fixture.componentRef.setInput('color', '#ff0000');
+    fixture.detectChanges();
+
+    spyOn(component.overlayCanvasRef.nativeElement, 'getBoundingClientRect')
+      .and.returnValue(makeBoundingRect(component));
+    spyOn(component as any, 'floodFill');
+
+    component.onMouseDown(new MouseEvent('mousedown', { clientX: 50, clientY: 50, button: 0 }));
+
+    expect((component as any).floodFill).not.toHaveBeenCalled();
+  });
+
+  it('onMouseMove in pen mode draws a stroke when mouse is pressed', () => {
+    fixture.componentRef.setInput('drawingMode', 'pen');
+    fixture.componentRef.setInput('color', '#0000ff');
+    fixture.detectChanges();
+
+    spyOn(component.overlayCanvasRef.nativeElement, 'getBoundingClientRect')
+      .and.returnValue(makeBoundingRect(component));
+
+    // Press at (10, 10) then drag to (200, 200)
+    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
+    component.onMouseMove(new MouseEvent('mousemove', { clientX: 200, clientY: 200 }));
+
+    // Pixel along the stroke path should be painted
+    const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
+      .getImageData(200, 200, 1, 1).data;
+    expect(pixel[2]).toBe(255); // blue channel
+  });
+
+  it('onMouseMove in pen mode does nothing when mouse is not pressed', () => {
+    fixture.componentRef.setInput('drawingMode', 'pen');
+    fixture.componentRef.setInput('color', '#0000ff');
+    fixture.detectChanges();
+
+    spyOn(component.overlayCanvasRef.nativeElement, 'getBoundingClientRect')
+      .and.returnValue(makeBoundingRect(component));
+
+    // Move without pressing first
+    component.onMouseMove(new MouseEvent('mousemove', { clientX: 100, clientY: 100 }));
+
+    const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
+      .getImageData(100, 100, 1, 1).data;
+    // Canvas should remain white
+    expect(pixel[0]).toBe(255);
+    expect(pixel[1]).toBe(255);
+    expect(pixel[2]).toBe(255);
+  });
+
+  it('onMouseUp ends the pen stroke (subsequent move does not draw)', () => {
+    fixture.componentRef.setInput('drawingMode', 'pen');
+    fixture.componentRef.setInput('color', '#00ff00');
+    fixture.detectChanges();
+
+    spyOn(component.overlayCanvasRef.nativeElement, 'getBoundingClientRect')
+      .and.returnValue(makeBoundingRect(component));
+
+    component.onMouseDown(new MouseEvent('mousedown', { clientX: 10, clientY: 10, button: 0 }));
+    component.onMouseUp();
+    component.onMouseMove(new MouseEvent('mousemove', { clientX: 300, clientY: 300 }));
+
+    // Pixel at 300,300 should remain white (no stroke after mouseup)
+    const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
+      .getImageData(300, 300, 1, 1).data;
+    expect(pixel[0]).toBe(255);
+    expect(pixel[1]).toBe(255);
+    expect(pixel[2]).toBe(255);
+  });
 });

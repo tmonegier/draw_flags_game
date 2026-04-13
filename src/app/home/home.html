@@ -28,20 +28,39 @@
     <p class="subtitle">Test your vexillology skills! Draw country flags from memory.</p>
   </div>
 
-  <div class="difficulty-section">
-    <h2>Choose Difficulty</h2>
-    <div class="cards">
-      @for (d of difficulties; track d.key) {
-        <button
-          class="card"
-          [class.selected]="selected() === d.key"
-          (click)="select(d.key)"
-        >
-          <span class="card-emoji">{{ d.emoji }}</span>
-          <span class="card-label">{{ d.label }}</span>
-          <span class="card-desc">{{ d.description }}</span>
-        </button>
-      }
+  <div class="mode-sections">
+    <div class="mode-section">
+      <h2 class="section-title">Free Drawing</h2>
+      <button
+        class="card card-free"
+        [class.selected]="selected() === freeDifficulty.key"
+        (click)="select(freeDifficulty.key)"
+      >
+        <span class="card-emoji">{{ freeDifficulty.emoji }}</span>
+        <span class="card-label">{{ freeDifficulty.label }}</span>
+        <span class="card-desc">{{ freeDifficulty.description }}</span>
+      </button>
+    </div>
+
+    <div class="mode-divider">
+      <span class="mode-divider-label">or</span>
+    </div>
+
+    <div class="mode-section">
+      <h2 class="section-title">Guided Modes</h2>
+      <div class="cards">
+        @for (d of guidedDifficulties; track d.key) {
+          <button
+            class="card"
+            [class.selected]="selected() === d.key"
+            (click)="select(d.key)"
+          >
+            <span class="card-emoji">{{ d.emoji }}</span>
+            <span class="card-label">{{ d.label }}</span>
+            <span class="card-desc">{{ d.description }}</span>
+          </button>
+        }
+      </div>
     </div>
   </div>
 

@@ -17,11 +17,13 @@ export class HomeComponent {
   selected = signal<Difficulty>('easy');
   showTutorial = signal(false);
 
-  readonly difficulties: { key: Difficulty; label: string; description: string; emoji: string }[] = [
+  readonly guidedDifficulties: { key: Difficulty; label: string; description: string; emoji: string }[] = [
     { key: 'easy',   label: 'Easy',   description: 'Bands pre-drawn — pick from flag colors only', emoji: '🟢' },
     { key: 'medium', label: 'Medium', description: 'Bands pre-drawn — use any color you like',     emoji: '🟡' },
     { key: 'hard',   label: 'Hard',   description: 'Blank canvas — draw everything from scratch',  emoji: '🔴' },
   ];
+
+  readonly freeDifficulty = { key: 'free' as Difficulty, label: 'Free Drawing', description: 'Freehand pen — draw freely with the flag\'s colors', emoji: '✏️' };
 
   select(difficulty: Difficulty): void {
     this.selected.set(difficulty);

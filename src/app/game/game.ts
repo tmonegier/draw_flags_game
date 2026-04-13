@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit, inject, signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { DrawingCanvasComponent } from '../drawing/drawing-canvas';
 import { ToolbarComponent } from '../drawing/toolbar';
@@ -16,35 +16,52 @@ export class GameComponent implements AfterViewInit {
   @ViewChild(DrawingCanvasComponent) drawingCanvas!: DrawingCanvasComponent;
 
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   readonly gameState = inject(GameStateService);
 
   activeColor = signal<string>('#000000');
   isElementsModalOpen = signal(false);
+  penSize = signal<number>(4);
 
-  /** In easy mode, restrict the palette to a shuffled copy of the current flag's colors. */
+  /** Restrict the palette to a shuffled copy of the current flag's colors in all modes. */
   readonly allowedColors = computed<string[] | null>(() => {
-    if (this.gameState.difficulty() === 'easy') {
-      const colors = this.gameState.currentCountry()?.colors;
-      if (!colors) return null;
-      const arr = [...colors];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
+    const colors = this.gameState.currentCountry()?.colors;
+    if (!colors) return null;
+    const arr = [...colors];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return null;
+    return arr;
   });
 
-  /** Label for the toolbar's clear button: restore hints on easy/medium, full clear on hard. */
-  readonly clearLabel = computed<string>(() =>
-    this.gameState.difficulty() === 'hard' ? '🗑️ Clear' : '↩️ Cancel Changes'
-  );
+  /** Label for the toolbar's clear button: restore hints on easy/medium, full clear on hard/free. */
+  readonly clearLabel = computed<string>(() => {
+    const d = this.gameState.difficulty();
+    return (d === 'easy' || d === 'medium') ? '↩️ Cancel Changes' : '🗑️ Clear';
+  });
 
   /** Elements picker is only available in hard mode. */
   readonly showElements = computed<boolean>(() => this.gameState.difficulty() === 'hard');
 
+  /** Pen size slider is only shown in free mode. */
+  readonly showPenSize = computed<boolean>(() => this.gameState.difficulty() === 'free');
+
+  /** Pen mode for free drawing; flood-fill for all other modes. */
+  readonly drawingMode = computed<'fill' | 'pen'>(() =>
+    this.gameState.difficulty() === 'free' ? 'pen' : 'fill'
+  );
+
   ngAfterViewInit(): void {
+    const countryCode = this.route.snapshot.paramMap.get('countryCode');
+    if (countryCode) {
+      const found = this.gameState.startGameWithCountry(countryCode, this.gameState.difficulty());
+      if (!found) {
+        this.router.navigate(['/']);
+        return;
+      }
+    }
+
     const country = this.gameState.currentCountry();
     const difficulty = this.gameState.difficulty();
     if (!country) return;
@@ -55,15 +72,18 @@ export class GameComponent implements AfterViewInit {
         this.drawingCanvas.applyHints(country.hints);
       });
     }
+    // free mode: blank canvas, pen drawing only — no hints applied.
 
-    if (difficulty === 'easy') {
-      const palette = this.allowedColors();
-      if (palette && palette.length > 0) this.activeColor.set(palette[0]);
-    }
+    const palette = this.allowedColors();
+    if (palette && palette.length > 0) this.activeColor.set(palette[0]);
   }
 
   onColorChange(color: string): void {
     this.activeColor.set(color);
+  }
+
+  onPenSizeChange(size: number): void {
+    this.penSize.set(size);
   }
 
   onClearCanvas(): void {

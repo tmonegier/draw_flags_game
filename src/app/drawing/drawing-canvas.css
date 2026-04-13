@@ -34,8 +34,13 @@
 
 .overlay-canvas {
   cursor: crosshair;
+  touch-action: none;
 }
 
 .overlay-canvas.placement-cursor {
   cursor: copy;
+}
+
+.overlay-canvas.pen-cursor {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='none' stroke='%23333' stroke-width='1.5'/%3E%3Cline x1='10' y1='0' x2='10' y2='6' stroke='%23333' stroke-width='1.5'/%3E%3Cline x1='10' y1='14' x2='10' y2='20' stroke='%23333' stroke-width='1.5'/%3E%3Cline x1='0' y1='10' x2='6' y2='10' stroke='%23333' stroke-width='1.5'/%3E%3Cline x1='14' y1='10' x2='20' y2='10' stroke='%23333' stroke-width='1.5'/%3E%3C/svg%3E") 10 10, crosshair;
 }

@@ -1,5 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { provideLocationMocks } from '@angular/common/testing';
 import { GameComponent } from './game';
@@ -50,20 +50,22 @@ describe('GameComponent', () => {
 
   // ── Signal defaults ───────────────────────────────────────────────────────────
 
-  it('activeColor is set to the first color of the shuffled palette in easy mode after init', () => {
+  it('activeColor is set to the first color of the shuffled palette after init', () => {
     const palette = component.allowedColors();
     expect(palette).not.toBeNull();
     expect(palette!.length).toBeGreaterThan(0);
     expect(component.activeColor()).toBe(palette![0]);
   });
 
-  it('activeColor stays black (#000000) in medium mode — player picks the colour', async () => {
+  it('activeColor is set to the first palette color in medium mode after init', async () => {
     gameState.startGame('medium');
     const medFixture = TestBed.createComponent(GameComponent);
     const medComponent = medFixture.componentInstance;
     medFixture.detectChanges();
     await medFixture.whenStable();
-    expect(medComponent.activeColor()).toBe('#000000');
+    const palette = medComponent.allowedColors();
+    expect(palette).not.toBeNull();
+    expect(medComponent.activeColor()).toBe(palette![0]);
   });
 
   it('isElementsModalOpen defaults to false', () => {
@@ -88,6 +90,12 @@ describe('GameComponent', () => {
     expect(component.clearLabel()).toBe('🗑️ Clear');
   });
 
+  it('clearLabel is "🗑️ Clear" on free mode', () => {
+    gameState.startGame('free');
+    fixture.detectChanges();
+    expect(component.clearLabel()).toBe('🗑️ Clear');
+  });
+
   // ── showElements computed signal ──────────────────────────────────────────────
 
   it('showElements is false on easy mode', () => {
@@ -104,6 +112,76 @@ describe('GameComponent', () => {
     gameState.startGame('hard');
     fixture.detectChanges();
     expect(component.showElements()).toBeTrue();
+  });
+
+  it('showElements is false on free mode', () => {
+    gameState.startGame('free');
+    fixture.detectChanges();
+    expect(component.showElements()).toBeFalse();
+  });
+
+  // ── drawingMode computed signal ───────────────────────────────────────────────
+
+  it('drawingMode is "fill" on easy mode', () => {
+    expect(component.drawingMode()).toBe('fill');
+  });
+
+  it('drawingMode is "fill" on medium mode', () => {
+    gameState.startGame('medium');
+    fixture.detectChanges();
+    expect(component.drawingMode()).toBe('fill');
+  });
+
+  it('drawingMode is "fill" on hard mode', () => {
+    gameState.startGame('hard');
+    fixture.detectChanges();
+    expect(component.drawingMode()).toBe('fill');
+  });
+
+  it('drawingMode is "pen" on free mode', () => {
+    gameState.startGame('free');
+    fixture.detectChanges();
+    expect(component.drawingMode()).toBe('pen');
+  });
+
+  // ── showPenSize computed signal ───────────────────────────────────────────────
+
+  it('showPenSize is false on easy mode', () => {
+    expect(component.showPenSize()).toBeFalse();
+  });
+
+  it('showPenSize is false on medium mode', () => {
+    gameState.startGame('medium');
+    fixture.detectChanges();
+    expect(component.showPenSize()).toBeFalse();
+  });
+
+  it('showPenSize is false on hard mode', () => {
+    gameState.startGame('hard');
+    fixture.detectChanges();
+    expect(component.showPenSize()).toBeFalse();
+  });
+
+  it('showPenSize is true on free mode', () => {
+    gameState.startGame('free');
+    fixture.detectChanges();
+    expect(component.showPenSize()).toBeTrue();
+  });
+
+  // ── penSize signal ────────────────────────────────────────────────────────────
+
+  it('penSize defaults to 4', () => {
+    expect(component.penSize()).toBe(4);
+  });
+
+  it('onPenSizeChange updates penSize', () => {
+    component.onPenSizeChange(12);
+    expect(component.penSize()).toBe(12);
+  });
+
+  it('onPenSizeChange stores the exact value', () => {
+    component.onPenSizeChange(1);
+    expect(component.penSize()).toBe(1);
   });
 
   // ── onColorChange ─────────────────────────────────────────────────────────────
@@ -279,5 +357,82 @@ describe('GameComponent', () => {
     spyOn(component.drawingCanvas, 'getDrawingDataUrl').and.returnValue('data:x');
     component.submit();
     expect(gameState.drawingHeight()).toBe(component.drawingCanvas.canvasHeight);
+  });
+});
+
+// ── GameComponent — route param (:countryCode) ────────────────────────────────
+
+async function createGameWithParam(countryCode: string | null): Promise<{
+  fixture: ComponentFixture<GameComponent>;
+  component: GameComponent;
+  router: Router;
+  gameState: GameStateService;
+}> {
+  await TestBed.configureTestingModule({
+    imports: [GameComponent],
+    providers: [
+      provideRouter([]),
+      provideLocationMocks(),
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: { paramMap: { get: (key: string) => key === 'countryCode' ? countryCode : null } },
+        },
+      },
+    ],
+  }).compileComponents();
+
+  const gameState = TestBed.inject(GameStateService);
+  const router    = TestBed.inject(Router);
+  spyOn(router, 'navigate');
+  gameState.startGame('easy');
+
+  const fixture   = TestBed.createComponent(GameComponent);
+  const component = fixture.componentInstance;
+  fixture.detectChanges();
+  await fixture.whenStable();
+  return { fixture, component, router, gameState };
+}
+
+describe('GameComponent with countryCode route param', () => {
+  afterEach(() => TestBed.resetTestingModule());
+
+  it('loads the specified country when countryCode param is present', async () => {
+    const { gameState } = await createGameWithParam('fr');
+    expect(gameState.currentCountry()?.code).toBe('fr');
+  });
+
+  it('sets queue to empty for a single-country game via route param', async () => {
+    const { gameState } = await createGameWithParam('fr');
+    expect(gameState.queue()).toEqual([]);
+  });
+
+  it('navigates to / when countryCode param is unknown', async () => {
+    const { router } = await createGameWithParam('xx');
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('does not call startGameWithCountry when no countryCode param', async () => {
+    await TestBed.configureTestingModule({
+      imports: [GameComponent],
+      providers: [
+        provideRouter([]),
+        provideLocationMocks(),
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: (_: string) => null } } },
+        },
+      ],
+    }).compileComponents();
+
+    const gameState = TestBed.inject(GameStateService);
+    gameState.startGame('easy');
+    spyOn(gameState, 'startGameWithCountry').and.callThrough();
+
+    const fixture = TestBed.createComponent(GameComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(gameState.startGameWithCountry).not.toHaveBeenCalled();
   });
 });

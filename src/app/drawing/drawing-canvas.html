@@ -32,6 +32,7 @@
     [height]="canvasHeight"
     class="overlay-canvas"
     [class.placement-cursor]="isPlacingElement()"
+    [class.pen-cursor]="drawingMode() === 'pen'"
     (mousedown)="onMouseDown($event)"
     (mousemove)="onMouseMove($event)"
     (contextmenu)="$event.preventDefault()"

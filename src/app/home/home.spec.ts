@@ -35,25 +35,44 @@ describe('HomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // ── Difficulties array ────────────────────────────────────────────────────────
+  // ── guidedDifficulties array ──────────────────────────────────────────────────
 
-  it('difficulties has exactly 3 entries', () => {
-    expect(component.difficulties.length).toBe(3);
+  it('guidedDifficulties has exactly 3 entries', () => {
+    expect(component.guidedDifficulties.length).toBe(3);
   });
 
-  it('difficulties contains easy, medium and hard keys', () => {
-    const keys = component.difficulties.map(d => d.key);
+  it('guidedDifficulties contains easy, medium and hard keys', () => {
+    const keys = component.guidedDifficulties.map(d => d.key);
     expect(keys).toContain('easy');
     expect(keys).toContain('medium');
     expect(keys).toContain('hard');
   });
 
-  it('each difficulty has a non-empty label', () => {
-    component.difficulties.forEach(d => expect(d.label.length).toBeGreaterThan(0));
+  it('guidedDifficulties does not contain free', () => {
+    const keys = component.guidedDifficulties.map(d => d.key);
+    expect(keys).not.toContain('free');
   });
 
-  it('each difficulty has a non-empty description', () => {
-    component.difficulties.forEach(d => expect(d.description.length).toBeGreaterThan(0));
+  it('each guided difficulty has a non-empty label', () => {
+    component.guidedDifficulties.forEach(d => expect(d.label.length).toBeGreaterThan(0));
+  });
+
+  it('each guided difficulty has a non-empty description', () => {
+    component.guidedDifficulties.forEach(d => expect(d.description.length).toBeGreaterThan(0));
+  });
+
+  // ── freeDifficulty ────────────────────────────────────────────────────────────
+
+  it('freeDifficulty key is "free"', () => {
+    expect(component.freeDifficulty.key).toBe('free');
+  });
+
+  it('freeDifficulty has a non-empty label', () => {
+    expect(component.freeDifficulty.label.length).toBeGreaterThan(0);
+  });
+
+  it('freeDifficulty has a non-empty description', () => {
+    expect(component.freeDifficulty.description.length).toBeGreaterThan(0);
   });
 
   // ── selected signal ───────────────────────────────────────────────────────────

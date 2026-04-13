@@ -24,6 +24,22 @@
     </div>
   }
 
+  <!-- Pen size slider (free mode only) -->
+  @if (showPenSize()) {
+    <div class="pen-size-control">
+      <input
+        type="range"
+        class="pen-size-slider"
+        min="1"
+        max="30"
+        [value]="penSize()"
+        (input)="onPenSizeInput($event)"
+        [title]="'Pen size: ' + penSize() + 'px'"
+      />
+      <div class="pen-size-preview" [style.width.px]="penSize() * 2" [style.height.px]="penSize() * 2"></div>
+    </div>
+  }
+
   <div class="divider"></div>
 
   <!-- Elements library (hard mode only) -->

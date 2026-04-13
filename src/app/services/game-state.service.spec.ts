@@ -124,6 +124,58 @@ describe('GameStateService', () => {
     });
   });
 
+  // ── startGameWithCountry ──────────────────────────────────────────────────
+
+  describe('startGameWithCountry', () => {
+    it('returns true for a known country code', () => {
+      expect(service.startGameWithCountry('fr', 'easy')).toBeTrue();
+    });
+
+    it('returns false for an unknown country code', () => {
+      expect(service.startGameWithCountry('xx', 'easy')).toBeFalse();
+    });
+
+    it('sets currentCountry to the matching country', () => {
+      service.startGameWithCountry('fr', 'easy');
+      expect(service.currentCountry()?.code).toBe('fr');
+      expect(service.currentCountry()?.name).toBe('France');
+    });
+
+    it('sets the difficulty', () => {
+      service.startGameWithCountry('fr', 'hard');
+      expect(service.difficulty()).toBe('hard');
+    });
+
+    it('sets the queue to empty (single-country game)', () => {
+      service.startGameWithCountry('fr', 'easy');
+      expect(service.queue()).toEqual([]);
+    });
+
+    it('clears any previous round scores', () => {
+      service.addRoundScore(makeScore(80));
+      service.startGameWithCountry('fr', 'easy');
+      expect(service.roundScores()).toEqual([]);
+    });
+
+    it('clears drawingDataUrl', () => {
+      service.submitDrawing('data:image/png;base64,abc', 600, 400);
+      service.startGameWithCountry('fr', 'easy');
+      expect(service.drawingDataUrl()).toBe('');
+    });
+
+    it('does not change state when country code is unknown', () => {
+      service.startGame('easy');
+      const before = service.currentCountry();
+      service.startGameWithCountry('xx', 'hard');
+      expect(service.currentCountry()).toEqual(before);
+    });
+
+    it('isGameOver is true immediately (empty queue, country set)', () => {
+      service.startGameWithCountry('fr', 'easy');
+      expect(service.isGameOver()).toBeTrue();
+    });
+  });
+
   // ── submitDrawing ─────────────────────────────────────────────────────────
 
   describe('submitDrawing', () => {

@@ -32,6 +32,10 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   color = input<string>('#000000');
   /** height:width ratio string, e.g. "2:3" or "1:2" */
   ratio = input<string>('2:3');
+  /** Drawing mode: flood-fill on click, or freehand pen strokes. */
+  drawingMode = input<'fill' | 'pen'>('fill');
+  /** Pen radius in pixels (used in pen mode). */
+  penSize = input<number>(4);
 
   readonly placementCancelled = output<void>();
 
@@ -55,6 +59,9 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   private pendingColor = '';
 
   private lastRenderedWidth = 0;
+
+  private isPenDrawing = false;
+  private lastPenPos: Point | null = null;
 
   ngAfterViewInit(): void {
     this.baseCtx = this.baseCanvasRef.nativeElement.getContext('2d')!;
@@ -363,6 +370,13 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
       }
       return;
     }
+    if (this.drawingMode() === 'pen') {
+      this.isPenDrawing = true;
+      const pos = this.getPos(event);
+      this.lastPenPos = pos;
+      this.penDot(pos);
+      return;
+    }
     const pos = this.getPos(event);
     const x = Math.round(pos.x);
     const y = Math.round(pos.y);
@@ -374,6 +388,37 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     } else {
       this.floodFill(x, y);
     }
+  }
+
+  @HostListener('document:mouseup')
+  onMouseUp(): void {
+    this.isPenDrawing = false;
+    this.lastPenPos = null;
+  }
+
+  private penDot(pos: Point): void {
+    const ctx = this.baseCtx;
+    ctx.save();
+    ctx.fillStyle = this.color();
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, this.penSize(), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  private penStrokeTo(pos: Point): void {
+    if (!this.lastPenPos) return;
+    const ctx = this.baseCtx;
+    ctx.save();
+    ctx.strokeStyle = this.color();
+    ctx.lineWidth = this.penSize() * 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(this.lastPenPos.x, this.lastPenPos.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    ctx.restore();
   }
 
   private floodFill(startX: number, startY: number): void {
@@ -432,16 +477,22 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   }
 
   onMouseMove(event: MouseEvent): void {
-    if (!this.isPlacingElement()) return;
     const pos = this.getPos(event);
-    const W = this.canvasWidth();
-    const H = this.canvasHeight;
-    this.overlayCtx.clearRect(0, 0, W, H);
-    if (this.placementImg) {
-      const s = this.pendingSize;
-      this.overlayCtx.globalAlpha = 0.72;
-      this.overlayCtx.drawImage(this.placementImg, pos.x - s / 2, pos.y - s / 2, s, s);
-      this.overlayCtx.globalAlpha = 1;
+    if (this.isPlacingElement()) {
+      const W = this.canvasWidth();
+      const H = this.canvasHeight;
+      this.overlayCtx.clearRect(0, 0, W, H);
+      if (this.placementImg) {
+        const s = this.pendingSize;
+        this.overlayCtx.globalAlpha = 0.72;
+        this.overlayCtx.drawImage(this.placementImg, pos.x - s / 2, pos.y - s / 2, s, s);
+        this.overlayCtx.globalAlpha = 1;
+      }
+      return;
+    }
+    if (this.drawingMode() === 'pen' && this.isPenDrawing) {
+      this.penStrokeTo(pos);
+      this.lastPenPos = pos;
     }
   }
 }

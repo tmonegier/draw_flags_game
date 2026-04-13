@@ -38,10 +38,15 @@ export class ToolbarComponent {
   clearLabel = input<string>('🗑️ Clear');
   /** Whether to show the Elements library button. */
   showElements = input<boolean>(true);
+  /** Whether to show the pen size slider. */
+  showPenSize = input<boolean>(false);
+  /** Current pen radius in pixels (used when showPenSize is true). */
+  penSize = input<number>(4);
 
   colorChange = output<string>();
   clearCanvas = output<void>();
   openElements = output<void>();
+  penSizeChange = output<number>();
 
   onColorInput(event: Event): void {
     this.colorChange.emit((event.target as HTMLInputElement).value);
@@ -49,5 +54,9 @@ export class ToolbarComponent {
 
   onClear(): void {
     this.clearCanvas.emit();
+  }
+
+  onPenSizeInput(event: Event): void {
+    this.penSizeChange.emit(Number((event.target as HTMLInputElement).value));
   }
 }

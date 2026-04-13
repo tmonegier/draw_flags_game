@@ -79,6 +79,23 @@ const STEPS: Record<Difficulty, TutorialStep[]> = {
       body: 'Made a mess? Hit "🗑️ Clear" to wipe everything and start again from a blank canvas.',
     },
   ],
+  free: [
+    {
+      emoji: '✏️',
+      title: 'Freehand Pen',
+      body: 'Hold the mouse button and drag to draw freely on the canvas. No flood-fill — every stroke is yours.',
+    },
+    {
+      emoji: '🎨',
+      title: 'Flag Color Palette',
+      body: "Only the flag's real colors are available. Pick a color from the palette and draw away.",
+    },
+    {
+      emoji: '🗑️',
+      title: 'Clear Canvas',
+      body: 'Made a mistake? Hit "🗑️ Clear" to wipe the canvas and start over.',
+    },
+  ],
 };
 
 @Component({
@@ -96,12 +113,12 @@ export class TutorialModalComponent {
   currentStep = signal(0);
 
   readonly difficultyLabel = computed(() => {
-    const map: Record<Difficulty, string> = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+    const map: Record<Difficulty, string> = { easy: 'Easy', medium: 'Medium', hard: 'Hard', free: 'Free' };
     return map[this.difficulty()];
   });
 
   readonly difficultyEmoji = computed(() => {
-    const map: Record<Difficulty, string> = { easy: '🟢', medium: '🟡', hard: '🔴' };
+    const map: Record<Difficulty, string> = { easy: '🟢', medium: '🟡', hard: '🔴', free: '✏️' };
     return map[this.difficulty()];
   });
 

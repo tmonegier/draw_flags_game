@@ -51,6 +51,21 @@ export class GameStateService {
     this.drawingDataUrl.set('');
   }
 
+  /**
+   * Start a single-country game for the given country code.
+   * Returns false if the code is not found in the country list.
+   */
+  startGameWithCountry(countryCode: string, difficulty: Difficulty): boolean {
+    const country = this.countryService.getCountries().find(c => c.code === countryCode);
+    if (!country) return false;
+    this.difficulty.set(difficulty);
+    this.roundScores.set([]);
+    this.currentCountry.set(country);
+    this.queue.set([]);
+    this.drawingDataUrl.set('');
+    return true;
+  }
+
   submitDrawing(dataUrl: string, width: number, height: number): void {
     this.drawingDataUrl.set(dataUrl);
     this.drawingWidth.set(width);

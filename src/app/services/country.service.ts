@@ -55,7 +55,7 @@ export interface Country {
   colors: string[];
 }
 
-export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'free';
 
 // All flags drawable with rectangular bands and/or a Nordic/centered cross.
 const ALL_COUNTRIES: Country[] = [

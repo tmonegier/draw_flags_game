@@ -17,9 +17,12 @@
     [allowedColors]="allowedColors()"
     [clearLabel]="clearLabel()"
     [showElements]="showElements()"
+    [showPenSize]="showPenSize()"
+    [penSize]="penSize()"
     (colorChange)="onColorChange($event)"
     (clearCanvas)="onClearCanvas()"
     (openElements)="onOpenElements()"
+    (penSizeChange)="onPenSizeChange($event)"
   />
 
   <!-- Placement mode banner -->
@@ -34,6 +37,8 @@
     <app-drawing-canvas
       [color]="activeColor()"
       [ratio]="gameState.currentCountry()?.ratio ?? '2:3'"
+      [drawingMode]="drawingMode()"
+      [penSize]="penSize()"
       (placementCancelled)="onPlacementCancelled()"
     />
   </div>
