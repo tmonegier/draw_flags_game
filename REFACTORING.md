@@ -9,7 +9,7 @@ Status legend: `todo` · `in-progress` · `done` · `skipped`
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 1 | Split `DrawingCanvasComponent` into focused services | todo | — |
+| 1 | Split `DrawingCanvasComponent` into focused services | done (option A — pure utils) | cc60fe4 |
 | 2 | Deduplicate `toPositions()` inside `drawing-canvas.ts` | done | 2901d49 |
 | 3 | Centralize ratio parsing + aspect-ratio helpers | done | f17674e |
 | 4 | Inject `CountryService` into `GameStateService` (no `new`) | done | 699eb5b |
@@ -33,7 +33,7 @@ Status legend: `todo` · `in-progress` · `done` · `skipped`
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 10 | Reduce `(component as any)` casts in canvas tests | todo | — |
+| 10 | Reduce `(component as any)` casts in canvas tests | done | cc60fe4 (folded into #1) |
 | 11 | Unify aspect-ratio template usage between compare & end | done | f17674e (folded into #3) |
 
 ---
@@ -41,14 +41,17 @@ Status legend: `todo` · `in-progress` · `done` · `skipped`
 ## Detail
 
 ### 1. Split `DrawingCanvasComponent`
-**Files:** `src/app/drawing/drawing-canvas.ts` (~500 lines)
+**Files:** `src/app/drawing/drawing-canvas.ts` (498 → 447 lines)
 **Why:** SRP violation — flood-fill, element placement, hint rendering, pen,
 mouse handling all tangled. Blocks future features (undo/redo, accessibility)
 and forces tests to mock canvas APIs.
-**Approach:** Extract `CanvasPixelService` (flood-fill, colour matching,
-hex→rgba), then `CanvasElementService` (SVG stamping, recolour). Component
-stays as thin orchestrator.
-**Cost:** M (2–3 h).
+**Done:** Option A — pure-utility extraction. `floodFillPixels`, `colorMatch`,
+`hexToRgba`, `getPixelColor`, `setPixelColor`, `ratioToPositions` moved to
+`utils/canvas-pixels.ts` and `utils/ratio.ts`. Component keeps a thin
+`floodFill(x, y)` wrapper that handles the canvas IO. Pixel-algorithm tests
+moved to `utils/canvas-pixels.spec.ts` (16 tests, no canvas mocks needed).
+A future pass could extract element placement (SVG building / recolour) the
+same way, but the SVG layer is already cohesive enough to leave alone.
 
 ### 2. Deduplicate `toPositions()`
 **Files:** `src/app/drawing/drawing-canvas.ts:229` and `:280` (identical bodies).
