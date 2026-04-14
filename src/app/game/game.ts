@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, inject, signal, computed, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, AfterViewInit, inject, signal, computed, effect } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { DrawingCanvasComponent } from '../drawing/drawing-canvas';
@@ -11,6 +11,7 @@ import { SplitConfig, CrossConfig } from '../drawing/toolbar';
   templateUrl: './game.html',
   styleUrl: './game.css',
   imports: [DrawingCanvasComponent, ToolbarComponent, ElementsModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameComponent implements AfterViewInit {
   @ViewChild(DrawingCanvasComponent) drawingCanvas!: DrawingCanvasComponent;

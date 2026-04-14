@@ -1,5 +1,5 @@
 import {
-  Component, ElementRef, HostListener, ViewChild,
+  ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild,
   AfterViewInit, AfterViewChecked,
   computed, input, output, signal
 } from '@angular/core';
@@ -27,6 +27,7 @@ interface PlacedElement {
   selector: 'app-drawing-canvas',
   templateUrl: './drawing-canvas.html',
   styleUrl: './drawing-canvas.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   @ViewChild('baseCanvas') baseCanvasRef!: ElementRef<HTMLCanvasElement>;

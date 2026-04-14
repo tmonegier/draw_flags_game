@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { Difficulty } from '../services/country.service';
@@ -14,6 +14,7 @@ export const LAST_PAGE_KEY = 'home-last-page';
   templateUrl: './home.html',
   styleUrl: './home.css',
   imports: [TutorialModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
   private readonly router = inject(Router);

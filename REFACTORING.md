@@ -56,7 +56,7 @@ items below. They're sorted by likely-bug → maintainability → polish.
 | # | Title | Status | Commit |
 |---|---|---|---|
 | 15 | Template method calls (`getScoreMessage()`, `gradeColor()`) re-run every CD cycle | done | (pending) |
-| 16 | No `ChangeDetectionStrategy.OnPush` anywhere — wasted CD on signal-driven app | todo | — |
+| 16 | No `ChangeDetectionStrategy.OnPush` anywhere — wasted CD on signal-driven app | done | (pending) |
 | 17 | `RoundScore.grade` typed `string` instead of the existing `Grade` union | done | (pending) |
 | 18 | `Promise` returned from `ScoringService` is uncancellable — leak / stale set after navigation | done | (pending) |
 

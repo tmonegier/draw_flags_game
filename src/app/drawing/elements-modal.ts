@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FLAG_ELEMENTS, FlagElement, ElementCategory } from './flag-elements';
 import { SplitConfig, SplitDirection, CrossConfig, CrossVariant } from './toolbar';
@@ -27,6 +27,7 @@ const CATEGORY_LABELS: Record<ElementCategory, string> = {
   selector: 'app-elements-modal',
   templateUrl: './elements-modal.html',
   styleUrl: './elements-modal.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ElementsModalComponent {
   private readonly sanitizer = inject(DomSanitizer);

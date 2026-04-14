@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService, scoreToGrade } from '../services/game-state.service';
 import { ScoringService } from '../services/scoring.service';
@@ -12,6 +12,7 @@ import { SCORE_MESSAGES, Grade } from '../scoring-config';
   templateUrl: './compare.html',
   styleUrl: './compare.css',
   imports: [AspectRatioPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompareComponent implements OnInit {
   private readonly router = inject(Router);

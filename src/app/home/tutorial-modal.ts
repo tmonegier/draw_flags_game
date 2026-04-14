@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
 import { Difficulty } from '../services/country.service';
 
 interface TutorialStep {
@@ -80,6 +80,7 @@ const STEPS: Record<Difficulty, TutorialStep[]> = {
   selector: 'app-tutorial-modal',
   templateUrl: './tutorial-modal.html',
   styleUrl: './tutorial-modal.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TutorialModalComponent {
   difficulty = input.required<Difficulty>();

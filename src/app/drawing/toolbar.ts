@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 /** Whether the clear button should fully wipe the canvas (`clear`) or just
  *  restore the difficulty-supplied hints (`cancel`). The toolbar owns the
@@ -39,6 +39,7 @@ export interface CrossConfig {
   selector: 'app-toolbar',
   templateUrl: './toolbar.html',
   styleUrl: './toolbar.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent {
   activeColor = input.required<string>();
