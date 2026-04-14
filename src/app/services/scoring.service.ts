@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CANVAS_BACKGROUND } from '../drawing/drawing-canvas';
 import { PIXEL_TOLERANCE, SCORE_SCALE } from '../scoring-config';
+import { getFlagUrl } from '../utils/flag-url';
 
 /** Parsed RGB of the unfilled-canvas background. Pixels matching this colour
  *  in the user submission are treated as "empty" and never score, even when
@@ -23,7 +24,7 @@ export class ScoringService {
    */
   computeScore(userDataUrl: string, svgFile: string, width: number, height: number): Promise<number> {
     return new Promise((resolve) => {
-      const flagUrl = `/flags/${svgFile}`;
+      const flagUrl = getFlagUrl(svgFile);
 
       const flagImg = new Image();
 

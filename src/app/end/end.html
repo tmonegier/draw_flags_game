@@ -29,7 +29,7 @@
           <div class="flag-slot">
             <span class="flag-slot-label">Real flag</span>
             <div class="flag-frame" [style.aspect-ratio]="round.country.ratio | aspectRatio">
-              <img [src]="'/flags/' + round.country.svgFile" [alt]="round.country.name" class="flag-img" />
+              <img [src]="round.country.svgFile | flagUrl" [alt]="round.country.name" class="flag-img" />
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { GameStateService, scoreToGrade } from '../services/game-state.service';
 import { ScoringService } from '../services/scoring.service';
 import { ratioToCssAspect } from '../utils/ratio';
 import { AspectRatioPipe } from '../utils/aspect-ratio.pipe';
+import { getFlagUrl } from '../utils/flag-url';
 import { SCORE_MESSAGES } from '../scoring-config';
 
 @Component({
@@ -26,7 +27,7 @@ export class CompareComponent implements OnInit {
 
   get flagUrl(): string {
     const f = this.currentCountry?.svgFile;
-    return f ? `/flags/${f}` : '';
+    return f ? getFlagUrl(f) : '';
   }
 
   /** CSS aspect-ratio string (width/height) derived from the country ratio (height:width). */
