@@ -8,6 +8,9 @@ import { DrawingHint, ElementHint } from '../services/country.service';
 import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
 
 export const CANVAS_HEIGHT = 400;
+/** Neutral grey used for the unfilled canvas. Picked to be distinct from any
+ *  flag colour (especially white) so unfilled regions visibly hurt the score. */
+export const CANVAS_BACKGROUND = '#d4d4d8';
 
 interface Point { x: number; y: number; }
 interface PlacedElement {
@@ -133,7 +136,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   clearCanvas(): void {
     const W = this.canvasWidth();
     const H = this.canvasHeight;
-    this.baseCtx.fillStyle = '#ffffff';
+    this.baseCtx.fillStyle = CANVAS_BACKGROUND;
     this.baseCtx.fillRect(0, 0, W, H);
     this.splitsCtx.clearRect(0, 0, W, H);
     this.elementsCtx.clearRect(0, 0, W, H);

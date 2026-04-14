@@ -1,5 +1,5 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { DrawingCanvasComponent, CANVAS_HEIGHT } from './drawing-canvas';
+import { DrawingCanvasComponent, CANVAS_HEIGHT, CANVAS_BACKGROUND } from './drawing-canvas';
 import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
 
 const MOCK_ELEMENT: FlagElement = {
@@ -72,7 +72,7 @@ describe('DrawingCanvasComponent', () => {
     expect(() => component.clearCanvas()).not.toThrow();
   });
 
-  it('clearCanvas fills the base canvas with white', () => {
+  it('clearCanvas fills the base canvas with the neutral background', () => {
     fixture.componentRef.setInput('color', '#ff0000');
     fixture.detectChanges();
     (component as any).floodFill(5, 5);
@@ -81,10 +81,14 @@ describe('DrawingCanvasComponent', () => {
 
     const ctx = component.baseCanvasRef.nativeElement.getContext('2d')!;
     const pixel = ctx.getImageData(5, 5, 1, 1).data;
-    expect(pixel[0]).toBe(255);
-    expect(pixel[1]).toBe(255);
-    expect(pixel[2]).toBe(255);
+    expect(pixel[0]).toBe(0xd4);
+    expect(pixel[1]).toBe(0xd4);
+    expect(pixel[2]).toBe(0xd8);
     expect(pixel[3]).toBe(255);
+  });
+
+  it('exports CANVAS_BACKGROUND as #d4d4d8', () => {
+    expect(CANVAS_BACKGROUND).toBe('#d4d4d8');
   });
 
   // ── isPlacingElement signal ───────────────────────────────────────────────────
@@ -342,7 +346,7 @@ describe('DrawingCanvasComponent', () => {
   it('floodFill propagates to fill the entire canvas (same initial color)', () => {
     fixture.componentRef.setInput('color', '#0000ff');
     fixture.detectChanges();
-    (component as any).floodFill(0, 0); // canvas is all white → fills everything
+    (component as any).floodFill(0, 0); // canvas is all background → fills everything
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(component.canvasWidth() - 1, component.canvasHeight - 1, 1, 1).data;
     expect(pixel[0]).toBe(0);
@@ -351,14 +355,14 @@ describe('DrawingCanvasComponent', () => {
   });
 
   it('floodFill is a no-op when fill color equals the target color', () => {
-    fixture.componentRef.setInput('color', '#ffffff'); // canvas is already white
+    fixture.componentRef.setInput('color', CANVAS_BACKGROUND); // canvas is already this colour
     fixture.detectChanges();
     (component as any).floodFill(5, 5);
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(5, 5, 1, 1).data;
-    expect(pixel[0]).toBe(255);
-    expect(pixel[1]).toBe(255);
-    expect(pixel[2]).toBe(255);
+    expect(pixel[0]).toBe(0xd4);
+    expect(pixel[1]).toBe(0xd4);
+    expect(pixel[2]).toBe(0xd8);
   });
 
   it('floodFill does not cross a split line', () => {
@@ -367,12 +371,12 @@ describe('DrawingCanvasComponent', () => {
     fixture.detectChanges();
     (component as any).floodFill(0, 0); // fill left side
 
-    // Right edge should remain white
+    // Right edge should remain unfilled (background grey)
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(component.canvasWidth() - 1, 0, 1, 1).data;
-    expect(pixel[0]).toBe(255); // R: white
-    expect(pixel[1]).toBe(255); // G: white
-    expect(pixel[2]).toBe(255); // B: white
+    expect(pixel[0]).toBe(0xd4);
+    expect(pixel[1]).toBe(0xd4);
+    expect(pixel[2]).toBe(0xd8);
   });
 
   it('floodFill does not start when click lands on a split line pixel', () => {
@@ -525,12 +529,12 @@ describe('DrawingCanvasComponent', () => {
 
     component.onPointerDown(new MouseEvent('mousedown', { clientX: 15, clientY: 15, button: 0 }) as PointerEvent);
 
-    // baseCanvas untouched — remains white
+    // baseCanvas untouched — remains background grey
     const basePixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(15, 15, 1, 1).data;
-    expect(basePixel[0]).toBe(255);
-    expect(basePixel[1]).toBe(255);
-    expect(basePixel[2]).toBe(255);
+    expect(basePixel[0]).toBe(0xd4);
+    expect(basePixel[1]).toBe(0xd4);
+    expect(basePixel[2]).toBe(0xd8);
   });
 
   it('onMouseDown right-click in placement mode cancels placement', () => {
@@ -562,9 +566,9 @@ describe('DrawingCanvasComponent', () => {
 
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(5, 5, 1, 1).data;
-    expect(pixel[0]).toBe(255);
-    expect(pixel[1]).toBe(255);
-    expect(pixel[2]).toBe(255);
+    expect(pixel[0]).toBe(0xd4);
+    expect(pixel[1]).toBe(0xd4);
+    expect(pixel[2]).toBe(0xd8);
   });
 
   // ── Pen drawing mode ──────────────────────────────────────────────────────────
@@ -651,10 +655,10 @@ describe('DrawingCanvasComponent', () => {
 
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(100, 100, 1, 1).data;
-    // Canvas should remain white
-    expect(pixel[0]).toBe(255);
-    expect(pixel[1]).toBe(255);
-    expect(pixel[2]).toBe(255);
+    // Canvas should remain unfilled (background grey)
+    expect(pixel[0]).toBe(0xd4);
+    expect(pixel[1]).toBe(0xd4);
+    expect(pixel[2]).toBe(0xd8);
   });
 
   it('onMouseUp ends the pen stroke (subsequent move does not draw)', () => {
@@ -669,11 +673,11 @@ describe('DrawingCanvasComponent', () => {
     component.onPointerUp();
     component.onPointerMove(new MouseEvent('mousemove', { clientX: 300, clientY: 300 }) as PointerEvent);
 
-    // Pixel at 300,300 should remain white (no stroke after mouseup)
+    // Pixel at 300,300 should remain unfilled (background grey, no stroke after mouseup)
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
       .getImageData(300, 300, 1, 1).data;
-    expect(pixel[0]).toBe(255);
-    expect(pixel[1]).toBe(255);
-    expect(pixel[2]).toBe(255);
+    expect(pixel[0]).toBe(0xd4);
+    expect(pixel[1]).toBe(0xd4);
+    expect(pixel[2]).toBe(0xd8);
   });
 });
