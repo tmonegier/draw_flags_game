@@ -4,7 +4,9 @@ import { GameStateService } from '../services/game-state.service';
 import { Difficulty } from '../services/country.service';
 import { TutorialModalComponent } from './tutorial-modal';
 
-type ModePage = 'free' | 'guided';
+type ModePage = 'free' | 'guided' | 'create';
+
+const PAGE_ORDER: ModePage[] = ['free', 'guided', 'create'];
 
 export const SWIPE_THRESHOLD_PX = 40;
 export const LAST_PAGE_KEY = 'home-last-page';
@@ -42,17 +44,23 @@ export class HomeComponent {
     this.page.set(page);
     if (page === 'free') {
       this.selected.set('free');
-    } else if (this.selected() === 'free') {
+    } else if (page === 'guided' && this.selected() === 'free') {
       this.selected.set('easy');
     }
   }
 
   nextPage(): void {
-    this.showPage(this.page() === 'free' ? 'guided' : 'free');
+    const i = PAGE_ORDER.indexOf(this.page());
+    this.showPage(PAGE_ORDER[(i + 1) % PAGE_ORDER.length]);
   }
 
   prevPage(): void {
-    this.showPage(this.page() === 'guided' ? 'free' : 'guided');
+    const i = PAGE_ORDER.indexOf(this.page());
+    this.showPage(PAGE_ORDER[(i - 1 + PAGE_ORDER.length) % PAGE_ORDER.length]);
+  }
+
+  startCreate(): void {
+    this.router.navigate(['/create']);
   }
 
   onTouchStart(event: TouchEvent): void {
@@ -95,7 +103,8 @@ export class HomeComponent {
   }
 
   private readLastPage(): ModePage {
-    return localStorage.getItem(LAST_PAGE_KEY) === 'guided' ? 'guided' : 'free';
+    const stored = localStorage.getItem(LAST_PAGE_KEY);
+    return PAGE_ORDER.includes(stored as ModePage) ? (stored as ModePage) : 'free';
   }
 
   private rememberPageFor(difficulty: Difficulty): void {

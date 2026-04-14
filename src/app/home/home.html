@@ -41,7 +41,7 @@
       (touchstart)="onTouchStart($event)"
       (touchend)="onTouchEnd($event)"
     >
-      <div class="carousel-track" [class.carousel-track-guided]="page() === 'guided'">
+      <div class="carousel-track" [attr.data-page]="page()">
         <div class="carousel-page" [attr.aria-hidden]="page() !== 'free'">
           <h2 class="section-title">Free Drawing</h2>
           <button
@@ -70,6 +70,19 @@
               </button>
             }
           </div>
+        </div>
+
+        <div class="carousel-page" [attr.aria-hidden]="page() !== 'create'">
+          <h2 class="section-title">Create Your Own</h2>
+          <button
+            class="card card-free"
+            [attr.tabindex]="page() === 'create' ? 0 : -1"
+            (click)="startCreate()"
+          >
+            <span class="card-emoji">🎨</span>
+            <span class="card-label">Create Your Flag</span>
+            <span class="card-desc">Any colors, elements, ratio — download as SVG</span>
+          </button>
         </div>
       </div>
     </div>
@@ -100,6 +113,15 @@
       [attr.aria-selected]="page() === 'guided'"
       aria-label="Guided Modes"
       (click)="showPage('guided')"
+    ></button>
+    <button
+      class="carousel-dot"
+      type="button"
+      role="tab"
+      [class.active]="page() === 'create'"
+      [attr.aria-selected]="page() === 'create'"
+      aria-label="Create Your Own"
+      (click)="showPage('create')"
     ></button>
   </div>
 

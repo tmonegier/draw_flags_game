@@ -1,0 +1,44 @@
+<div class="create-screen">
+  <div class="header">
+    <button class="home-btn" (click)="goHome()">🏠 Home</button>
+    <div class="title">
+      <span class="label">Create your own</span>
+      <h1 class="screen-title">Custom Flag</h1>
+    </div>
+    <span class="header-spacer"></span>
+  </div>
+
+  <div class="toolbar-row">
+    <app-toolbar
+      [activeColor]="activeColor()"
+      [allowedColors]="null"
+      [clearMode]="'clear'"
+      [showElements]="true"
+      [showPenSize]="false"
+      [ratio]="ratio()"
+      [ratioOptions]="ratioValues"
+      (colorChange)="onColorChange($event)"
+      (clearCanvas)="onClearCanvas()"
+      (openElements)="onOpenElements()"
+      (ratioChange)="onRatioChange($event)"
+    />
+    <button class="download-btn" title="Download SVG" aria-label="Download SVG" (click)="download()">⬇️</button>
+  </div>
+
+  <div class="canvas-area">
+    <app-drawing-canvas
+      [color]="activeColor()"
+      [ratio]="ratio()"
+      [drawingMode]="'fill'"
+    />
+  </div>
+</div>
+
+<app-elements-modal
+  [isOpen]="isElementsModalOpen()"
+  [activeColor]="activeColor()"
+  (closed)="isElementsModalOpen.set(false)"
+  (elementSelected)="onElementSelected($event)"
+  (splitsSelected)="onSplitsSelected($event)"
+  (crossSelected)="onCrossSelected($event)"
+/>

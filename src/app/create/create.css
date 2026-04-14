@@ -1,0 +1,166 @@
+.create-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1rem 0.75rem 2rem;
+  min-height: 100vh;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  gap: 0.5rem;
+}
+
+.home-btn {
+  justify-self: start;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50px;
+  color: #c8cfe0;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.home-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+  color: #fff;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: #8892a4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.screen-title {
+  font-size: clamp(1.2rem, 5vw, 2.2rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.header-spacer {
+  justify-self: end;
+}
+
+app-toolbar {
+  width: 100%;
+  max-width: 800px;
+}
+
+.canvas-area {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: center;
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.toolbar-row app-toolbar {
+  flex: 1;
+  min-width: 0;
+}
+
+.download-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(66, 153, 225, 0.35);
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66, 153, 225, 0.55);
+}
+
+.placement-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  max-width: 640px;
+  padding: 0.55rem 1rem;
+  background: rgba(66, 153, 225, 0.12);
+  border: 1px solid rgba(66, 153, 225, 0.3);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #90cdf4;
+}
+
+.placement-banner kbd {
+  display: inline-block;
+  padding: 0.05rem 0.35rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.cancel-placement-btn {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(245,101,101,0.15);
+  border: 1px solid rgba(245,101,101,0.3);
+  border-radius: 6px;
+  color: #fc8181;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.cancel-placement-btn:hover {
+  background: rgba(245,101,101,0.3);
+}
+
+@media (max-width: 480px) {
+  .create-screen {
+    gap: 0.75rem;
+    padding: 0.75rem 0.5rem 1.5rem;
+  }
+
+  .download-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.05rem;
+  }
+}

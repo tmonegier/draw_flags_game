@@ -42,6 +42,21 @@
 
   <div class="divider"></div>
 
+  <!-- Ratio picker (create mode only) -->
+  @if (ratioOptions().length > 0) {
+    <select
+      class="ratio-select"
+      title="Flag ratio"
+      aria-label="Flag ratio"
+      [value]="ratio()"
+      (change)="onRatioInput($event)"
+    >
+      @for (opt of ratioOptions(); track opt) {
+        <option [value]="opt">{{ opt }}</option>
+      }
+    </select>
+  }
+
   <!-- Elements library (hard mode only) -->
   @if (showElements()) {
     <button class="elements-btn" title="Flag elements library" (click)="openElements.emit()">⭐ Elements</button>

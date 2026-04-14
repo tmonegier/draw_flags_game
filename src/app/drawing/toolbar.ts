@@ -54,11 +54,16 @@ export class ToolbarComponent {
   showPenSize = input<boolean>(false);
   /** Current pen radius in pixels (used when showPenSize is true). */
   penSize = input<number>(4);
+  /** When non-empty, renders a ratio picker inside the toolbar. */
+  ratioOptions = input<readonly string[]>([]);
+  /** Current ratio value (e.g. "2:3"); used when ratioOptions is non-empty. */
+  ratio = input<string>('2:3');
 
   colorChange = output<string>();
   clearCanvas = output<void>();
   openElements = output<void>();
   penSizeChange = output<number>();
+  ratioChange = output<string>();
 
   onColorInput(event: Event): void {
     this.colorChange.emit((event.target as HTMLInputElement).value);
@@ -70,5 +75,9 @@ export class ToolbarComponent {
 
   onPenSizeInput(event: Event): void {
     this.penSizeChange.emit(Number((event.target as HTMLInputElement).value));
+  }
+
+  onRatioInput(event: Event): void {
+    this.ratioChange.emit((event.target as HTMLSelectElement).value);
   }
 }
