@@ -18,15 +18,15 @@ Status legend: `todo` · `in-progress` · `done` · `skipped`
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 5 | Centralize magic numbers (grade thresholds, scale, tolerance) | todo | — |
-| 6 | Reshape `RoundScore` to compose `Country` instead of copying fields | todo | — |
-| 7 | Parametrize grade-threshold tests against constants | todo | — |
+| 5 | Centralize magic numbers (grade thresholds, scale, tolerance) | done | f726fba |
+| 6 | Reshape `RoundScore` to compose `Country` instead of copying fields | done | 81e8cf4 |
+| 7 | Parametrize grade-threshold tests against constants | done | f726fba (folded into #5) |
 
 ## Medium
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 8 | Centralize flag asset URL building (`/flags/${file}`) | todo | — |
+| 8 | Centralize flag asset URL building (`/flags/${file}`) | done | 49d6e40 |
 | 9 | Cache `getImageData()` to avoid per-click MB allocations | todo | — |
 
 ## Low
