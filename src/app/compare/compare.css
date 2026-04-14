@@ -26,11 +26,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 72px;
-  min-height: 72px;
+  width: 96px;
+  height: 96px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 3px solid;
   padding: 0.5rem;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .scoring-badge.computing {
@@ -49,6 +52,16 @@
   font-size: 1.1rem;
   font-weight: 800;
   line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.score-number small {
+  font-size: 0.6rem;
+  font-weight: 600;
+  opacity: 0.75;
 }
 
 .grade-letter {
@@ -207,12 +220,16 @@
   }
 
   .scoring-badge {
-    min-width: 64px;
-    min-height: 64px;
+    width: 84px;
+    height: 84px;
   }
 
   .score-number {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .score-number small {
+    font-size: 0.55rem;
   }
 
   .grade-letter {

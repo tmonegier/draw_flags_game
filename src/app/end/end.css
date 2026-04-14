@@ -39,16 +39,29 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 4px solid;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .avg-number {
   font-size: 1.3rem;
   font-weight: 800;
   line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.avg-number small {
+  font-size: 0.65rem;
+  font-weight: 600;
+  opacity: 0.75;
 }
 
 .avg-grade {
@@ -203,12 +216,16 @@ h1 {
   }
 
   .avg-badge {
-    width: 88px;
-    height: 88px;
+    width: 104px;
+    height: 104px;
   }
 
   .avg-number {
     font-size: 1.15rem;
+  }
+
+  .avg-number small {
+    font-size: 0.6rem;
   }
 
   .avg-grade {
