@@ -163,7 +163,7 @@ describe('CountryService', () => {
 
     it('Canada colors include the flag red', () => {
       const canada = service.getCountries().find(c => c.name === 'Canada')!;
-      expect(canada.colors).toContain('#d52b1e');
+      expect(canada.colors).toContain('#D52B1E');
     });
 
     it('includes Slovenia', () => {
