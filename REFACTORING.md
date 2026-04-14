@@ -10,9 +10,9 @@ Status legend: `todo` · `in-progress` · `done` · `skipped`
 | # | Title | Status | Commit |
 |---|---|---|---|
 | 1 | Split `DrawingCanvasComponent` into focused services | todo | — |
-| 2 | Deduplicate `toPositions()` inside `drawing-canvas.ts` | done | (pending) |
-| 3 | Centralize ratio parsing + aspect-ratio helpers | done | (pending) |
-| 4 | Inject `CountryService` into `GameStateService` (no `new`) | done | (pending) |
+| 2 | Deduplicate `toPositions()` inside `drawing-canvas.ts` | done | 2901d49 |
+| 3 | Centralize ratio parsing + aspect-ratio helpers | done | f17674e |
+| 4 | Inject `CountryService` into `GameStateService` (no `new`) | done | 699eb5b |
 
 ## High
 
@@ -34,7 +34,7 @@ Status legend: `todo` · `in-progress` · `done` · `skipped`
 | # | Title | Status | Commit |
 |---|---|---|---|
 | 10 | Reduce `(component as any)` casts in canvas tests | todo | — |
-| 11 | Unify aspect-ratio template usage between compare & end | done | (folded into #3) |
+| 11 | Unify aspect-ratio template usage between compare & end | done | f17674e (folded into #3) |
 
 ---
 
