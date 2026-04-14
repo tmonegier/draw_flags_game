@@ -6,6 +6,7 @@ import {
 import { CrossConfig } from './toolbar';
 import { DrawingHint, ElementHint } from '../services/country.service';
 import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
+import { parseRatio } from '../utils/ratio';
 
 export const CANVAS_HEIGHT = 400;
 /** Neutral grey used for the unfilled canvas. Picked to be distinct from any
@@ -44,7 +45,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   readonly canvasHeight = CANVAS_HEIGHT;
   readonly canvasWidth = computed(() => {
-    const [h, w] = this.ratio().split(':').map(Number);
+    const { h, w } = parseRatio(this.ratio());
     return Math.round(CANVAS_HEIGHT * w / h);
   });
   readonly isPlacingElement = signal(false);
@@ -213,6 +214,18 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     }
   }
 
+  /** Converts a ratio array into N-1 cumulative pixel positions (rounded). */
+  private ratioToPositions(ratios: number[], total: number): number[] {
+    const sum = ratios.reduce((a, b) => a + b, 0);
+    const positions: number[] = [];
+    let acc = 0;
+    for (let i = 0; i < ratios.length - 1; i++) {
+      acc += ratios[i];
+      positions.push(Math.round(acc / sum * total));
+    }
+    return positions;
+  }
+
   /**
    * Draws a plus-sign outline on baseCanvas for flags whose cross does NOT extend
    * to the flag edges (e.g. Switzerland). The outline pixel color differs from
@@ -226,19 +239,8 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const W = this.canvasWidth();
     const H = this.canvasHeight;
 
-    const toPositions = (ratios: number[], total: number): number[] => {
-      const sum = ratios.reduce((a, b) => a + b, 0);
-      const positions: number[] = [];
-      let acc = 0;
-      for (let i = 0; i < ratios.length - 1; i++) {
-        acc += ratios[i];
-        positions.push(Math.round(acc / sum * total));
-      }
-      return positions;
-    };
-
-    const xPos = toPositions(widthRatios, W);
-    const yPos = toPositions(heightRatios, H);
+    const xPos = this.ratioToPositions(widthRatios, W);
+    const yPos = this.ratioToPositions(heightRatios, H);
     if (xPos.length < 4 || yPos.length < 4) return;
 
     const [x0, x1, x2, x3] = xPos;
@@ -276,20 +278,8 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     ctx.lineWidth = 1;
     ctx.setLineDash([]);
 
-    // Convert ratio array into N-1 guide-line pixel positions.
-    const toPositions = (ratios: number[], total: number): number[] => {
-      const sum = ratios.reduce((a, b) => a + b, 0);
-      const positions: number[] = [];
-      let acc = 0;
-      for (let i = 0; i < ratios.length - 1; i++) {
-        acc += ratios[i];
-        positions.push(Math.round(acc / sum * total));
-      }
-      return positions;
-    };
-
-    const xPos = toPositions(config.widthRatios, W);
-    const yPos = toPositions(config.heightRatios, H);
+    const xPos = this.ratioToPositions(config.widthRatios, W);
+    const yPos = this.ratioToPositions(config.heightRatios, H);
 
     // Each guide line at index i is paired with its symmetric counterpart: the
     // outer pair skips the full cross bar, the inner pair (double cross) skips only
