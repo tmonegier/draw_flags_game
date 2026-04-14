@@ -51,16 +51,6 @@ describe('EndComponent', () => {
     it('is case-sensitive (lowercase a → #888)', () => expect(component.gradeColor('a')).toBe('#888'));
   });
 
-  // ── aspectRatio ────────────────────────────────────────────────────────────────
-
-  describe('aspectRatio()', () => {
-    it('converts 2:3 to 3/2', () => expect(component.aspectRatio('2:3')).toBe('3/2'));
-    it('converts 1:2 to 2/1', () => expect(component.aspectRatio('1:2')).toBe('2/1'));
-    it('converts 3:5 to 5/3', () => expect(component.aspectRatio('3:5')).toBe('5/3'));
-    it('converts 1:1 to 1/1', () => expect(component.aspectRatio('1:1')).toBe('1/1'));
-    it('converts 2:5 to 5/2', () => expect(component.aspectRatio('2:5')).toBe('5/2'));
-  });
-
   // ── playAgain ─────────────────────────────────────────────────────────────────
 
   it('playAgain() navigates to /', () => {

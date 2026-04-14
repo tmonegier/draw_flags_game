@@ -22,13 +22,13 @@
         <div class="card-flags">
           <div class="flag-slot">
             <span class="flag-slot-label">Your drawing</span>
-            <div class="flag-frame" [style.aspect-ratio]="aspectRatio(round.ratio)">
+            <div class="flag-frame" [style.aspect-ratio]="round.ratio | aspectRatio">
               <img [src]="round.drawingDataUrl" [alt]="round.country" class="flag-img" />
             </div>
           </div>
           <div class="flag-slot">
             <span class="flag-slot-label">Real flag</span>
-            <div class="flag-frame" [style.aspect-ratio]="aspectRatio(round.ratio)">
+            <div class="flag-frame" [style.aspect-ratio]="round.ratio | aspectRatio">
               <img [src]="'/flags/' + round.svgFile" [alt]="round.country" class="flag-img" />
             </div>
           </div>

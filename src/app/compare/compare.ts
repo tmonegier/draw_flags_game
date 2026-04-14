@@ -2,11 +2,14 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService, scoreToGrade } from '../services/game-state.service';
 import { ScoringService } from '../services/scoring.service';
+import { ratioToCssAspect } from '../utils/ratio';
+import { AspectRatioPipe } from '../utils/aspect-ratio.pipe';
 
 @Component({
   selector: 'app-compare',
   templateUrl: './compare.html',
   styleUrl: './compare.css',
+  imports: [AspectRatioPipe],
 })
 export class CompareComponent implements OnInit {
   private readonly router = inject(Router);
@@ -27,9 +30,7 @@ export class CompareComponent implements OnInit {
 
   /** CSS aspect-ratio string (width/height) derived from the country ratio (height:width). */
   get flagAspectRatio(): string {
-    const ratio = this.currentCountry?.ratio ?? '2:3';
-    const [h, w] = ratio.split(':').map(Number);
-    return `${w}/${h}`;
+    return ratioToCssAspect(this.currentCountry?.ratio ?? '2:3');
   }
 
   get hasMore() { return this.gameState.queue().length > 0; }
