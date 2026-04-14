@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit, inject, signal, computed } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, inject, signal, computed, effect } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { DrawingCanvasComponent } from '../drawing/drawing-canvas';
@@ -23,17 +23,26 @@ export class GameComponent implements AfterViewInit {
   isElementsModalOpen = signal(false);
   penSize = signal<number>(4);
 
-  /** Restrict the palette to a shuffled copy of the current flag's colors in all modes. */
-  readonly allowedColors = computed<string[] | null>(() => {
-    const colors = this.gameState.currentCountry()?.colors;
-    if (!colors) return null;
-    const arr = [...colors];
+  /** Restrict the palette to a shuffled copy of the current flag's colors in all modes.
+   *  Stored as a plain signal — the shuffle has to run once per country, not on every
+   *  recomputation, otherwise the swatches reorder every change-detection tick. */
+  readonly allowedColors = signal<string[] | null>(null);
+
+  constructor() {
+    effect(() => {
+      const colors = this.gameState.currentCountry()?.colors;
+      this.allowedColors.set(colors ? this.shuffle(colors) : null);
+    });
+  }
+
+  private shuffle<T>(items: readonly T[]): T[] {
+    const arr = [...items];
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-  });
+  }
 
   /** Label for the toolbar's clear button: restore hints on easy, full clear on hard/free. */
   readonly clearLabel = computed<string>(() => {
