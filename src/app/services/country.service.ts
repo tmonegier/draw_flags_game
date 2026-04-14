@@ -516,7 +516,7 @@ const FREE_MODE_COUNTRIES: Country[] = [
   { name: 'Guinea-Bissau', code: 'gw', ratio: '1:2', svgFile: 'guinea-bissau.svg', hints: [], colors: ['#CE1126', '#FCD116', '#009E49', '#000000'] },
   { name: 'Guyana', code: 'gy', ratio: '3:5', svgFile: 'guyana.svg', hints: [], colors: ['#009E49', '#FFFFFF', '#FCD116', '#000000', '#CE1126'] },
   { name: 'Haiti', code: 'ht', ratio: '3:5', svgFile: 'haiti.svg', hints: [], colors: ['#00209F', '#D21034'] },
-  { name: 'Honduras', code: 'hn', ratio: '1:2', svgFile: 'honduras.svg', hints: [], colors: ['#0073CF', '#FFFFFF'] },
+  { name: 'Honduras', code: 'hn', ratio: '1:2', svgFile: 'honduras.svg', hints: [], colors: ['#0d3b99', '#FFFFFF'] },
   { name: 'Hungary', code: 'hu', ratio: '1:2', svgFile: 'hungary.svg', hints: [], colors: ['#CE2939', '#FFFFFF', '#477050'] },
   { name: 'Iceland', code: 'is', ratio: '18:25', svgFile: 'iceland.svg', hints: [], colors: ['#02529C', '#FFFFFF', '#DC1E35'] },
   { name: 'India', code: 'in', ratio: '2:3', svgFile: 'india.svg', hints: [], colors: ['#FF9933', '#FFFFFF', '#138808', '#000080'] },

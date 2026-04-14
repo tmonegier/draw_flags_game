@@ -44,7 +44,20 @@
       "Bash(awk 'NR>=387 && NR<=398' /home/thiba/projects/draw_flags_game/src/app/drawing/flag-elements.ts)",
       "Bash(pip install:*)",
       "Bash(pip3 install:*)",
-      "Bash(awk NR>=420 && NR<=470:*)"
+      "Bash(awk NR>=420 && NR<=470:*)",
+      "Bash(npx tsc:*)",
+      "Bash(google-chrome --headless --disable-gpu --no-sandbox --screenshot=/tmp/sg_test.png --window-size=420,420 file:///tmp/test_sg.html)",
+      "Bash(google-chrome --headless --disable-gpu --no-sandbox --screenshot=/tmp/real_sg.png --window-size=900,600 file:///home/thiba/projects/draw_flags_game/public/flags/singapore.svg)",
+      "Bash(google-chrome --headless --disable-gpu --no-sandbox --screenshot=/tmp/sg_final.png --window-size=920,620 file:///home/thiba/projects/draw_flags_game/public/flags/singapore.svg)",
+      "Bash(curl -sL -A \"Mozilla/5.0 \\(flag-draws/1.0; +mailto:thiba@local\\)\" \"https://upload.wikimedia.org/wikipedia/commons/4/48/Flag_of_Singapore.svg\" -o /tmp/singapore_wiki.svg)",
+      "Bash(google-chrome --headless --disable-gpu --no-sandbox --screenshot=/tmp/sg_wiki.png --window-size=920,620 file:///tmp/singapore_wiki.svg)",
+      "Bash(ls /home/thiba/projects/draw_flags_game/public/flags/)",
+      "Read(//tmp/**)",
+      "Bash(apt list:*)",
+      "Bash(tee /tmp/download_log.txt)",
+      "Bash(CHROME_BIN=/snap/bin/chromium npx ng test --browsers=ChromeHeadlessNoSandbox --watch=false)",
+      "Bash(CHROME_BIN=/usr/bin/google-chrome npx ng test --browsers=ChromeHeadlessNoSandbox --watch=false)",
+      "Bash(grep -oE \"fill[:=][\\\\\"' ]*#[0-9a-fA-F]{3,6}|stop-color[:=][\\\\\"' ]*#[0-9a-fA-F]{3,6}|fill[:=][\\\\\"' ]*[a-z]+\" /home/thiba/projects/draw_flags_game/public/flags/honduras.svg)"
     ]
   }
 }
