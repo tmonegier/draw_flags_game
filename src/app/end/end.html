@@ -4,7 +4,7 @@
 
   <div class="overall-score">
     <span class="avg-label">Overall Score</span>
-    <div class="avg-badge" [style.border-color]="gradeColor(gameState.overallGrade())" [style.color]="gradeColor(gameState.overallGrade())">
+    <div class="avg-badge" [style.border-color]="gameState.overallGrade() | gradeColor" [style.color]="gameState.overallGrade() | gradeColor">
       <span class="avg-number">{{ gameState.averageScore() }}<small>/1000</small></span>
       <span class="avg-grade">{{ gameState.overallGrade() }}</span>
     </div>
@@ -16,7 +16,7 @@
         <div class="card-header">
           <span class="card-index">{{ i + 1 }}</span>
           <span class="card-country">{{ round.country.name }}</span>
-          <span class="card-grade" [style.color]="gradeColor(round.grade)">{{ round.grade }}</span>
+          <span class="card-grade" [style.color]="round.grade | gradeColor">{{ round.grade }}</span>
           <span class="card-score">{{ round.score }} / 1000</span>
         </div>
         <div class="card-flags">

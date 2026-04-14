@@ -55,7 +55,7 @@ items below. They're sorted by likely-bug → maintainability → polish.
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 15 | Template method calls (`getScoreMessage()`, `gradeColor()`) re-run every CD cycle | todo | — |
+| 15 | Template method calls (`getScoreMessage()`, `gradeColor()`) re-run every CD cycle | done | (pending) |
 | 16 | No `ChangeDetectionStrategy.OnPush` anywhere — wasted CD on signal-driven app | todo | — |
 | 17 | `RoundScore.grade` typed `string` instead of the existing `Grade` union | todo | — |
 | 18 | `Promise` returned from `ScoringService` is uncancellable — leak / stale set after navigation | todo | — |
@@ -65,7 +65,7 @@ items below. They're sorted by likely-bug → maintainability → polish.
 | # | Title | Status | Commit |
 |---|---|---|---|
 | 19 | `clearLabel` input encodes intent as a string — should pass `difficulty` and let toolbar render the label | todo | — |
-| 20 | `gradeColor()` should be a pipe (matches `AspectRatioPipe` / `FlagUrlPipe` pattern) | todo | — |
+| 20 | `gradeColor()` should be a pipe (matches `AspectRatioPipe` / `FlagUrlPipe` pattern) | done | (pending, folded into #15) |
 | 21 | `canvasHeight` is a constant while `canvasWidth` is a signal — naming/usage drift | todo | — |
 | 22 | Flood-fill uses exact RGB equality; scoring uses tolerance — document or align | todo | — |
 

@@ -36,7 +36,7 @@
     @if (scoringError(); as err) {
       <p class="score-description scoring-error">⚠️ {{ err }}</p>
     } @else {
-      <p class="score-description">{{ getScoreMessage() }}</p>
+      <p class="score-description">{{ scoreMessage() }}</p>
     }
   }
 

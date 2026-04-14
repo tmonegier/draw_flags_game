@@ -3,21 +3,17 @@ import { Router } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { AspectRatioPipe } from '../utils/aspect-ratio.pipe';
 import { FlagUrlPipe } from '../utils/flag-url.pipe';
-import { GRADE_COLORS, Grade } from '../scoring-config';
+import { GradeColorPipe } from '../utils/grade-color.pipe';
 
 @Component({
   selector: 'app-end',
   templateUrl: './end.html',
   styleUrl: './end.css',
-  imports: [AspectRatioPipe, FlagUrlPipe],
+  imports: [AspectRatioPipe, FlagUrlPipe, GradeColorPipe],
 })
 export class EndComponent {
   private readonly router = inject(Router);
   readonly gameState = inject(GameStateService);
-
-  gradeColor(grade: string): string {
-    return GRADE_COLORS[grade as Grade] ?? '#888';
-  }
 
   playAgain(): void {
     this.router.navigate(['/']);

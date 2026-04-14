@@ -204,30 +204,30 @@ describe('CompareComponent', () => {
     expect(gameState.roundScores()[0].grade).toBe('F');
   });
 
-  // ── getScoreMessage ───────────────────────────────────────────────────────────
+  // ── scoreMessage ──────────────────────────────────────────────────────────────
 
-  it('getScoreMessage returns empty string when score is null', () => {
+  it('scoreMessage returns empty string when score is null', () => {
     fixture   = TestBed.createComponent(CompareComponent);
     component = fixture.componentInstance;
-    expect(component.getScoreMessage()).toBe('');
+    expect(component.scoreMessage()).toBe('');
   });
 
   // Drive boundary tests off the same SCORE_MESSAGES table the component reads.
   for (const msg of SCORE_MESSAGES) {
-    it(`getScoreMessage returns "${msg.message.slice(0, 28)}…" at the lower bound (score = ${msg.min})`, async () => {
+    it(`scoreMessage returns "${msg.message.slice(0, 28)}…" at the lower bound (score = ${msg.min})`, async () => {
       await createReady();
       component.score.set(msg.min);
-      expect(component.getScoreMessage()).toBe(msg.message);
+      expect(component.scoreMessage()).toBe(msg.message);
     });
   }
   // Just-below-boundary: each message should yield to the next tier down.
   for (let i = 0; i < SCORE_MESSAGES.length - 1; i++) {
     const here = SCORE_MESSAGES[i];
     const below = SCORE_MESSAGES[i + 1];
-    it(`getScoreMessage drops to "${below.message.slice(0, 20)}…" just below ${here.min}`, async () => {
+    it(`scoreMessage drops to "${below.message.slice(0, 20)}…" just below ${here.min}`, async () => {
       await createReady();
       component.score.set(here.min - 1);
-      expect(component.getScoreMessage()).toBe(below.message);
+      expect(component.scoreMessage()).toBe(below.message);
     });
   }
 

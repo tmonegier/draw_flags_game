@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService, scoreToGrade } from '../services/game-state.service';
 import { ScoringService } from '../services/scoring.service';
@@ -22,6 +22,13 @@ export class CompareComponent implements OnInit {
   grade = signal<string>('');
   isScoring = signal(true);
   scoringError = signal<string | null>(null);
+
+  /** Cached message that only re-runs when `score` changes (vs every CD tick). */
+  readonly scoreMessage = computed<string>(() => {
+    const s = this.score();
+    if (s === null) return '';
+    return SCORE_MESSAGES.find(m => s >= m.min)?.message ?? '';
+  });
 
   get currentCountry() { return this.gameState.currentCountry(); }
   get userDrawing() { return this.gameState.drawingDataUrl(); }
@@ -80,9 +87,4 @@ export class CompareComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  getScoreMessage(): string {
-    const s = this.score();
-    if (s === null) return '';
-    return SCORE_MESSAGES.find(m => s >= m.min)?.message ?? '';
-  }
 }

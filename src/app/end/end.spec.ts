@@ -41,19 +41,6 @@ describe('EndComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // ── gradeColor ────────────────────────────────────────────────────────────────
-
-  describe('gradeColor()', () => {
-    it('returns #68d391 for A', () => expect(component.gradeColor('A')).toBe('#68d391'));
-    it('returns #63b3ed for B', () => expect(component.gradeColor('B')).toBe('#63b3ed'));
-    it('returns #f6e05e for C', () => expect(component.gradeColor('C')).toBe('#f6e05e'));
-    it('returns #f6ad55 for D', () => expect(component.gradeColor('D')).toBe('#f6ad55'));
-    it('returns #fc8181 for F', () => expect(component.gradeColor('F')).toBe('#fc8181'));
-    it('returns #888 for unknown grade string', () => expect(component.gradeColor('Z')).toBe('#888'));
-    it('returns #888 for empty string',         () => expect(component.gradeColor('')).toBe('#888'));
-    it('is case-sensitive (lowercase a → #888)', () => expect(component.gradeColor('a')).toBe('#888'));
-  });
-
   // ── playAgain ─────────────────────────────────────────────────────────────────
 
   it('playAgain() navigates to /', () => {
