@@ -6,7 +6,8 @@ import {
 import { CrossConfig } from './toolbar';
 import { DrawingHint, ElementHint } from '../services/country.service';
 import { FlagElement, FLAG_ELEMENTS } from './flag-elements';
-import { parseRatio } from '../utils/ratio';
+import { parseRatio, ratioToPositions } from '../utils/ratio';
+import { floodFillPixels, hexToRgba } from '../utils/canvas-pixels';
 
 export const CANVAS_HEIGHT = 400;
 /** Neutral grey used for the unfilled canvas. Picked to be distinct from any
@@ -214,18 +215,6 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     }
   }
 
-  /** Converts a ratio array into N-1 cumulative pixel positions (rounded). */
-  private ratioToPositions(ratios: number[], total: number): number[] {
-    const sum = ratios.reduce((a, b) => a + b, 0);
-    const positions: number[] = [];
-    let acc = 0;
-    for (let i = 0; i < ratios.length - 1; i++) {
-      acc += ratios[i];
-      positions.push(Math.round(acc / sum * total));
-    }
-    return positions;
-  }
-
   /**
    * Draws a plus-sign outline on baseCanvas for flags whose cross does NOT extend
    * to the flag edges (e.g. Switzerland). The outline pixel color differs from
@@ -239,8 +228,8 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const W = this.canvasWidth();
     const H = this.canvasHeight;
 
-    const xPos = this.ratioToPositions(widthRatios, W);
-    const yPos = this.ratioToPositions(heightRatios, H);
+    const xPos = ratioToPositions(widthRatios, W);
+    const yPos = ratioToPositions(heightRatios, H);
     if (xPos.length < 4 || yPos.length < 4) return;
 
     const [x0, x1, x2, x3] = xPos;
@@ -278,8 +267,8 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     ctx.lineWidth = 1;
     ctx.setLineDash([]);
 
-    const xPos = this.ratioToPositions(config.widthRatios, W);
-    const yPos = this.ratioToPositions(config.heightRatios, H);
+    const xPos = ratioToPositions(config.widthRatios, W);
+    const yPos = ratioToPositions(config.heightRatios, H);
 
     // Each guide line at index i is paired with its symmetric counterpart: the
     // outer pair skips the full cross bar, the inner pair (double cross) skips only
@@ -419,60 +408,21 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     ctx.restore();
   }
 
+  /** Reads pixel buffers off the canvases and delegates to the pure
+   *  flood-fill in `utils/canvas-pixels`. Kept as an instance method so the
+   *  spec can drive it directly. */
   private floodFill(startX: number, startY: number): void {
     const canvas = this.baseCanvasRef.nativeElement;
     const ctx = this.baseCtx;
     const splitsData = this.splitsCtx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-    // Don't fill if the click landed on a split line
-    if (splitsData[(startY * canvas.width + startX) * 4 + 3] > 0) return;
-
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    const targetColor = this.getPixelColor(data, startX, startY, canvas.width);
-    const fillColor = this.hexToRgba(this.color());
-    if (targetColor[0] === fillColor[0] && targetColor[1] === fillColor[1] && targetColor[2] === fillColor[2]) return;
-
-    const stack: Point[] = [{ x: startX, y: startY }];
-    const visited = new Uint8Array(canvas.width * canvas.height);
-    while (stack.length) {
-      const { x, y } = stack.pop()!;
-      if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) continue;
-      const idx = y * canvas.width + x;
-      if (visited[idx]) continue;
-      visited[idx] = 1;
-      // Split line pixel: paint it with the fill color but don't propagate through it
-      if (splitsData[idx * 4 + 3] > 0) {
-        this.setPixelColor(data, x, y, canvas.width, fillColor);
-        continue;
-      }
-      const c = this.getPixelColor(data, x, y, canvas.width);
-      if (!this.colorMatch(c, targetColor)) continue;
-      this.setPixelColor(data, x, y, canvas.width, fillColor);
-      stack.push({ x: x + 1, y }, { x: x - 1, y }, { x, y: y + 1 }, { x, y: y - 1 });
-    }
+    floodFillPixels(
+      imageData.data, splitsData, canvas.width, canvas.height,
+      startX, startY, hexToRgba(this.color()),
+    );
     ctx.putImageData(imageData, 0, 0);
   }
 
-  private getPixelColor(data: Uint8ClampedArray, x: number, y: number, w: number): [number, number, number, number] {
-    const i = (y * w + x) * 4;
-    return [data[i], data[i + 1], data[i + 2], data[i + 3]];
-  }
-
-  private setPixelColor(data: Uint8ClampedArray, x: number, y: number, w: number, color: [number, number, number, number]): void {
-    const i = (y * w + x) * 4;
-    data[i] = color[0]; data[i + 1] = color[1]; data[i + 2] = color[2]; data[i + 3] = color[3];
-  }
-
-  private colorMatch(a: [number, number, number, number], b: [number, number, number, number], tol = 20): boolean {
-    return Math.abs(a[0] - b[0]) <= tol && Math.abs(a[1] - b[1]) <= tol && Math.abs(a[2] - b[2]) <= tol;
-  }
-
-  private hexToRgba(hex: string): [number, number, number, number] {
-    const clean = hex.replace('#', '');
-    const num = parseInt(clean, 16);
-    return [(num >> 16) & 0xff, (num >> 8) & 0xff, num & 0xff, 255];
-  }
 
   onPointerMove(event: PointerEvent): void {
     if (this.isPenDrawing) event.preventDefault();

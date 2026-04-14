@@ -12,3 +12,16 @@ export function ratioToCssAspect(ratio: string): string {
   const { h, w } = parseRatio(ratio);
   return `${w}/${h}`;
 }
+
+/** Converts a ratio array into N-1 cumulative pixel positions (rounded).
+ *  Used for placing band guide lines and cross arms within a fixed total. */
+export function ratioToPositions(ratios: number[], total: number): number[] {
+  const sum = ratios.reduce((a, b) => a + b, 0);
+  const positions: number[] = [];
+  let acc = 0;
+  for (let i = 0; i < ratios.length - 1; i++) {
+    acc += ratios[i];
+    positions.push(Math.round(acc / sum * total));
+  }
+  return positions;
+}

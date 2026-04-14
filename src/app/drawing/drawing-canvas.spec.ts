@@ -400,46 +400,6 @@ describe('DrawingCanvasComponent', () => {
     expect(isRed).toBeFalse();
   });
 
-  // ── hexToRgba (private — tested via cast) ─────────────────────────────────────
-
-  it('hexToRgba converts #ff0000 to [255, 0, 0, 255]', () => {
-    expect((component as any).hexToRgba('#ff0000')).toEqual([255, 0, 0, 255]);
-  });
-
-  it('hexToRgba converts #000000 to [0, 0, 0, 255]', () => {
-    expect((component as any).hexToRgba('#000000')).toEqual([0, 0, 0, 255]);
-  });
-
-  it('hexToRgba converts #ffffff to [255, 255, 255, 255]', () => {
-    expect((component as any).hexToRgba('#ffffff')).toEqual([255, 255, 255, 255]);
-  });
-
-  it('hexToRgba works without the # prefix', () => {
-    expect((component as any).hexToRgba('00ff00')).toEqual([0, 255, 0, 255]);
-  });
-
-  // ── colorMatch (private — tested via cast) ────────────────────────────────────
-
-  it('colorMatch returns true for identical colors', () => {
-    expect((component as any).colorMatch([200, 100, 50, 255], [200, 100, 50, 255])).toBeTrue();
-  });
-
-  it('colorMatch returns true when every channel diff is within tolerance (20)', () => {
-    expect((component as any).colorMatch([100, 100, 100, 255], [120, 120, 120, 255])).toBeTrue();
-  });
-
-  it('colorMatch returns false when any channel diff exceeds tolerance (20)', () => {
-    expect((component as any).colorMatch([100, 100, 100, 255], [121, 100, 100, 255])).toBeFalse();
-  });
-
-  it('colorMatch boundary: diff = 20 on every channel → true', () => {
-    expect((component as any).colorMatch([0, 0, 0, 255], [20, 20, 20, 255])).toBeTrue();
-  });
-
-  it('colorMatch boundary: diff = 21 on one channel → false', () => {
-    expect((component as any).colorMatch([0, 0, 0, 255], [21, 0, 0, 255])).toBeFalse();
-  });
-
   // ── Mouse event handlers ──────────────────────────────────────────────────────
 
   it('onMouseDown on background fills baseCanvas', () => {
