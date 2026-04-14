@@ -67,7 +67,7 @@ items below. They're sorted by likely-bug → maintainability → polish.
 | 19 | `clearLabel` input encodes intent as a string — should pass `difficulty` and let toolbar render the label | done | (pending) |
 | 20 | `gradeColor()` should be a pipe (matches `AspectRatioPipe` / `FlagUrlPipe` pattern) | done | (pending, folded into #15) |
 | 21 | `canvasHeight` is a constant while `canvasWidth` is a signal — naming/usage drift | done | (pending) |
-| 22 | Flood-fill uses exact RGB equality; scoring uses tolerance — document or align | todo | — |
+| 22 | Flood-fill uses exact RGB equality; scoring uses tolerance — document or align | done | (pending) |
 
 ## Low (docs / micro)
 

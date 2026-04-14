@@ -30,7 +30,15 @@ export function colorMatch(a: Rgba, b: Rgba, tol = 20): boolean {
 
 /** Iterative 4-neighbour flood fill on a pixel buffer. `splitsData` defines
  *  boundary pixels (any pixel with alpha > 0 blocks propagation but is itself
- *  painted with the fill colour). Mutates `data` in place. */
+ *  painted with the fill colour). Mutates `data` in place.
+ *
+ *  Tolerance asymmetry: the no-op guard below uses *exact* RGB equality so
+ *  re-clicking the same colour is a true no-op even when adjacent regions
+ *  blend within the propagation tolerance. Within the fill loop we still use
+ *  `colorMatch` (default 20/255 per channel) to bridge anti-aliased seams
+ *  inside one logical region. The scoring service applies a wider tolerance
+ *  (PIXEL_TOLERANCE = 60/255) — that's intentional: drawings score against the
+ *  reference flag perceptually, but flood-fill needs tight region boundaries. */
 export function floodFillPixels(
   data: Uint8ClampedArray,
   splitsData: Uint8ClampedArray,
