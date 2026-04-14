@@ -47,35 +47,35 @@ items below. They're sorted by likely-bug → maintainability → polish.
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 12 | `allowedColors` computed reshuffles on every recomputation (Math.random in `computed`) | done | (pending) |
-| 13 | `ScoringService.computeScore()` swallows errors silently — frozen "Scoring…" UI | done | (pending) |
-| 14 | Race condition in `recolorElement`: rapid clicks let stale image loads paint over fresh ones | done | (pending) |
+| 12 | `allowedColors` computed reshuffles on every recomputation (Math.random in `computed`) | done | 3bbe28f |
+| 13 | `ScoringService.computeScore()` swallows errors silently — frozen "Scoring…" UI | done | b41434c |
+| 14 | Race condition in `recolorElement`: rapid clicks let stale image loads paint over fresh ones | done | 8b5f1b8 |
 
 ## High (maintainability / perf)
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 15 | Template method calls (`getScoreMessage()`, `gradeColor()`) re-run every CD cycle | done | (pending) |
-| 16 | No `ChangeDetectionStrategy.OnPush` anywhere — wasted CD on signal-driven app | done | (pending) |
-| 17 | `RoundScore.grade` typed `string` instead of the existing `Grade` union | done | (pending) |
-| 18 | `Promise` returned from `ScoringService` is uncancellable — leak / stale set after navigation | done | (pending) |
+| 15 | Template method calls (`getScoreMessage()`, `gradeColor()`) re-run every CD cycle | done | 6c129c2 |
+| 16 | No `ChangeDetectionStrategy.OnPush` anywhere — wasted CD on signal-driven app | done | d3feb90 |
+| 17 | `RoundScore.grade` typed `string` instead of the existing `Grade` union | done | 451915b |
+| 18 | `Promise` returned from `ScoringService` is uncancellable — leak / stale set after navigation | done | bb0a813 |
 
 ## Medium (consistency / polish)
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 19 | `clearLabel` input encodes intent as a string — should pass `difficulty` and let toolbar render the label | done | (pending) |
-| 20 | `gradeColor()` should be a pipe (matches `AspectRatioPipe` / `FlagUrlPipe` pattern) | done | (pending, folded into #15) |
-| 21 | `canvasHeight` is a constant while `canvasWidth` is a signal — naming/usage drift | done | (pending) |
-| 22 | Flood-fill uses exact RGB equality; scoring uses tolerance — document or align | done | (pending) |
+| 19 | `clearLabel` input encodes intent as a string — should pass `difficulty` and let toolbar render the label | done | 4460e92 |
+| 20 | `gradeColor()` should be a pipe (matches `AspectRatioPipe` / `FlagUrlPipe` pattern) | done | 6c129c2 (folded into #15) |
+| 21 | `canvasHeight` is a constant while `canvasWidth` is a signal — naming/usage drift | done | 3c6a20f |
+| 22 | Flood-fill uses exact RGB equality; scoring uses tolerance — document or align | done | e413d96 |
 
 ## Low (docs / micro)
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 23 | CLAUDE.md still mentions an `easy/medium/hard` ladder; `medium` was removed | done | (pending) |
-| 24 | `Point` interface defined privately in canvas component — fine to keep, flag if reused | todo | — |
-| 25 | `getDrawingDataUrl()` allocates a fresh temp canvas on every submit | todo | — |
+| 23 | CLAUDE.md still mentions an `easy/medium/hard` ladder; `medium` was removed | done | 9f4f6e2 |
+| 24 | `Point` interface defined privately in canvas component — fine to keep, flag if reused | skipped | (no second consumer) |
+| 25 | `getDrawingDataUrl()` allocates a fresh temp canvas on every submit | skipped | (one alloc per submission — negligible) |
 
 ## Detail
 
