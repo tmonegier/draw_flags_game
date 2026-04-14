@@ -49,7 +49,7 @@ items below. They're sorted by likely-bug → maintainability → polish.
 |---|---|---|---|
 | 12 | `allowedColors` computed reshuffles on every recomputation (Math.random in `computed`) | done | (pending) |
 | 13 | `ScoringService.computeScore()` swallows errors silently — frozen "Scoring…" UI | done | (pending) |
-| 14 | Race condition in `recolorElement`: rapid clicks let stale image loads paint over fresh ones | todo | — |
+| 14 | Race condition in `recolorElement`: rapid clicks let stale image loads paint over fresh ones | done | (pending) |
 
 ## High (maintainability / perf)
 

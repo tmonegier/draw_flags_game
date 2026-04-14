@@ -58,6 +58,10 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   private placedElements: PlacedElement[] = [];
 
+  /** Generation counter for async element redraws. Bumped on every redraw or
+   *  clear so stale Image.onload callbacks know to skip painting. */
+  private redrawGeneration = 0;
+
   private placementImg: HTMLImageElement | null = null;
   private pendingSize = 80;
   private pendingElement: FlagElement | null = null;
@@ -144,6 +148,9 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     this.elementsCtx.clearRect(0, 0, W, H);
     this.overlayCtx.clearRect(0, 0, W, H);
     this.placedElements = [];
+    // Invalidate any in-flight element image loads so they don't paint over
+    // the freshly cleared canvas.
+    this.redrawGeneration++;
   }
 
   applyHints(hints: DrawingHint[]): void {
@@ -177,7 +184,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
 
-  private renderPlacedElement(pe: PlacedElement): void {
+  private renderPlacedElement(pe: PlacedElement, generation = this.redrawGeneration): void {
     const W = this.canvasWidth();
     const H = this.canvasHeight;
     const s = H * pe.sizeFraction;
@@ -185,15 +192,18 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const y = H * pe.yCenter;
     const img = new Image();
     img.onload = () => {
+      // Drop the paint if a newer redraw has happened while this image was loading.
+      if (generation !== this.redrawGeneration) return;
       this.elementsCtx.drawImage(img, x - s / 2, y - s / 2, s, s);
     };
     img.src = this.buildSvgDataUrl(pe.element, pe.color);
   }
 
   private redrawAllElements(): void {
+    const generation = ++this.redrawGeneration;
     this.elementsCtx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight);
     for (const pe of this.placedElements) {
-      this.renderPlacedElement(pe);
+      this.renderPlacedElement(pe, generation);
     }
   }
 
