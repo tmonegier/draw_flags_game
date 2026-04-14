@@ -37,7 +37,7 @@ describe('DrawingCanvasComponent', () => {
   });
 
   it('canvasHeight property equals CANVAS_HEIGHT', () => {
-    expect(component.canvasHeight).toBe(CANVAS_HEIGHT);
+    expect(component.canvasHeight()).toBe(CANVAS_HEIGHT);
   });
 
   // ── canvasWidth computed signal ───────────────────────────────────────────────
@@ -315,7 +315,7 @@ describe('DrawingCanvasComponent', () => {
   it('applySplits draws a visible line on the splits canvas', () => {
     component.applySplits('horizontal', [1, 1]);
     const ctx = component.splitsCanvasRef.nativeElement.getContext('2d')!;
-    const imageData = ctx.getImageData(0, 0, component.canvasWidth(), component.canvasHeight);
+    const imageData = ctx.getImageData(0, 0, component.canvasWidth(), component.canvasHeight());
     const hasNonTransparent = Array.from(imageData.data)
       .some((value, i) => i % 4 === 3 && value > 0);
     expect(hasNonTransparent).toBeTrue();
@@ -348,7 +348,7 @@ describe('DrawingCanvasComponent', () => {
     fixture.detectChanges();
     (component as any).floodFill(0, 0); // canvas is all background → fills everything
     const pixel = component.baseCanvasRef.nativeElement.getContext('2d')!
-      .getImageData(component.canvasWidth() - 1, component.canvasHeight - 1, 1, 1).data;
+      .getImageData(component.canvasWidth() - 1, component.canvasHeight() - 1, 1, 1).data;
     expect(pixel[0]).toBe(0);
     expect(pixel[1]).toBe(0);
     expect(pixel[2]).toBe(255);
@@ -385,7 +385,7 @@ describe('DrawingCanvasComponent', () => {
 
     // Find the first row with a visible (alpha > 0) split-line pixel
     let splitY = -1;
-    for (let y = 0; y < component.canvasHeight && splitY === -1; y++) {
+    for (let y = 0; y < component.canvasHeight() && splitY === -1; y++) {
       if (splitCtx.getImageData(0, y, 1, 1).data[3] > 0) splitY = y;
     }
     expect(splitY).toBeGreaterThanOrEqual(0);
@@ -409,8 +409,8 @@ describe('DrawingCanvasComponent', () => {
     const overlay = component.overlayCanvasRef.nativeElement;
     spyOn(overlay, 'getBoundingClientRect').and.returnValue({
       left: 0, top: 0,
-      width: component.canvasWidth(), height: component.canvasHeight,
-      right: component.canvasWidth(), bottom: component.canvasHeight,
+      width: component.canvasWidth(), height: component.canvasHeight(),
+      right: component.canvasWidth(), bottom: component.canvasHeight(),
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect);
 
@@ -432,8 +432,8 @@ describe('DrawingCanvasComponent', () => {
       element: FLAG_ELEMENTS[0],
       color: '#0000ff',
       xCenter: 15 / component.canvasWidth(),
-      yCenter: 15 / component.canvasHeight,
-      sizeFraction: 100 / component.canvasHeight, // large box: ±50px around center
+      yCenter: 15 / component.canvasHeight(),
+      sizeFraction: 100 / component.canvasHeight(), // large box: ±50px around center
     };
     (component as any).placedElements = [pe];
 
@@ -448,8 +448,8 @@ describe('DrawingCanvasComponent', () => {
     const overlay = component.overlayCanvasRef.nativeElement;
     spyOn(overlay, 'getBoundingClientRect').and.returnValue({
       left: 0, top: 0,
-      width: component.canvasWidth(), height: component.canvasHeight,
-      right: component.canvasWidth(), bottom: component.canvasHeight,
+      width: component.canvasWidth(), height: component.canvasHeight(),
+      right: component.canvasWidth(), bottom: component.canvasHeight(),
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect);
 
@@ -469,8 +469,8 @@ describe('DrawingCanvasComponent', () => {
       element: FLAG_ELEMENTS[0],
       color: '#0000ff',
       xCenter: 15 / component.canvasWidth(),
-      yCenter: 15 / component.canvasHeight,
-      sizeFraction: 100 / component.canvasHeight,
+      yCenter: 15 / component.canvasHeight(),
+      sizeFraction: 100 / component.canvasHeight(),
     }];
 
     const elemCtx = component.elementsCanvasRef.nativeElement.getContext('2d')!;
@@ -482,8 +482,8 @@ describe('DrawingCanvasComponent', () => {
     const overlay = component.overlayCanvasRef.nativeElement;
     spyOn(overlay, 'getBoundingClientRect').and.returnValue({
       left: 0, top: 0,
-      width: component.canvasWidth(), height: component.canvasHeight,
-      right: component.canvasWidth(), bottom: component.canvasHeight,
+      width: component.canvasWidth(), height: component.canvasHeight(),
+      right: component.canvasWidth(), bottom: component.canvasHeight(),
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect);
 
@@ -536,8 +536,8 @@ describe('DrawingCanvasComponent', () => {
   function makeBoundingRect(component: DrawingCanvasComponent): DOMRect {
     return {
       left: 0, top: 0,
-      width: component.canvasWidth(), height: component.canvasHeight,
-      right: component.canvasWidth(), bottom: component.canvasHeight,
+      width: component.canvasWidth(), height: component.canvasHeight(),
+      right: component.canvasWidth(), bottom: component.canvasHeight(),
       x: 0, y: 0, toJSON: () => ({}),
     } as DOMRect;
   }

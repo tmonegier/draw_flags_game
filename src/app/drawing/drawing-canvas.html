@@ -1,11 +1,11 @@
 <div class="canvas-wrapper"
-     [style.aspect-ratio]="canvasWidth() + '/' + canvasHeight"
+     [style.aspect-ratio]="canvasWidth() + '/' + canvasHeight()"
      [style.max-width.px]="canvasWidth()">
   <!-- Base canvas: permanent drawings (exported on submit) -->
   <canvas
     #baseCanvas
     [width]="canvasWidth()"
-    [height]="canvasHeight"
+    [height]="canvasHeight()"
     class="base-canvas"
   ></canvas>
 
@@ -13,7 +13,7 @@
   <canvas
     #splitsCanvas
     [width]="canvasWidth()"
-    [height]="canvasHeight"
+    [height]="canvasHeight()"
     class="splits-canvas"
   ></canvas>
 
@@ -21,7 +21,7 @@
   <canvas
     #elementsCanvas
     [width]="canvasWidth()"
-    [height]="canvasHeight"
+    [height]="canvasHeight()"
     class="elements-canvas"
   ></canvas>
 
@@ -29,7 +29,7 @@
   <canvas
     #overlayCanvas
     [width]="canvasWidth()"
-    [height]="canvasHeight"
+    [height]="canvasHeight()"
     class="overlay-canvas"
     [class.placement-cursor]="isPlacingElement()"
     [class.pen-cursor]="drawingMode() === 'pen'"

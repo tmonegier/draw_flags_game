@@ -311,7 +311,7 @@ describe('GameComponent', () => {
   it('submit stores canvas height in game state', () => {
     spyOn(component.drawingCanvas, 'getDrawingDataUrl').and.returnValue('data:x');
     component.submit();
-    expect(gameState.drawingHeight()).toBe(component.drawingCanvas.canvasHeight);
+    expect(gameState.drawingHeight()).toBe(component.drawingCanvas.canvasHeight());
   });
 });
 

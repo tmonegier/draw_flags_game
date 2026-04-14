@@ -44,7 +44,9 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   readonly placementCancelled = output<void>();
 
-  readonly canvasHeight = CANVAS_HEIGHT;
+  // Both exposed as signals for a consistent API: callers always invoke them
+  // (`canvasWidth()`, `canvasHeight()`) instead of remembering which is plain.
+  readonly canvasHeight = signal(CANVAS_HEIGHT).asReadonly();
   readonly canvasWidth = computed(() => {
     const { h, w } = parseRatio(this.ratio());
     return Math.round(CANVAS_HEIGHT * w / h);
@@ -116,7 +118,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   cancelPlacement(): void {
     this.isPlacingElement.set(false);
     this.placementImg = null;
-    this.overlayCtx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight);
+    this.overlayCtx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());
     this.placementCancelled.emit();
   }
 
@@ -129,7 +131,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   getDrawingDataUrl(): string {
     const W = this.canvasWidth();
-    const H = this.canvasHeight;
+    const H = this.canvasHeight();
     const temp = document.createElement('canvas');
     temp.width = W;
     temp.height = H;
@@ -141,7 +143,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   clearCanvas(): void {
     const W = this.canvasWidth();
-    const H = this.canvasHeight;
+    const H = this.canvasHeight();
     this.baseCtx.fillStyle = CANVAS_BACKGROUND;
     this.baseCtx.fillRect(0, 0, W, H);
     this.splitsCtx.clearRect(0, 0, W, H);
@@ -186,7 +188,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   private renderPlacedElement(pe: PlacedElement, generation = this.redrawGeneration): void {
     const W = this.canvasWidth();
-    const H = this.canvasHeight;
+    const H = this.canvasHeight();
     const s = H * pe.sizeFraction;
     const x = W * pe.xCenter;
     const y = H * pe.yCenter;
@@ -201,7 +203,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   private redrawAllElements(): void {
     const generation = ++this.redrawGeneration;
-    this.elementsCtx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight);
+    this.elementsCtx.clearRect(0, 0, this.canvasWidth(), this.canvasHeight());
     for (const pe of this.placedElements) {
       this.renderPlacedElement(pe, generation);
     }
@@ -211,7 +213,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
    *  updates its color, and redraws the elements canvas from SVG source. */
   private recolorElement(x: number, y: number): void {
     const W = this.canvasWidth();
-    const H = this.canvasHeight;
+    const H = this.canvasHeight();
     for (let i = this.placedElements.length - 1; i >= 0; i--) {
       const pe = this.placedElements[i];
       const cx = W * pe.xCenter;
@@ -236,7 +238,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
    */
   drawCrossOutline(widthRatios: number[], heightRatios: number[]): void {
     const W = this.canvasWidth();
-    const H = this.canvasHeight;
+    const H = this.canvasHeight();
 
     const xPos = ratioToPositions(widthRatios, W);
     const yPos = ratioToPositions(heightRatios, H);
@@ -270,7 +272,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   applyNordicCross(config: CrossConfig): void {
     const W = this.canvasWidth();
-    const H = this.canvasHeight;
+    const H = this.canvasHeight();
     const ctx = this.splitsCtx;
     ctx.save();
     ctx.strokeStyle = '#888888';
@@ -305,7 +307,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
 
   applySplits(direction: 'horizontal' | 'vertical', ratios: number[]): void {
     const W = this.canvasWidth();
-    const H = this.canvasHeight;
+    const H = this.canvasHeight();
     const total = ratios.reduce((s, r) => s + r, 0);
     const ctx = this.splitsCtx;
     ctx.save();
@@ -337,7 +339,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
   private getPos(event: { clientX: number; clientY: number }): Point {
     const rect = this.overlayCanvasRef.nativeElement.getBoundingClientRect();
     const scaleX = this.canvasWidth() / rect.width;
-    const scaleY = this.canvasHeight / rect.height;
+    const scaleY = this.canvasHeight() / rect.height;
     return {
       x: (event.clientX - rect.left) * scaleX,
       y: (event.clientY - rect.top) * scaleY,
@@ -360,8 +362,8 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
           element: this.pendingElement,
           color: this.pendingColor,
           xCenter: pos.x / this.canvasWidth(),
-          yCenter: pos.y / this.canvasHeight,
-          sizeFraction: s / this.canvasHeight,
+          yCenter: pos.y / this.canvasHeight(),
+          sizeFraction: s / this.canvasHeight(),
         });
       }
       return;
@@ -378,7 +380,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const y = Math.round(pos.y);
     // If the click lands on an element pixel, recolor via SVG re-render.
     // Otherwise, flood-fill the base canvas (bounded by split lines).
-    const elemData = this.elementsCtx.getImageData(0, 0, this.canvasWidth(), this.canvasHeight).data;
+    const elemData = this.elementsCtx.getImageData(0, 0, this.canvasWidth(), this.canvasHeight()).data;
     if (elemData[(y * this.canvasWidth() + x) * 4 + 3] > 0) {
       this.recolorElement(x, y);
     } else {
@@ -439,7 +441,7 @@ export class DrawingCanvasComponent implements AfterViewInit, AfterViewChecked {
     const pos = this.getPos(event);
     if (this.isPlacingElement()) {
       const W = this.canvasWidth();
-      const H = this.canvasHeight;
+      const H = this.canvasHeight();
       this.overlayCtx.clearRect(0, 0, W, H);
       if (this.placementImg) {
         const s = this.pendingSize;

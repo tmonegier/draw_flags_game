@@ -140,7 +140,7 @@ export class GameComponent implements AfterViewInit {
       this.drawingCanvas.cancelPlacement();
     }
     const dataUrl = this.drawingCanvas.getDrawingDataUrl();
-    this.gameState.submitDrawing(dataUrl, this.drawingCanvas.canvasWidth(), this.drawingCanvas.canvasHeight);
+    this.gameState.submitDrawing(dataUrl, this.drawingCanvas.canvasWidth(), this.drawingCanvas.canvasHeight());
     this.router.navigate(['/compare']);
   }
 }
