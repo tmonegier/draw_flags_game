@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { Country, CountryService, Difficulty } from './country.service';
 
 export interface RoundScore {
@@ -21,7 +21,7 @@ export function scoreToGrade(score: number): string {
 
 @Injectable({ providedIn: 'root' })
 export class GameStateService {
-  private readonly countryService = new CountryService();
+  private readonly countryService = inject(CountryService);
 
   readonly difficulty = signal<Difficulty>('easy');
   readonly queue = signal<Country[]>([]);
