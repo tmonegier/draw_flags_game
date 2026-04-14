@@ -204,6 +204,21 @@ describe('CompareComponent', () => {
     expect(gameState.roundScores()[0].grade).toBe('F');
   });
 
+  it('does not push a round score when the user navigates away mid-scoring', async () => {
+    let resolveScore!: (n: number) => void;
+    mockScoring.computeScore.and.returnValue(new Promise<number>(res => { resolveScore = res; }));
+    gameState.startGame('easy');
+    gameState.submitDrawing('data:image/png;base64,abc', 600, 400);
+    fixture   = TestBed.createComponent(CompareComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    // Tear down before the score promise resolves
+    fixture.destroy();
+    resolveScore(750);
+    await fixture.whenStable();
+    expect(gameState.roundScores().length).toBe(0);
+  });
+
   // ── scoreMessage ──────────────────────────────────────────────────────────────
 
   it('scoreMessage returns empty string when score is null', () => {

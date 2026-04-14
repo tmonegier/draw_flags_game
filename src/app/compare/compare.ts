@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService, scoreToGrade } from '../services/game-state.service';
 import { ScoringService } from '../services/scoring.service';
@@ -17,6 +17,11 @@ export class CompareComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly gameState = inject(GameStateService);
   private readonly scoringService = inject(ScoringService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  /** Set when the component is destroyed so late-resolving scoring promises
+   *  don't mutate signals or push a duplicate round into game state. */
+  private destroyed = false;
 
   score = signal<number | null>(null);
   grade = signal<Grade | ''>('');
@@ -46,6 +51,8 @@ export class CompareComponent implements OnInit {
   get hasMore() { return this.gameState.queue().length > 0; }
 
   ngOnInit(): void {
+    this.destroyRef.onDestroy(() => { this.destroyed = true; });
+
     const country = this.currentCountry;
     const drawing = this.userDrawing;
 
@@ -57,6 +64,7 @@ export class CompareComponent implements OnInit {
     this.scoringService
       .computeScore(drawing, country.svgFile, this.gameState.drawingWidth(), this.gameState.drawingHeight())
       .then(s => {
+        if (this.destroyed) return;
         this.score.set(s);
         const g = scoreToGrade(s);
         this.grade.set(g);
@@ -64,6 +72,7 @@ export class CompareComponent implements OnInit {
         this.gameState.addRoundScore({ country, score: s, grade: g, drawingDataUrl: drawing });
       })
       .catch(err => {
+        if (this.destroyed) return;
         // Surface the failure instead of leaving the spinner running forever.
         // The round is still recorded with a 0 score so the user can move on.
         this.scoringError.set(err?.message ?? 'Scoring failed.');
