@@ -20,16 +20,22 @@ describe('ToolbarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // ── clearLabel input ──────────────────────────────────────────────────────────
+  // ── clearMode input → clearLabel computed ─────────────────────────────────────
 
-  it('clearLabel defaults to "🗑️ Clear"', () => {
+  it('clearLabel defaults to "🗑️ Clear" when clearMode is unset (default "clear")', () => {
     expect(component.clearLabel()).toBe('🗑️ Clear');
   });
 
-  it('clearLabel reflects a custom value', () => {
-    fixture.componentRef.setInput('clearLabel', '↩️ Cancel Changes');
+  it('clearLabel renders "↩️ Cancel Changes" when clearMode is "cancel"', () => {
+    fixture.componentRef.setInput('clearMode', 'cancel');
     fixture.detectChanges();
     expect(component.clearLabel()).toBe('↩️ Cancel Changes');
+  });
+
+  it('clearLabel renders "🗑️ Clear" when clearMode is explicitly "clear"', () => {
+    fixture.componentRef.setInput('clearMode', 'clear');
+    fixture.detectChanges();
+    expect(component.clearLabel()).toBe('🗑️ Clear');
   });
 
   // ── showElements input ────────────────────────────────────────────────────────

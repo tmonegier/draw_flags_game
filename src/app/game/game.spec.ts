@@ -61,22 +61,22 @@ describe('GameComponent', () => {
     expect(component.isElementsModalOpen()).toBeFalse();
   });
 
-  // ── clearLabel computed signal ────────────────────────────────────────────────
+  // ── clearMode computed signal ─────────────────────────────────────────────────
 
-  it('clearLabel is "↩️ Cancel Changes" on easy mode', () => {
-    expect(component.clearLabel()).toBe('↩️ Cancel Changes');
+  it('clearMode is "cancel" on easy mode', () => {
+    expect(component.clearMode()).toBe('cancel');
   });
 
-  it('clearLabel is "🗑️ Clear" on hard mode', () => {
+  it('clearMode is "clear" on hard mode', () => {
     gameState.startGame('hard');
     fixture.detectChanges();
-    expect(component.clearLabel()).toBe('🗑️ Clear');
+    expect(component.clearMode()).toBe('clear');
   });
 
-  it('clearLabel is "🗑️ Clear" on free mode', () => {
+  it('clearMode is "clear" on free mode', () => {
     gameState.startGame('free');
     fixture.detectChanges();
-    expect(component.clearLabel()).toBe('🗑️ Clear');
+    expect(component.clearMode()).toBe('clear');
   });
 
   // ── showElements computed signal ──────────────────────────────────────────────

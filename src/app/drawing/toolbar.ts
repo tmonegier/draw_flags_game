@@ -1,4 +1,14 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
+
+/** Whether the clear button should fully wipe the canvas (`clear`) or just
+ *  restore the difficulty-supplied hints (`cancel`). The toolbar owns the
+ *  copy/icon for each mode so callers don't ship presentation strings. */
+export type ClearMode = 'clear' | 'cancel';
+
+const CLEAR_LABELS: Record<ClearMode, string> = {
+  clear:  '🗑️ Clear',
+  cancel: '↩️ Cancel Changes',
+};
 
 export type SplitDirection = 'horizontal' | 'vertical';
 
@@ -34,8 +44,9 @@ export class ToolbarComponent {
   activeColor = input.required<string>();
   /** When non-null, replaces the free color picker with a fixed palette of flag colors. */
   allowedColors = input<string[] | null>(null);
-  /** Label for the clear/cancel button. */
-  clearLabel = input<string>('🗑️ Clear');
+  /** Whether the clear button performs a full wipe or restores hints. */
+  clearMode = input<ClearMode>('clear');
+  readonly clearLabel = computed<string>(() => CLEAR_LABELS[this.clearMode()]);
   /** Whether to show the Elements library button. */
   showElements = input<boolean>(true);
   /** Whether to show the pen size slider. */

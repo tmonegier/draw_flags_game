@@ -44,10 +44,10 @@ export class GameComponent implements AfterViewInit {
     return arr;
   }
 
-  /** Label for the toolbar's clear button: restore hints on easy, full clear on hard/free. */
-  readonly clearLabel = computed<string>(() => {
-    return this.gameState.difficulty() === 'easy' ? '↩️ Cancel Changes' : '🗑️ Clear';
-  });
+  /** Toolbar clear-button intent: easy mode restores hints, others wipe the canvas. */
+  readonly clearMode = computed<'cancel' | 'clear'>(
+    () => this.gameState.difficulty() === 'easy' ? 'cancel' : 'clear',
+  );
 
   /** Elements picker is only available in hard mode. */
   readonly showElements = computed<boolean>(() => this.gameState.difficulty() === 'hard');
