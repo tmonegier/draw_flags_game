@@ -52,15 +52,7 @@ export class CompareComponent implements OnInit {
         const g = scoreToGrade(s);
         this.grade.set(g);
         this.isScoring.set(false);
-        this.gameState.addRoundScore({
-          country: country.name,
-          code: country.code,
-          score: s,
-          grade: g,
-          drawingDataUrl: drawing,
-          svgFile: country.svgFile,
-          ratio: country.ratio,
-        });
+        this.gameState.addRoundScore({ country, score: s, grade: g, drawingDataUrl: drawing });
       });
   }
 

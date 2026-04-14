@@ -336,12 +336,12 @@ describe('GameStateService', () => {
 
 function makeScore(score: number): RoundScore {
   return {
-    country: 'France',
-    code: 'fr',
+    country: {
+      name: 'France', code: 'fr', ratio: '2:3', svgFile: 'france.svg',
+      hints: [], colors: [],
+    },
     score,
     grade: scoreToGrade(score),
     drawingDataUrl: 'data:image/png;base64,abc',
-    svgFile: 'france.svg',
-    ratio: '2:3',
   };
 }

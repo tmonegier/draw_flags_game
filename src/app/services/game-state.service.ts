@@ -3,13 +3,10 @@ import { Country, CountryService, Difficulty } from './country.service';
 import { GRADE_THRESHOLDS } from '../scoring-config';
 
 export interface RoundScore {
-  country: string;
-  code: string;
+  country: Country;
   score: number;
   grade: string;
   drawingDataUrl: string;
-  svgFile: string;
-  ratio: string;
 }
 
 export function scoreToGrade(score: number): string {

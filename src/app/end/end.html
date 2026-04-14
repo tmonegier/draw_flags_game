@@ -11,25 +11,25 @@
   </div>
 
   <div class="cards">
-    @for (round of gameState.roundScores(); track round.code; let i = $index) {
+    @for (round of gameState.roundScores(); track round.country.code; let i = $index) {
       <div class="card">
         <div class="card-header">
           <span class="card-index">{{ i + 1 }}</span>
-          <span class="card-country">{{ round.country }}</span>
+          <span class="card-country">{{ round.country.name }}</span>
           <span class="card-grade" [style.color]="gradeColor(round.grade)">{{ round.grade }}</span>
           <span class="card-score">{{ round.score }} / 1000</span>
         </div>
         <div class="card-flags">
           <div class="flag-slot">
             <span class="flag-slot-label">Your drawing</span>
-            <div class="flag-frame" [style.aspect-ratio]="round.ratio | aspectRatio">
-              <img [src]="round.drawingDataUrl" [alt]="round.country" class="flag-img" />
+            <div class="flag-frame" [style.aspect-ratio]="round.country.ratio | aspectRatio">
+              <img [src]="round.drawingDataUrl" [alt]="round.country.name" class="flag-img" />
             </div>
           </div>
           <div class="flag-slot">
             <span class="flag-slot-label">Real flag</span>
-            <div class="flag-frame" [style.aspect-ratio]="round.ratio | aspectRatio">
-              <img [src]="'/flags/' + round.svgFile" [alt]="round.country" class="flag-img" />
+            <div class="flag-frame" [style.aspect-ratio]="round.country.ratio | aspectRatio">
+              <img [src]="'/flags/' + round.country.svgFile" [alt]="round.country.name" class="flag-img" />
             </div>
           </div>
         </div>

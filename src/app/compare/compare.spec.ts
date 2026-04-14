@@ -172,14 +172,11 @@ describe('CompareComponent', () => {
     expect(gameState.roundScores()[0].score).toBe(750);
   });
 
-  it('round score includes country name, code, svgFile and ratio', async () => {
+  it('round score embeds the full country object', async () => {
     await createReady();
     const country = gameState.currentCountry()!;
     const rs = gameState.roundScores()[0];
-    expect(rs.country).toBe(country.name);
-    expect(rs.code).toBe(country.code);
-    expect(rs.svgFile).toBe(country.svgFile);
-    expect(rs.ratio).toBe(country.ratio);
+    expect(rs.country).toBe(country);
   });
 
   // ── getScoreMessage ───────────────────────────────────────────────────────────
