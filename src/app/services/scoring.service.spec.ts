@@ -34,13 +34,14 @@ describe('ScoringService', () => {
 
   // ── Error cases ───────────────────────────────────────────────────────────────
 
-  it('resolves 0 when the flag image fails to load', async () => {
+  it('rejects with a descriptive error when the flag image fails to load', async () => {
     (window as any).Image = makeMockImage(false);
-    const score = await service.computeScore('data:x', 'test.svg', 2, 2);
-    expect(score).toBe(0);
+    spyOn(console, 'error'); // suppress expected error log
+    await expectAsync(service.computeScore('data:x', 'test.svg', 2, 2))
+      .toBeRejectedWithError(/Failed to load reference flag/);
   });
 
-  it('resolves 0 when the user image fails to load', async () => {
+  it('rejects when the user image fails to load', async () => {
     // First Image created (flag) succeeds; second (user) fails.
     let instanceCount = 0;
     (window as any).Image = class {
@@ -53,8 +54,9 @@ describe('ScoringService', () => {
     };
     // drawImage would throw because our mock is not an HTMLImageElement
     spyOn(CanvasRenderingContext2D.prototype, 'drawImage').and.callFake(() => {});
-    const score = await service.computeScore('data:x', 'test.svg', 2, 2);
-    expect(score).toBe(0);
+    spyOn(console, 'error');
+    await expectAsync(service.computeScore('data:x', 'test.svg', 2, 2))
+      .toBeRejectedWithError(/Failed to load user drawing/);
   });
 
   it('builds the flag URL with the /flags/ prefix', async () => {
@@ -67,7 +69,8 @@ describe('ScoringService', () => {
         queueMicrotask(() => this.onerror?.());
       }
     };
-    await service.computeScore('data:x', 'france.svg', 2, 2);
+    spyOn(console, 'error');
+    await service.computeScore('data:x', 'france.svg', 2, 2).catch(() => {/* expected */});
     expect(capturedSrc).toBe('/flags/france.svg');
   });
 

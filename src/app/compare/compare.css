@@ -139,6 +139,11 @@
   margin: 0;
 }
 
+.score-description.scoring-error {
+  color: #fc8181;
+  font-weight: 600;
+}
+
 /* Actions */
 .actions {
   display: flex;

@@ -33,7 +33,11 @@
   </div>
 
   @if (!isScoring()) {
-    <p class="score-description">{{ getScoreMessage() }}</p>
+    @if (scoringError(); as err) {
+      <p class="score-description scoring-error">⚠️ {{ err }}</p>
+    } @else {
+      <p class="score-description">{{ getScoreMessage() }}</p>
+    }
   }
 
   <div class="actions">

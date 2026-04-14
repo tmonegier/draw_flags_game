@@ -179,6 +179,31 @@ describe('CompareComponent', () => {
     expect(rs.country).toBe(country);
   });
 
+  // ── Scoring failure handling ──────────────────────────────────────────────────
+
+  async function createReadyWithRejection(err: Error): Promise<void> {
+    mockScoring.computeScore.and.returnValue(Promise.reject(err));
+    gameState.startGame('easy');
+    gameState.submitDrawing('data:image/png;base64,abc', 600, 400);
+    fixture   = TestBed.createComponent(CompareComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+  }
+
+  it('exposes a scoringError signal when computeScore rejects', async () => {
+    await createReadyWithRejection(new Error('boom'));
+    expect(component.scoringError()).toBe('boom');
+    expect(component.isScoring()).toBeFalse();
+  });
+
+  it('records a 0/F round even when scoring fails so the game can continue', async () => {
+    await createReadyWithRejection(new Error('boom'));
+    expect(gameState.roundScores().length).toBe(1);
+    expect(gameState.roundScores()[0].score).toBe(0);
+    expect(gameState.roundScores()[0].grade).toBe('F');
+  });
+
   // ── getScoreMessage ───────────────────────────────────────────────────────────
 
   it('getScoreMessage returns empty string when score is null', () => {

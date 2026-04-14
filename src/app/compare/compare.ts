@@ -21,6 +21,7 @@ export class CompareComponent implements OnInit {
   score = signal<number | null>(null);
   grade = signal<string>('');
   isScoring = signal(true);
+  scoringError = signal<string | null>(null);
 
   get currentCountry() { return this.gameState.currentCountry(); }
   get userDrawing() { return this.gameState.drawingDataUrl(); }
@@ -54,6 +55,15 @@ export class CompareComponent implements OnInit {
         this.grade.set(g);
         this.isScoring.set(false);
         this.gameState.addRoundScore({ country, score: s, grade: g, drawingDataUrl: drawing });
+      })
+      .catch(err => {
+        // Surface the failure instead of leaving the spinner running forever.
+        // The round is still recorded with a 0 score so the user can move on.
+        this.scoringError.set(err?.message ?? 'Scoring failed.');
+        this.score.set(0);
+        this.grade.set('F');
+        this.isScoring.set(false);
+        this.gameState.addRoundScore({ country, score: 0, grade: 'F', drawingDataUrl: drawing });
       });
   }
 
