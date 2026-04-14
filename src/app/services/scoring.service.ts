@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
+import { CANVAS_BACKGROUND } from '../drawing/drawing-canvas';
+
+/** Parsed RGB of the unfilled-canvas background. Pixels matching this colour
+ *  in the user submission are treated as "empty" and never score, even when
+ *  the underlying flag region is white. */
+const UNFILLED = (() => {
+  const n = parseInt(CANVAS_BACKGROUND.replace('#', ''), 16);
+  return [(n >> 16) & 0xff, (n >> 8) & 0xff, n & 0xff] as const;
+})();
 
 @Injectable({ providedIn: 'root' })
 export class ScoringService {
   /**
-   * Computes a pixel-similarity score (0–100) between the user's drawing
+   * Computes a pixel-similarity score (0–1000) between the user's drawing
    * and the reference SVG flag.
    *
    * @param userDataUrl - canvas.toDataURL() from the drawing canvas
@@ -44,6 +53,12 @@ export class ScoringService {
           const tolerance = 60;
 
           for (let i = 0; i < refData.length; i += 4) {
+            // Unfilled canvas pixels never match — empty is not a colour.
+            if (
+              userData[i]     === UNFILLED[0] &&
+              userData[i + 1] === UNFILLED[1] &&
+              userData[i + 2] === UNFILLED[2]
+            ) continue;
             const rDiff = Math.abs(refData[i]     - userData[i]);
             const gDiff = Math.abs(refData[i + 1] - userData[i + 1]);
             const bDiff = Math.abs(refData[i + 2] - userData[i + 2]);
@@ -52,7 +67,7 @@ export class ScoringService {
             }
           }
 
-          resolve(Math.round((matching / totalPixels) * 100));
+          resolve(Math.round((matching / totalPixels) * 1000));
         };
         userImg.onerror = () => resolve(0);
         userImg.src = userDataUrl;

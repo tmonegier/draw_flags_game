@@ -82,14 +82,14 @@ describe('EndComponent', () => {
   });
 
   it('exposes gameState.overallGrade() correctly', () => {
-    gameState.addRoundScore(makeScore(95)); // 95 → A
+    gameState.addRoundScore(makeScore(950)); // 950 → A
     expect(component.gameState.overallGrade()).toBe('A');
   });
 
   it('overallGrade updates reactively when scores are added', () => {
-    gameState.addRoundScore(makeScore(40)); // D
+    gameState.addRoundScore(makeScore(400)); // D
     expect(component.gameState.overallGrade()).toBe('D');
-    gameState.addRoundScore(makeScore(90)); // avg 65 → C
+    gameState.addRoundScore(makeScore(900)); // avg 650 → C
     expect(component.gameState.overallGrade()).toBe('C');
   });
 });

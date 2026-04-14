@@ -4,16 +4,16 @@ import { GameStateService, RoundScore, scoreToGrade } from './game-state.service
 // ── scoreToGrade (pure function) ──────────────────────────────────────────────
 
 describe('scoreToGrade', () => {
-  it('returns A for score = 100', () => expect(scoreToGrade(100)).toBe('A'));
-  it('returns A for score = 90', () => expect(scoreToGrade(90)).toBe('A'));
-  it('returns B for score = 89', () => expect(scoreToGrade(89)).toBe('B'));
-  it('returns B for score = 70', () => expect(scoreToGrade(70)).toBe('B'));
-  it('returns C for score = 69', () => expect(scoreToGrade(69)).toBe('C'));
-  it('returns C for score = 50', () => expect(scoreToGrade(50)).toBe('C'));
-  it('returns D for score = 49', () => expect(scoreToGrade(49)).toBe('D'));
-  it('returns D for score = 30', () => expect(scoreToGrade(30)).toBe('D'));
-  it('returns F for score = 29', () => expect(scoreToGrade(29)).toBe('F'));
-  it('returns F for score = 0',  () => expect(scoreToGrade(0)).toBe('F'));
+  it('returns A for score = 1000', () => expect(scoreToGrade(1000)).toBe('A'));
+  it('returns A for score = 900',  () => expect(scoreToGrade(900)).toBe('A'));
+  it('returns B for score = 899',  () => expect(scoreToGrade(899)).toBe('B'));
+  it('returns B for score = 700',  () => expect(scoreToGrade(700)).toBe('B'));
+  it('returns C for score = 699',  () => expect(scoreToGrade(699)).toBe('C'));
+  it('returns C for score = 500',  () => expect(scoreToGrade(500)).toBe('C'));
+  it('returns D for score = 499',  () => expect(scoreToGrade(499)).toBe('D'));
+  it('returns D for score = 300',  () => expect(scoreToGrade(300)).toBe('D'));
+  it('returns F for score = 299',  () => expect(scoreToGrade(299)).toBe('F'));
+  it('returns F for score = 0',    () => expect(scoreToGrade(0)).toBe('F'));
 });
 
 // ── GameStateService ──────────────────────────────────────────────────────────
@@ -308,24 +308,24 @@ describe('GameStateService', () => {
       expect(service.overallGrade()).toBe('F');
     });
 
-    it('is A when average score is 90+', () => {
-      service.addRoundScore(makeScore(100));
-      service.addRoundScore(makeScore(90));
+    it('is A when average score is 900+', () => {
+      service.addRoundScore(makeScore(1000));
+      service.addRoundScore(makeScore(900));
       expect(service.overallGrade()).toBe('A');
     });
 
-    it('is B when average score is 70–89', () => {
-      service.addRoundScore(makeScore(70));
+    it('is B when average score is 700–899', () => {
+      service.addRoundScore(makeScore(700));
       expect(service.overallGrade()).toBe('B');
     });
 
-    it('is C when average score is 50–69', () => {
-      service.addRoundScore(makeScore(55));
+    it('is C when average score is 500–699', () => {
+      service.addRoundScore(makeScore(550));
       expect(service.overallGrade()).toBe('C');
     });
 
-    it('is D when average score is 30–49', () => {
-      service.addRoundScore(makeScore(40));
+    it('is D when average score is 300–499', () => {
+      service.addRoundScore(makeScore(400));
       expect(service.overallGrade()).toBe('D');
     });
 

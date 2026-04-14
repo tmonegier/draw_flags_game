@@ -6,7 +6,7 @@
       <div class="scoring-badge computing">Scoring…</div>
     } @else {
       <div class="scoring-badge" [class]="'grade-' + grade().toLowerCase()">
-        <span class="score-number">{{ score() }}%</span>
+        <span class="score-number">{{ score() }}<small>/1000</small></span>
         <span class="grade-letter">{{ grade() }}</span>
       </div>
     }

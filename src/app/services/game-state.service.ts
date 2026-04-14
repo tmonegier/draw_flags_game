@@ -12,10 +12,10 @@ export interface RoundScore {
 }
 
 export function scoreToGrade(score: number): string {
-  if (score >= 90) return 'A';
-  if (score >= 70) return 'B';
-  if (score >= 50) return 'C';
-  if (score >= 30) return 'D';
+  if (score >= 900) return 'A';
+  if (score >= 700) return 'B';
+  if (score >= 500) return 'C';
+  if (score >= 300) return 'D';
   return 'F';
 }
 

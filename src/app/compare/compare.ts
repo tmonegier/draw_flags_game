@@ -78,10 +78,10 @@ export class CompareComponent implements OnInit {
   getScoreMessage(): string {
     const s = this.score();
     if (s === null) return '';
-    if (s >= 90) return '🎉 Outstanding! Near-perfect match!';
-    if (s >= 70) return '👍 Great job! Mostly correct.';
-    if (s >= 50) return '😊 Not bad! Room for improvement.';
-    if (s >= 30) return '😅 Keep practicing!';
+    if (s >= 900) return '🎉 Outstanding! Near-perfect match!';
+    if (s >= 700) return '👍 Great job! Mostly correct.';
+    if (s >= 500) return '😊 Not bad! Room for improvement.';
+    if (s >= 300) return '😅 Keep practicing!';
     return '😬 Better luck next time!';
   }
 }

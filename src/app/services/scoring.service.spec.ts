@@ -1,5 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { ScoringService } from './scoring.service';
+import { CANVAS_BACKGROUND } from '../drawing/drawing-canvas';
+
+const BG = (() => {
+  const n = parseInt(CANVAS_BACKGROUND.replace('#', ''), 16);
+  return [(n >> 16) & 0xff, (n >> 8) & 0xff, n & 0xff];
+})();
 
 describe('ScoringService', () => {
   let service: ScoringService;
@@ -76,13 +82,13 @@ describe('ScoringService', () => {
     spyOn(CanvasRenderingContext2D.prototype, 'getImageData').and.callFake(getImageDataImpl);
   }
 
-  it('returns 100 when both images render identically (same pixel data)', async () => {
+  it('returns 1000 when both images render identically (same pixel data)', async () => {
     (window as any).Image = makeMockImage(true);
     const w = 2, h = 2;
     const allWhite = new Uint8ClampedArray(w * h * 4).fill(255);
     setupCanvasSpies(() => ({ data: allWhite, width: w, height: h, colorSpace: 'srgb' } as ImageData));
     const score = await service.computeScore('data:x', 'test.svg', w, h);
-    expect(score).toBe(100);
+    expect(score).toBe(1000);
   });
 
   it('returns 0 when all pixels exceed tolerance (white vs black)', async () => {
@@ -99,7 +105,7 @@ describe('ScoringService', () => {
     expect(score).toBe(0);
   });
 
-  it('returns 50 when exactly half the pixels match', async () => {
+  it('returns 500 when exactly half the pixels match', async () => {
     (window as any).Image = makeMockImage(true);
     const w = 2, h = 1;
     let call = 0;
@@ -111,7 +117,7 @@ describe('ScoringService', () => {
       return { data, width: w, height: h, colorSpace: 'srgb' } as ImageData;
     });
     const score = await service.computeScore('data:x', 'test.svg', w, h);
-    expect(score).toBe(50);
+    expect(score).toBe(500);
   });
 
   it('counts a pixel as matching when every channel diff equals tolerance (60)', async () => {
@@ -125,7 +131,7 @@ describe('ScoringService', () => {
       return { data, width: w, height: h, colorSpace: 'srgb' } as ImageData;
     });
     const score = await service.computeScore('data:x', 'test.svg', w, h);
-    expect(score).toBe(100);
+    expect(score).toBe(1000);
   });
 
   it('counts a pixel as non-matching when red channel diff is tolerance+1 (61)', async () => {
@@ -142,14 +148,30 @@ describe('ScoringService', () => {
     expect(score).toBe(0);
   });
 
-  it('score is always in the range [0, 100]', async () => {
+  it('does not count unfilled canvas pixels even when the flag region is white', async () => {
+    (window as any).Image = makeMockImage(true);
+    const w = 2, h = 1;
+    let call = 0;
+    setupCanvasSpies(() => {
+      // ref: 2 white pixels; user: 1 white + 1 unfilled-canvas-grey
+      const data = call++ === 0
+        ? new Uint8ClampedArray([255, 255, 255, 255, 255, 255, 255, 255])
+        : new Uint8ClampedArray([255, 255, 255, 255, BG[0], BG[1], BG[2], 255]);
+      return { data, width: w, height: h, colorSpace: 'srgb' } as ImageData;
+    });
+    const score = await service.computeScore('data:x', 'test.svg', w, h);
+    // 1 of 2 pixels matches → 500, despite grey being within tolerance of white
+    expect(score).toBe(500);
+  });
+
+  it('score is always in the range [0, 1000]', async () => {
     (window as any).Image = makeMockImage(true);
     const w = 4, h = 4;
     const data = new Uint8ClampedArray(w * h * 4).fill(128);
     setupCanvasSpies(() => ({ data, width: w, height: h, colorSpace: 'srgb' } as ImageData));
     const score = await service.computeScore('data:x', 'test.svg', w, h);
     expect(score).toBeGreaterThanOrEqual(0);
-    expect(score).toBeLessThanOrEqual(100);
+    expect(score).toBeLessThanOrEqual(1000);
   });
 
   it('passes width and height to canvas operations', async () => {

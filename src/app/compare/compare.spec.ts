@@ -15,7 +15,7 @@ describe('CompareComponent', () => {
 
   beforeEach(async () => {
     mockScoring = jasmine.createSpyObj('ScoringService', ['computeScore']);
-    mockScoring.computeScore.and.returnValue(Promise.resolve(75));
+    mockScoring.computeScore.and.returnValue(Promise.resolve(750));
 
     await TestBed.configureTestingModule({
       imports: [CompareComponent],
@@ -32,7 +32,7 @@ describe('CompareComponent', () => {
   });
 
   /** Start game + submit drawing, then create + initialise the component. */
-  async function createReady(score = 75): Promise<void> {
+  async function createReady(score = 750): Promise<void> {
     mockScoring.computeScore.and.returnValue(Promise.resolve(score));
     gameState.startGame('easy');
     gameState.submitDrawing('data:image/png;base64,abc', 600, 400);
@@ -140,12 +140,12 @@ describe('CompareComponent', () => {
   });
 
   it('sets score signal after computing', async () => {
-    await createReady(88);
-    expect(component.score()).toBe(88);
+    await createReady(880);
+    expect(component.score()).toBe(880);
   });
 
   it('sets grade signal from scoreToGrade after computing', async () => {
-    await createReady(88); // 88 → B
+    await createReady(880); // 880 → B
     expect(component.grade()).toBe('B');
   });
 
@@ -166,9 +166,9 @@ describe('CompareComponent', () => {
   });
 
   it('adds a round score to game state after computing', async () => {
-    await createReady(75);
+    await createReady(750);
     expect(gameState.roundScores().length).toBe(1);
-    expect(gameState.roundScores()[0].score).toBe(75);
+    expect(gameState.roundScores()[0].score).toBe(750);
   });
 
   it('round score includes country name, code, svgFile and ratio', async () => {
@@ -189,57 +189,57 @@ describe('CompareComponent', () => {
     expect(component.getScoreMessage()).toBe('');
   });
 
-  it('getScoreMessage returns outstanding message for score >= 90', async () => {
+  it('getScoreMessage returns outstanding message for score >= 900', async () => {
     await createReady();
-    component.score.set(95);
+    component.score.set(950);
     expect(component.getScoreMessage()).toContain('Outstanding');
   });
 
-  it('getScoreMessage returns great message for score 70–89', async () => {
+  it('getScoreMessage returns great message for score 700–899', async () => {
     await createReady();
-    component.score.set(75);
+    component.score.set(750);
     expect(component.getScoreMessage()).toContain('Great');
   });
 
-  it('getScoreMessage returns not-bad message for score 50–69', async () => {
+  it('getScoreMessage returns not-bad message for score 500–699', async () => {
     await createReady();
-    component.score.set(60);
+    component.score.set(600);
     expect(component.getScoreMessage()).toContain('Not bad');
   });
 
-  it('getScoreMessage returns keep-practicing message for score 30–49', async () => {
+  it('getScoreMessage returns keep-practicing message for score 300–499', async () => {
     await createReady();
-    component.score.set(40);
+    component.score.set(400);
     expect(component.getScoreMessage()).toContain('practicing');
   });
 
-  it('getScoreMessage returns better-luck message for score < 30', async () => {
+  it('getScoreMessage returns better-luck message for score < 300', async () => {
     await createReady();
-    component.score.set(15);
+    component.score.set(150);
     expect(component.getScoreMessage()).toContain('luck');
   });
 
-  it('getScoreMessage boundary: score 90 is outstanding', async () => {
+  it('getScoreMessage boundary: score 900 is outstanding', async () => {
     await createReady();
-    component.score.set(90);
+    component.score.set(900);
     expect(component.getScoreMessage()).toContain('Outstanding');
   });
 
-  it('getScoreMessage boundary: score 70 is great', async () => {
+  it('getScoreMessage boundary: score 700 is great', async () => {
     await createReady();
-    component.score.set(70);
+    component.score.set(700);
     expect(component.getScoreMessage()).toContain('Great');
   });
 
-  it('getScoreMessage boundary: score 50 is not-bad', async () => {
+  it('getScoreMessage boundary: score 500 is not-bad', async () => {
     await createReady();
-    component.score.set(50);
+    component.score.set(500);
     expect(component.getScoreMessage()).toContain('Not bad');
   });
 
-  it('getScoreMessage boundary: score 30 is keep-practicing', async () => {
+  it('getScoreMessage boundary: score 300 is keep-practicing', async () => {
     await createReady();
-    component.score.set(30);
+    component.score.set(300);
     expect(component.getScoreMessage()).toContain('practicing');
   });
 
