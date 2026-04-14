@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { AspectRatioPipe } from '../utils/aspect-ratio.pipe';
+import { GRADE_COLORS, Grade } from '../scoring-config';
 
 @Component({
   selector: 'app-end',
@@ -14,8 +15,7 @@ export class EndComponent {
   readonly gameState = inject(GameStateService);
 
   gradeColor(grade: string): string {
-    const map: Record<string, string> = { A: '#68d391', B: '#63b3ed', C: '#f6e05e', D: '#f6ad55', F: '#fc8181' };
-    return map[grade] ?? '#888';
+    return GRADE_COLORS[grade as Grade] ?? '#888';
   }
 
   playAgain(): void {

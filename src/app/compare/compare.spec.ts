@@ -5,6 +5,7 @@ import { provideLocationMocks } from '@angular/common/testing';
 import { CompareComponent } from './compare';
 import { GameStateService } from '../services/game-state.service';
 import { ScoringService } from '../services/scoring.service';
+import { SCORE_MESSAGES } from '../scoring-config';
 
 describe('CompareComponent', () => {
   let fixture: ComponentFixture<CompareComponent>;
@@ -189,59 +190,24 @@ describe('CompareComponent', () => {
     expect(component.getScoreMessage()).toBe('');
   });
 
-  it('getScoreMessage returns outstanding message for score >= 900', async () => {
-    await createReady();
-    component.score.set(950);
-    expect(component.getScoreMessage()).toContain('Outstanding');
-  });
-
-  it('getScoreMessage returns great message for score 700–899', async () => {
-    await createReady();
-    component.score.set(750);
-    expect(component.getScoreMessage()).toContain('Great');
-  });
-
-  it('getScoreMessage returns not-bad message for score 500–699', async () => {
-    await createReady();
-    component.score.set(600);
-    expect(component.getScoreMessage()).toContain('Not bad');
-  });
-
-  it('getScoreMessage returns keep-practicing message for score 300–499', async () => {
-    await createReady();
-    component.score.set(400);
-    expect(component.getScoreMessage()).toContain('practicing');
-  });
-
-  it('getScoreMessage returns better-luck message for score < 300', async () => {
-    await createReady();
-    component.score.set(150);
-    expect(component.getScoreMessage()).toContain('luck');
-  });
-
-  it('getScoreMessage boundary: score 900 is outstanding', async () => {
-    await createReady();
-    component.score.set(900);
-    expect(component.getScoreMessage()).toContain('Outstanding');
-  });
-
-  it('getScoreMessage boundary: score 700 is great', async () => {
-    await createReady();
-    component.score.set(700);
-    expect(component.getScoreMessage()).toContain('Great');
-  });
-
-  it('getScoreMessage boundary: score 500 is not-bad', async () => {
-    await createReady();
-    component.score.set(500);
-    expect(component.getScoreMessage()).toContain('Not bad');
-  });
-
-  it('getScoreMessage boundary: score 300 is keep-practicing', async () => {
-    await createReady();
-    component.score.set(300);
-    expect(component.getScoreMessage()).toContain('practicing');
-  });
+  // Drive boundary tests off the same SCORE_MESSAGES table the component reads.
+  for (const msg of SCORE_MESSAGES) {
+    it(`getScoreMessage returns "${msg.message.slice(0, 28)}…" at the lower bound (score = ${msg.min})`, async () => {
+      await createReady();
+      component.score.set(msg.min);
+      expect(component.getScoreMessage()).toBe(msg.message);
+    });
+  }
+  // Just-below-boundary: each message should yield to the next tier down.
+  for (let i = 0; i < SCORE_MESSAGES.length - 1; i++) {
+    const here = SCORE_MESSAGES[i];
+    const below = SCORE_MESSAGES[i + 1];
+    it(`getScoreMessage drops to "${below.message.slice(0, 20)}…" just below ${here.min}`, async () => {
+      await createReady();
+      component.score.set(here.min - 1);
+      expect(component.getScoreMessage()).toBe(below.message);
+    });
+  }
 
   // ── next() ────────────────────────────────────────────────────────────────────
 

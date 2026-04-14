@@ -4,6 +4,7 @@ import { GameStateService, scoreToGrade } from '../services/game-state.service';
 import { ScoringService } from '../services/scoring.service';
 import { ratioToCssAspect } from '../utils/ratio';
 import { AspectRatioPipe } from '../utils/aspect-ratio.pipe';
+import { SCORE_MESSAGES } from '../scoring-config';
 
 @Component({
   selector: 'app-compare',
@@ -79,10 +80,6 @@ export class CompareComponent implements OnInit {
   getScoreMessage(): string {
     const s = this.score();
     if (s === null) return '';
-    if (s >= 900) return '🎉 Outstanding! Near-perfect match!';
-    if (s >= 700) return '👍 Great job! Mostly correct.';
-    if (s >= 500) return '😊 Not bad! Room for improvement.';
-    if (s >= 300) return '😅 Keep practicing!';
-    return '😬 Better luck next time!';
+    return SCORE_MESSAGES.find(m => s >= m.min)?.message ?? '';
   }
 }

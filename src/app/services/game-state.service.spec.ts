@@ -1,19 +1,26 @@
 import { TestBed } from '@angular/core/testing';
 import { GameStateService, RoundScore, scoreToGrade } from './game-state.service';
+import { GRADE_THRESHOLDS, SCORE_SCALE } from '../scoring-config';
 
 // ── scoreToGrade (pure function) ──────────────────────────────────────────────
 
 describe('scoreToGrade', () => {
-  it('returns A for score = 1000', () => expect(scoreToGrade(1000)).toBe('A'));
-  it('returns A for score = 900',  () => expect(scoreToGrade(900)).toBe('A'));
-  it('returns B for score = 899',  () => expect(scoreToGrade(899)).toBe('B'));
-  it('returns B for score = 700',  () => expect(scoreToGrade(700)).toBe('B'));
-  it('returns C for score = 699',  () => expect(scoreToGrade(699)).toBe('C'));
-  it('returns C for score = 500',  () => expect(scoreToGrade(500)).toBe('C'));
-  it('returns D for score = 499',  () => expect(scoreToGrade(499)).toBe('D'));
-  it('returns D for score = 300',  () => expect(scoreToGrade(300)).toBe('D'));
-  it('returns F for score = 299',  () => expect(scoreToGrade(299)).toBe('F'));
-  it('returns F for score = 0',    () => expect(scoreToGrade(0)).toBe('F'));
+  // Walk every threshold pair and assert both sides of the boundary.
+  for (let i = 0; i < GRADE_THRESHOLDS.length; i++) {
+    const { grade, min } = GRADE_THRESHOLDS[i];
+    it(`returns ${grade} at the lower bound (score = ${min})`, () => {
+      expect(scoreToGrade(min)).toBe(grade);
+    });
+    if (i > 0) {
+      const nextGrade = GRADE_THRESHOLDS[i].grade; // current
+      it(`returns ${nextGrade} just below the previous bound (score = ${GRADE_THRESHOLDS[i - 1].min - 1})`, () => {
+        expect(scoreToGrade(GRADE_THRESHOLDS[i - 1].min - 1)).toBe(nextGrade);
+      });
+    }
+  }
+  it('returns A at the top of the scale', () => {
+    expect(scoreToGrade(SCORE_SCALE)).toBe('A');
+  });
 });
 
 // ── GameStateService ──────────────────────────────────────────────────────────
@@ -308,26 +315,14 @@ describe('GameStateService', () => {
       expect(service.overallGrade()).toBe('F');
     });
 
-    it('is A when average score is 900+', () => {
-      service.addRoundScore(makeScore(1000));
-      service.addRoundScore(makeScore(900));
-      expect(service.overallGrade()).toBe('A');
-    });
-
-    it('is B when average score is 700–899', () => {
-      service.addRoundScore(makeScore(700));
-      expect(service.overallGrade()).toBe('B');
-    });
-
-    it('is C when average score is 500–699', () => {
-      service.addRoundScore(makeScore(550));
-      expect(service.overallGrade()).toBe('C');
-    });
-
-    it('is D when average score is 300–499', () => {
-      service.addRoundScore(makeScore(400));
-      expect(service.overallGrade()).toBe('D');
-    });
+    // For each grade, seed a single round at that grade's lower bound and
+    // assert the overall grade matches.
+    for (const { grade, min } of GRADE_THRESHOLDS) {
+      it(`is ${grade} when the average sits at the ${grade} lower bound (${min})`, () => {
+        service.addRoundScore(makeScore(min));
+        expect(service.overallGrade()).toBe(grade);
+      });
+    }
 
     it('mirrors scoreToGrade(averageScore())', () => {
       service.addRoundScore(makeScore(60));

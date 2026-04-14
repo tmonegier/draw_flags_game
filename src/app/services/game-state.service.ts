@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Country, CountryService, Difficulty } from './country.service';
+import { GRADE_THRESHOLDS } from '../scoring-config';
 
 export interface RoundScore {
   country: string;
@@ -12,10 +13,9 @@ export interface RoundScore {
 }
 
 export function scoreToGrade(score: number): string {
-  if (score >= 900) return 'A';
-  if (score >= 700) return 'B';
-  if (score >= 500) return 'C';
-  if (score >= 300) return 'D';
+  for (const { grade, min } of GRADE_THRESHOLDS) {
+    if (score >= min) return grade;
+  }
   return 'F';
 }
 
