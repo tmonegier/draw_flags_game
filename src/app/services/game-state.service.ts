@@ -44,7 +44,10 @@ export class GameStateService {
   startGame(difficulty: Difficulty): void {
     this.difficulty.set(difficulty);
     this.roundScores.set([]);
-    const all = this.countryService.shuffle(this.countryService.getCountries());
+    const source = difficulty === 'free'
+      ? this.countryService.getFreeModeCountries()
+      : this.countryService.getCountries();
+    const all = this.countryService.shuffle(source);
     const [first, ...rest] = all.slice(0, 10);
     this.currentCountry.set(first);
     this.queue.set(rest);
@@ -56,7 +59,10 @@ export class GameStateService {
    * Returns false if the code is not found in the country list.
    */
   startGameWithCountry(countryCode: string, difficulty: Difficulty): boolean {
-    const country = this.countryService.getCountries().find(c => c.code === countryCode);
+    const source = difficulty === 'free'
+      ? this.countryService.getFreeModeCountries()
+      : this.countryService.getCountries();
+    const country = source.find(c => c.code === countryCode);
     if (!country) return false;
     this.difficulty.set(difficulty);
     this.roundScores.set([]);

@@ -12,8 +12,8 @@ describe('CountryService', () => {
   // ── getCountries ─────────────────────────────────────────────────────────────
 
   describe('getCountries', () => {
-    it('returns 55 countries', () => {
-      expect(service.getCountries().length).toBe(55);
+    it('returns 64 countries', () => {
+      expect(service.getCountries().length).toBe(64);
     });
 
     it('returns a new array each call (not the same reference)', () => {
@@ -23,7 +23,7 @@ describe('CountryService', () => {
     it('does not mutate internal data when the returned array is modified', () => {
       const a = service.getCountries();
       a.push({ name: 'Test', code: 'xx', ratio: '1:1', svgFile: 'test.svg', hints: [], colors: [] });
-      expect(service.getCountries().length).toBe(55);
+      expect(service.getCountries().length).toBe(64);
     });
 
     it('every country has a non-empty name', () => {
@@ -430,6 +430,52 @@ describe('CountryService', () => {
       const shuffled = service.shuffle(countries);
       expect(shuffled.length).toBe(countries.length);
       countries.forEach(c => expect(shuffled).toContain(c));
+    });
+  });
+
+  // ── getFreeModeCountries ─────────────────────────────────────────────────────
+
+  describe('getFreeModeCountries', () => {
+    it('returns 206 sovereign states (UN members + observers + partially recognized)', () => {
+      expect(service.getFreeModeCountries().length).toBe(206);
+    });
+
+    it('returns a new array each call', () => {
+      expect(service.getFreeModeCountries()).not.toBe(service.getFreeModeCountries());
+    });
+
+    it('every country has name, code, ratio, svgFile, colors', () => {
+      service.getFreeModeCountries().forEach(c => {
+        expect(c.name).toBeTruthy();
+        expect(c.code).toBeTruthy();
+        expect(c.ratio).toMatch(/^\d+:\d+$/);
+        expect(c.svgFile).toMatch(/\.svg$/);
+        expect(c.colors.length).toBeGreaterThan(0);
+      });
+    });
+
+    it('every color is a valid hex string', () => {
+      service.getFreeModeCountries().forEach(c =>
+        c.colors.forEach(col => expect(col).toMatch(/^#[0-9a-fA-F]{6}$/))
+      );
+    });
+
+    it('includes UN observers Vatican City and Palestine', () => {
+      const names = service.getFreeModeCountries().map(c => c.name);
+      expect(names).toContain('Vatican City');
+      expect(names).toContain('Palestine');
+    });
+
+    it('includes partially recognized states', () => {
+      const names = service.getFreeModeCountries().map(c => c.name);
+      expect(names).toContain('Kosovo');
+      expect(names).toContain('Taiwan');
+      expect(names).toContain('Western Sahara');
+    });
+
+    it('every country code is unique', () => {
+      const codes = service.getFreeModeCountries().map(c => c.code);
+      expect(new Set(codes).size).toBe(codes.length);
     });
 
     it('produces a different order at least sometimes (statistical test over 20 runs)', () => {
