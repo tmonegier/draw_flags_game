@@ -73,7 +73,7 @@ items below. They're sorted by likely-bug → maintainability → polish.
 
 | # | Title | Status | Commit |
 |---|---|---|---|
-| 23 | CLAUDE.md still mentions an `easy/medium/hard` ladder; `medium` was removed | todo | — |
+| 23 | CLAUDE.md still mentions an `easy/medium/hard` ladder; `medium` was removed | done | (pending) |
 | 24 | `Point` interface defined privately in canvas component — fine to keep, flag if reused | todo | — |
 | 25 | `getDrawingDataUrl()` allocates a fresh temp canvas on every submit | todo | — |
 
