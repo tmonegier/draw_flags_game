@@ -1,15 +1,15 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Country, CountryService, Difficulty } from './country.service';
-import { GRADE_THRESHOLDS } from '../scoring-config';
+import { GRADE_THRESHOLDS, Grade } from '../scoring-config';
 
 export interface RoundScore {
   country: Country;
   score: number;
-  grade: string;
+  grade: Grade;
   drawingDataUrl: string;
 }
 
-export function scoreToGrade(score: number): string {
+export function scoreToGrade(score: number): Grade {
   for (const { grade, min } of GRADE_THRESHOLDS) {
     if (score >= min) return grade;
   }

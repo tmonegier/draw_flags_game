@@ -5,7 +5,7 @@ import { ScoringService } from '../services/scoring.service';
 import { ratioToCssAspect } from '../utils/ratio';
 import { AspectRatioPipe } from '../utils/aspect-ratio.pipe';
 import { getFlagUrl } from '../utils/flag-url';
-import { SCORE_MESSAGES } from '../scoring-config';
+import { SCORE_MESSAGES, Grade } from '../scoring-config';
 
 @Component({
   selector: 'app-compare',
@@ -19,7 +19,7 @@ export class CompareComponent implements OnInit {
   private readonly scoringService = inject(ScoringService);
 
   score = signal<number | null>(null);
-  grade = signal<string>('');
+  grade = signal<Grade | ''>('');
   isScoring = signal(true);
   scoringError = signal<string | null>(null);
 
