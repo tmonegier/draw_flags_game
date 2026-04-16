@@ -5,13 +5,15 @@ import { ExploreComponent } from './explore';
 import { GameStateService } from '../services/game-state.service';
 
 /**
- * Minimal SVG with two paths:
- *   - fr: drawable (in FREE_MODE_COUNTRIES)
- *   - zz: unknown code (must be ignored on click)
+ * Minimal SVG with two paths and one microstate marker:
+ *   - fr:  drawable <path>    (in FREE_MODE_COUNTRIES)
+ *   - zz:  unknown <path>     (must be ignored on click)
+ *   - mc:  drawable <circle>  (microstate marker — Monaco)
  */
 const FAKE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
   <path data-code="fr" data-name="France" d="M0,0h1v1h-1z"/>
   <path data-code="zz" data-name="Nowhere" d="M2,2h1v1h-1z"/>
+  <circle class="marker" data-code="mc" data-name="Monaco" cx="5" cy="5" r="1"/>
 </svg>`;
 
 describe('ExploreComponent', () => {
@@ -48,12 +50,21 @@ describe('ExploreComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('injects the map SVG and marks drawable paths', () => {
+  it('injects the map SVG and marks drawable shapes (paths and markers)', () => {
     const host: HTMLElement = fixture.nativeElement;
     const fr = host.querySelector<SVGPathElement>('path[data-code="fr"]');
     const zz = host.querySelector<SVGPathElement>('path[data-code="zz"]');
+    const mc = host.querySelector<SVGCircleElement>('circle[data-code="mc"]');
     expect(fr?.classList.contains('drawable')).toBeTrue();
     expect(zz?.classList.contains('drawable')).toBeFalse();
+    expect(mc?.classList.contains('drawable')).toBeTrue();
+  });
+
+  it('click on a microstate marker <circle> navigates like any country path', () => {
+    const mc = (fixture.nativeElement as HTMLElement).querySelector<SVGCircleElement>('circle[data-code="mc"]')!;
+    component.onClick({ target: mc } as unknown as MouseEvent);
+    expect(gameState.difficulty()).toBe('free');
+    expect(router.navigate).toHaveBeenCalledWith(['/game', 'mc']);
   });
 
   it('click on a drawable path navigates to /game/:code with free difficulty and explore entry', () => {

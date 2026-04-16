@@ -144,3 +144,18 @@
 .explore .map-container path.drawable:hover {
   fill: #63b3ed;
 }
+
+/* Microstate markers — painted on top of paths so they win pointer events.
+   vector-effect keeps the circle a constant screen size when the viewBox zooms. */
+.explore .map-container circle.marker {
+  fill: #4a6fa5;
+  stroke: #1a1f2c;
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: fill 0.12s ease;
+}
+
+.explore .map-container circle.marker:hover {
+  fill: #63b3ed;
+}

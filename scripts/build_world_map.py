@@ -49,6 +49,53 @@ ISO3_TO_ISO2 = {
 
 W, H = 1000, 500
 
+# Countries either missing from the geojson (microstates like Monaco, Vatican,
+# Andorra, Singapore, Liechtenstein, ...) or present but too small to click at
+# the base zoom level. For each we emit a <circle> marker at its centroid, tagged
+# with data-code so the existing click handler treats it like any other country.
+# Threshold is the minor-axis length (px at viewBox scale) below which a country
+# is considered unclickable without a companion dot.
+MIN_CLICKABLE_PX = 3.5
+MARKER_LAT_LON = {
+    # iso2: (lat, lon, name)
+    'mc': (43.7384, 7.4246, 'Monaco'),
+    'li': (47.1660, 9.5554, 'Liechtenstein'),
+    'ad': (42.5063, 1.5218, 'Andorra'),
+    'sm': (43.9424, 12.4578, 'San Marino'),
+    'va': (41.9029, 12.4534, 'Vatican City'),
+    'mt': (35.9375, 14.3754, 'Malta'),
+    'sg': (1.3521, 103.8198, 'Singapore'),
+    'bh': (26.0667, 50.5577, 'Bahrain'),
+    'mv': (3.2028, 73.2207, 'Maldives'),
+    'lu': (49.8153, 6.1296, 'Luxembourg'),
+    'cy': (35.1264, 33.4299, 'Cyprus'),
+    'cy_n': (35.1856, 33.3823, 'Northern Cyprus'),
+    'bb': (13.1939, -59.5432, 'Barbados'),
+    'gd': (12.1165, -61.6790, 'Grenada'),
+    'kn': (17.3578, -62.7830, 'Saint Kitts and Nevis'),
+    'lc': (13.9094, -60.9789, 'Saint Lucia'),
+    'vc': (12.9843, -61.2872, 'Saint Vincent and the Grenadines'),
+    'ag': (17.0608, -61.7964, 'Antigua and Barbuda'),
+    'dm': (15.4150, -61.3710, 'Dominica'),
+    'km': (-11.6455, 43.3333, 'Comoros'),
+    'sc': (-4.6796, 55.4920, 'Seychelles'),
+    'mu': (-20.3484, 57.5522, 'Mauritius'),
+    'st': (0.1864, 6.6131, 'São Tomé and Príncipe'),
+    'cv': (16.5388, -23.0418, 'Cape Verde'),
+    'tv': (-7.1095, 177.6493, 'Tuvalu'),
+    'nr': (-0.5228, 166.9315, 'Nauru'),
+    'ki': (1.8709, -157.3630, 'Kiribati'),
+    'pw': (7.5150, 134.5825, 'Palau'),
+    'fm': (7.4256, 150.5508, 'Micronesia'),
+    'mh': (7.1315, 171.1845, 'Marshall Islands'),
+    'ws': (-13.7590, -172.1046, 'Samoa'),
+    'to': (-21.1790, -175.1982, 'Tonga'),
+    'ck': (-21.2367, -159.7777, 'Cook Islands'),
+    'nu': (-19.0544, -169.8672, 'Niue'),
+    'bs': (25.0343, -77.3963, 'Bahamas'),
+    'bm': (32.3078, -64.7505, 'Bermuda'),
+}
+
 def project(lon, lat):
     x = (lon + 180) / 360 * W
     y = (90 - lat) / 180 * H
@@ -77,6 +124,23 @@ def geom_to_d(geom):
             parts.append(ring_to_path(ring))
     return " ".join(parts)
 
+
+def minor_bbox_px(geom):
+    """Min of the feature's bbox width/height in viewBox pixels, so we can flag
+    countries too small to click without a companion marker."""
+    xs, ys = [], []
+    def walk(x):
+        if isinstance(x, list) and x and isinstance(x[0], (int, float)):
+            xs.append(x[0]); ys.append(x[1])
+        elif isinstance(x, list):
+            for i in x: walk(i)
+    walk(geom['coordinates'])
+    if not xs:
+        return 0
+    w_px = (max(xs) - min(xs)) / 360 * W
+    h_px = (max(ys) - min(ys)) / 180 * H
+    return min(w_px, h_px)
+
 def fetch_geojson(path):
     if os.path.exists(path):
         with open(path) as f:
@@ -93,6 +157,10 @@ def main():
     data = fetch_geojson(cache)
 
     paths = []
+    # Countries whose paths are too small to click at base zoom — we'll skip
+    # their marker entry from being dropped as "already covered".
+    too_small = set()
+    rendered = set()
     for feat in data['features']:
         iso3 = feat['id']
         iso2 = ISO3_TO_ISO2.get(iso3)
@@ -103,17 +171,36 @@ def main():
             continue
         name = feat['properties'].get('name', '').replace('"', '&quot;')
         paths.append(f'<path data-code="{iso2}" data-name="{name}" d="{d}"/>')
+        rendered.add(iso2)
+        if minor_bbox_px(feat['geometry']) < MIN_CLICKABLE_PX:
+            too_small.add(iso2)
+
+    # Marker dots: every missing microstate plus every too-small country that
+    # has a centroid entry. Dots go *after* paths so they stack on top and win
+    # pointer events over nearby land.
+    markers = []
+    for iso2, (lat, lon, name) in MARKER_LAT_LON.items():
+        if iso2 in rendered and iso2 not in too_small:
+            continue  # path is already big enough to click
+        x, y = project(lon, lat)
+        safe_name = name.replace('"', '&quot;')
+        markers.append(
+            f'<circle class="marker" data-code="{iso2}" data-name="{safe_name}" '
+            f'cx="{x:.1f}" cy="{y:.1f}" r="3"/>'
+        )
 
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" '
         f'preserveAspectRatio="xMidYMid meet">\n'
         + "\n".join(paths)
+        + "\n"
+        + "\n".join(markers)
         + "\n</svg>\n"
     )
     out = os.path.abspath(OUT_PATH)
     with open(out, 'w') as f:
         f.write(svg)
-    print(f"Wrote {out} ({len(paths)} countries, {len(svg)} bytes)")
+    print(f"Wrote {out} ({len(paths)} country paths + {len(markers)} markers, {len(svg)} bytes)")
 
 if __name__ == "__main__":
     main()

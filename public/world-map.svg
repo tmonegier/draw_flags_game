@@ -168,4 +168,39 @@
 <path data-code="za" data-name="South Africa" d="M587.6,331.3L587.0,331.7L585.8,333.1L585.1,334.5L583.5,336.5L580.3,339.4L578.4,341.0L576.3,342.3L573.4,343.4L572.0,343.5L571.6,344.3L569.9,343.9L568.5,344.4L565.5,343.9L563.9,344.2L562.7,344.1L559.8,345.2L557.5,345.6L555.8,346.7L554.5,346.7L553.3,345.7L552.4,345.7L551.2,344.4L551.0,344.8L550.7,344.1L550.7,342.4L549.8,340.6L550.7,340.1L550.6,337.9L548.8,335.3L547.4,333.0L547.4,333.0L545.4,329.4L546.7,328.0L547.8,328.8L548.3,330.0L549.5,330.2L551.3,330.7L552.8,330.5L555.3,329.1L555.3,318.8L556.0,319.2L557.7,321.9L557.4,323.5L558.0,324.5L560.0,324.2L561.4,323.0L562.7,322.2L563.4,320.8L564.8,320.2L565.9,320.5L567.3,321.3L569.5,321.4L571.3,320.8L571.6,319.9L572.1,318.6L573.6,318.4L574.4,317.3L575.3,315.5L577.8,313.4L581.8,311.4L582.9,311.4L584.2,311.9L585.2,311.5L586.6,311.8L588.0,315.7L588.7,317.7L588.2,320.8L588.4,321.8L587.0,321.3L586.2,321.5L586.0,322.3L585.2,323.3L585.2,324.3L586.9,325.8L588.5,325.5L589.1,324.3L591.2,324.3L590.5,326.3L590.2,328.6L589.5,329.9L587.6,331.3Z M580.5,330.4L579.3,329.6L578.0,330.1L576.5,331.2L575.0,333.0L577.1,335.1L578.1,334.8L578.6,334.0L580.1,333.5L580.6,332.6L581.5,331.3L580.5,330.4Z"/>
 <path data-code="zm" data-name="Zambia" d="M591.0,275.6L592.3,276.9L593.0,279.2L592.5,280.0L592.0,282.2L592.5,284.5L591.6,285.5L590.8,288.1L592.3,288.8L583.8,291.1L584.1,293.1L582.0,293.5L580.4,294.6L580.1,295.5L579.1,295.7L576.7,298.0L575.1,299.8L574.2,299.9L573.3,299.6L570.2,299.3L569.7,299.1L569.7,298.8L568.6,298.2L566.8,298.0L564.5,298.7L562.7,296.9L560.8,294.7L560.9,285.8L566.7,285.9L566.5,284.9L566.9,283.9L566.4,282.6L566.7,281.2L566.4,280.4L567.4,280.4L567.5,281.3L568.8,281.2L570.6,281.5L571.5,282.7L573.8,283.1L575.5,282.2L576.1,283.7L578.2,284.1L579.2,285.3L580.4,286.8L582.5,286.8L582.3,283.8L581.5,284.3L579.6,283.3L578.8,282.8L579.2,280.0L579.6,276.7L579.0,275.5L579.8,273.7L580.6,273.4L584.3,272.9L585.4,273.2L586.5,273.9L587.7,274.3L589.4,274.8L591.0,275.6Z"/>
 <path data-code="zw" data-name="Zimbabwe" d="M586.6,311.8L585.2,311.5L584.2,311.9L582.9,311.4L581.8,311.4L580.0,310.1L577.8,309.7L577.0,307.9L577.0,306.9L575.8,306.6L572.7,303.6L571.8,302.0L571.2,301.5L570.2,299.3L573.3,299.6L574.2,299.9L575.1,299.8L576.7,298.0L579.1,295.7L580.1,295.5L580.4,294.6L582.0,293.5L584.1,293.1L584.3,294.1L586.6,294.1L587.9,294.6L588.5,295.3L589.8,295.5L591.2,296.4L591.2,299.9L590.7,301.9L590.6,303.9L591.0,304.8L590.7,306.4L590.3,306.7L589.6,308.7L586.6,311.8Z"/>
+<circle class="marker" data-code="mc" data-name="Monaco" cx="520.6" cy="128.5" r="3"/>
+<circle class="marker" data-code="li" data-name="Liechtenstein" cx="526.5" cy="119.0" r="3"/>
+<circle class="marker" data-code="ad" data-name="Andorra" cx="504.2" cy="131.9" r="3"/>
+<circle class="marker" data-code="sm" data-name="San Marino" cx="534.6" cy="127.9" r="3"/>
+<circle class="marker" data-code="va" data-name="Vatican City" cx="534.6" cy="133.6" r="3"/>
+<circle class="marker" data-code="mt" data-name="Malta" cx="539.9" cy="150.2" r="3"/>
+<circle class="marker" data-code="sg" data-name="Singapore" cx="788.4" cy="246.2" r="3"/>
+<circle class="marker" data-code="bh" data-name="Bahrain" cx="640.4" cy="177.6" r="3"/>
+<circle class="marker" data-code="mv" data-name="Maldives" cx="703.4" cy="241.1" r="3"/>
+<circle class="marker" data-code="lu" data-name="Luxembourg" cx="517.0" cy="111.6" r="3"/>
+<circle class="marker" data-code="cy" data-name="Cyprus" cx="592.9" cy="152.4" r="3"/>
+<circle class="marker" data-code="cy_n" data-name="Northern Cyprus" cx="592.7" cy="152.3" r="3"/>
+<circle class="marker" data-code="bb" data-name="Barbados" cx="334.6" cy="213.4" r="3"/>
+<circle class="marker" data-code="gd" data-name="Grenada" cx="328.7" cy="216.3" r="3"/>
+<circle class="marker" data-code="kn" data-name="Saint Kitts and Nevis" cx="325.6" cy="201.8" r="3"/>
+<circle class="marker" data-code="lc" data-name="Saint Lucia" cx="330.6" cy="211.4" r="3"/>
+<circle class="marker" data-code="vc" data-name="Saint Vincent and the Grenadines" cx="329.8" cy="213.9" r="3"/>
+<circle class="marker" data-code="ag" data-name="Antigua and Barbuda" cx="328.3" cy="202.6" r="3"/>
+<circle class="marker" data-code="dm" data-name="Dominica" cx="329.5" cy="207.2" r="3"/>
+<circle class="marker" data-code="km" data-name="Comoros" cx="620.4" cy="282.3" r="3"/>
+<circle class="marker" data-code="sc" data-name="Seychelles" cx="654.1" cy="263.0" r="3"/>
+<circle class="marker" data-code="mu" data-name="Mauritius" cx="659.9" cy="306.5" r="3"/>
+<circle class="marker" data-code="st" data-name="São Tomé and Príncipe" cx="518.4" cy="249.5" r="3"/>
+<circle class="marker" data-code="cv" data-name="Cape Verde" cx="436.0" cy="204.1" r="3"/>
+<circle class="marker" data-code="tv" data-name="Tuvalu" cx="993.5" cy="269.7" r="3"/>
+<circle class="marker" data-code="nr" data-name="Nauru" cx="963.7" cy="251.5" r="3"/>
+<circle class="marker" data-code="ki" data-name="Kiribati" cx="62.9" cy="244.8" r="3"/>
+<circle class="marker" data-code="pw" data-name="Palau" cx="873.8" cy="229.1" r="3"/>
+<circle class="marker" data-code="fm" data-name="Micronesia" cx="918.2" cy="229.4" r="3"/>
+<circle class="marker" data-code="mh" data-name="Marshall Islands" cx="975.5" cy="230.2" r="3"/>
+<circle class="marker" data-code="ws" data-name="Samoa" cx="21.9" cy="288.2" r="3"/>
+<circle class="marker" data-code="to" data-name="Tonga" cx="13.3" cy="308.8" r="3"/>
+<circle class="marker" data-code="ck" data-name="Cook Islands" cx="56.2" cy="309.0" r="3"/>
+<circle class="marker" data-code="nu" data-name="Niue" cx="28.1" cy="302.9" r="3"/>
+<circle class="marker" data-code="bm" data-name="Bermuda" cx="320.1" cy="160.3" r="3"/>
 </svg>

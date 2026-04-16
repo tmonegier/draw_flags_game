@@ -79,10 +79,12 @@ export class ExploreComponent implements AfterViewInit {
   }
 
   private markDrawable(): void {
-    const paths = this.mapContainer.nativeElement.querySelectorAll<SVGPathElement>('path[data-code]');
-    paths.forEach(p => {
-      if (this.drawableCodes.has(p.dataset['code'] ?? '')) {
-        p.classList.add('drawable');
+    // Both <path> countries and <circle> markers (for microstates too small to
+    // click at base zoom) carry data-code/data-name — treat them uniformly.
+    const shapes = this.mapContainer.nativeElement.querySelectorAll<SVGElement>('[data-code]');
+    shapes.forEach(el => {
+      if (this.drawableCodes.has(el.dataset['code'] ?? '')) {
+        el.classList.add('drawable');
       }
     });
   }
@@ -227,17 +229,27 @@ export class ExploreComponent implements AfterViewInit {
       this.didDrag = false;
       return;
     }
-    const target = event.target;
-    if (!(target instanceof SVGPathElement)) return;
-    const code = target.dataset['code'];
+    const code = this.codeFrom(event.target);
     if (!code || !this.drawableCodes.has(code)) return;
     this.gameState.difficulty.set('free');
     this.gameState.entry.set('explore');
     this.router.navigate(['/game', code]);
   }
 
+  /** Reads a drawable country's ISO-2 code off the clicked/hovered element.
+   *  Handles both <path> borders and <circle> microstate markers uniformly. */
+  private codeFrom(target: EventTarget | null): string | null {
+    if (!(target instanceof SVGElement)) return null;
+    return target.dataset['code'] ?? null;
+  }
+
   private updateHoverName(target: EventTarget | null): void {
-    if (target instanceof SVGPathElement && this.drawableCodes.has(target.dataset['code'] ?? '')) {
+    if (!(target instanceof SVGElement)) {
+      this.hoveredName.set('');
+      return;
+    }
+    const code = target.dataset['code'];
+    if (code && this.drawableCodes.has(code)) {
       this.hoveredName.set(target.dataset['name'] ?? '');
     } else {
       this.hoveredName.set('');
