@@ -30,7 +30,7 @@ ISO3_TO_ISO2 = {
     'COG':'cg','COL':'co','CRI':'cr','CUB':'cu','CYP':'cy','CZE':'cz','DEU':'de','DJI':'dj',
     'DNK':'dk','DOM':'do','DZA':'dz','ECU':'ec','EGY':'eg','ERI':'er','ESP':'es','EST':'ee',
     'ETH':'et','FIN':'fi','FJI':'fj','FRA':'fr','GAB':'ga','GBR':'gb','GEO':'ge','GHA':'gh',
-    'GIN':'gn','GMB':'gm','GNB':'gw','GNQ':'gq','GRC':'gr','GTM':'gt','GUY':'gy','HND':'hn',
+    'GIN':'gn','GMB':'gm','GNB':'gw','GNQ':'gq','GRC':'gr','GRL':'gl','GTM':'gt','GUY':'gy','HND':'hn',
     'HRV':'hr','HTI':'ht','HUN':'hu','IDN':'id','IND':'in','IRL':'ie','IRN':'ir','IRQ':'iq',
     'ISL':'is','ISR':'il','ITA':'it','JAM':'jm','JOR':'jo','JPN':'jp','KAZ':'kz','KEN':'ke',
     'KGZ':'kg','KHM':'kh','KOR':'kr','KWT':'kw','LAO':'la','LBN':'lb','LBR':'lr','LBY':'ly',

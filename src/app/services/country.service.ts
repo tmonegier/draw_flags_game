@@ -510,6 +510,7 @@ const FREE_MODE_COUNTRIES: Country[] = [
   { name: 'Germany', code: 'de', ratio: '3:5', svgFile: 'germany.svg', hints: [], colors: ['#DD0000', '#FFCE00', '#000000'] },
   { name: 'Ghana', code: 'gh', ratio: '2:3', svgFile: 'ghana.svg', hints: [], colors: ['#FCD116', '#006B3F', '#CE1126', '#000000'] },
   { name: 'Greece', code: 'gr', ratio: '2:3', svgFile: 'greece.svg', hints: [], colors: ['#FFFFFF', '#0D5EAF'] },
+  { name: 'Greenland', code: 'gl', ratio: '2:3', svgFile: 'greenland.svg', hints: [], colors: ['#FFFFFF', '#C8102E'] },
   { name: 'Grenada', code: 'gd', ratio: '3:5', svgFile: 'grenada.svg', hints: [], colors: ['#CE1126', '#FCD116', '#007A5E'] },
   { name: 'Guatemala', code: 'gt', ratio: '5:8', svgFile: 'guatemala.svg', hints: [], colors: ['#FFFFFF', '#4997D0'] },
   { name: 'Guinea', code: 'gn', ratio: '2:3', svgFile: 'guinea.svg', hints: [], colors: ['#009460', '#CE1126', '#FCD116'] },

@@ -74,7 +74,8 @@
       "Bash(curl -s http://localhost:4200/world-map.svg)",
       "Bash(curl -sI http://localhost:4200/explore)",
       "Bash(npm start *)",
-      "Bash(echo \"Started PID $!\")"
+      "Bash(echo \"Started PID $!\")",
+      "Bash(curl -sL -o public/flags/greenland.svg \"https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_Greenland.svg\")"
     ]
   }
 }
