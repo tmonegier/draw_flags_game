@@ -17,6 +17,17 @@ export class EndComponent {
   readonly gameState = inject(GameStateService);
 
   playAgain(): void {
+    // Explore-mode rounds came from the world map, so "play again" returns there
+    // to let the user pick another country rather than restarting a shuffled queue.
+    if (this.gameState.entry() === 'explore') {
+      this.router.navigate(['/explore']);
+      return;
+    }
+    this.gameState.startGame(this.gameState.difficulty());
+    this.router.navigate(['/game']);
+  }
+
+  goHome(): void {
     this.router.navigate(['/']);
   }
 }

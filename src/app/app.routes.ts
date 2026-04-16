@@ -5,6 +5,7 @@ export const routes: Routes = [
   { path: 'game', loadComponent: () => import('./game/game').then(m => m.GameComponent) },
   { path: 'game/:countryCode', loadComponent: () => import('./game/game').then(m => m.GameComponent) },
   { path: 'create', loadComponent: () => import('./create/create').then(m => m.CreateComponent) },
+  { path: 'explore', loadComponent: () => import('./explore/explore').then(m => m.ExploreComponent) },
   { path: 'compare', loadComponent: () => import('./compare/compare').then(m => m.CompareComponent) },
   { path: 'end', loadComponent: () => import('./end/end').then(m => m.EndComponent) },
   { path: '**', redirectTo: '' },

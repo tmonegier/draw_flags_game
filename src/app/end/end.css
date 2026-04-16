@@ -168,23 +168,45 @@ h1 {
   object-fit: fill;
 }
 
-/* Play again */
-.play-again-btn {
-  padding: 0.9rem 2.8rem;
+/* End-of-game actions */
+.end-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.play-again-btn,
+.home-btn {
+  padding: 0.9rem 2.4rem;
   font-size: 1.1rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #4299e1, #3182ce);
-  color: #fff;
   border: none;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.play-again-btn {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: #fff;
   box-shadow: 0 4px 18px rgba(66, 153, 225, 0.35);
 }
 
 .play-again-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(66, 153, 225, 0.55);
+}
+
+.home-btn {
+  background: rgba(255,255,255,0.06);
+  color: #d0d8e8;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.home-btn:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 480px) {
@@ -236,7 +258,14 @@ h1 {
     padding: 0.55rem;
   }
 
-  .play-again-btn {
+  .end-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .play-again-btn,
+  .home-btn {
     width: 100%;
     max-width: 320px;
     padding: 0.8rem 1.5rem;

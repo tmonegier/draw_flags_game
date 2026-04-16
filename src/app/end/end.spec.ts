@@ -43,8 +43,33 @@ describe('EndComponent', () => {
 
   // ── playAgain ─────────────────────────────────────────────────────────────────
 
-  it('playAgain() navigates to /', () => {
+  it('playAgain() restarts the current mode and navigates to /game', () => {
+    spyOn(gameState, 'startGame').and.callThrough();
+    gameState.difficulty.set('hard');
     component.playAgain();
+    expect(gameState.startGame).toHaveBeenCalledWith('hard');
+    expect(router.navigate).toHaveBeenCalledWith(['/game']);
+  });
+
+  it('playAgain() preserves whatever difficulty was in play (free)', () => {
+    spyOn(gameState, 'startGame').and.callThrough();
+    gameState.difficulty.set('free');
+    component.playAgain();
+    expect(gameState.startGame).toHaveBeenCalledWith('free');
+  });
+
+  it('playAgain() returns to /explore when the round was launched from the map', () => {
+    spyOn(gameState, 'startGame').and.callThrough();
+    gameState.entry.set('explore');
+    component.playAgain();
+    expect(router.navigate).toHaveBeenCalledWith(['/explore']);
+    expect(gameState.startGame).not.toHaveBeenCalled();
+  });
+
+  // ── goHome ────────────────────────────────────────────────────────────────────
+
+  it('goHome() navigates to /', () => {
+    component.goHome();
     expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 

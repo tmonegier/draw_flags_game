@@ -273,6 +273,15 @@ describe('HomeComponent', () => {
     });
   });
 
+  // ── startExplore() ────────────────────────────────────────────────────────────
+
+  describe('startExplore()', () => {
+    it('navigates to /explore', () => {
+      component.startExplore();
+      expect(router.navigate).toHaveBeenCalledWith(['/explore']);
+    });
+  });
+
   // ── onTutorialClosed() ────────────────────────────────────────────────────────
 
   describe('onTutorialClosed()', () => {

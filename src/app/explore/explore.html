@@ -1,0 +1,34 @@
+<div class="explore">
+  <header class="explore-header">
+    <button class="back-btn" type="button" (click)="goHome()" aria-label="Back to home">‹ Back</button>
+    <h1>Explore the World</h1>
+    <p class="subtitle">Click any country to draw its flag</p>
+  </header>
+
+  @if (loadError()) {
+    <div class="error" role="alert">Failed to load map: {{ loadError() }}</div>
+  }
+
+  <div class="tooltip" aria-live="polite">{{ hoveredName() || '\u00A0' }}</div>
+
+  <div class="map-wrapper">
+    <div
+      #mapContainer
+      class="map-container"
+      (click)="onClick($event)"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp($event)"
+      (pointercancel)="onPointerUp($event)"
+      (pointerleave)="onPointerUp($event)"
+      (wheel)="onWheel($event)"
+      (mouseleave)="hoveredName.set('')"
+    ></div>
+
+    <div class="zoom-controls" role="group" aria-label="Zoom controls">
+      <button type="button" class="zoom-btn" (click)="zoomIn()" aria-label="Zoom in">+</button>
+      <button type="button" class="zoom-btn" (click)="resetZoom()" aria-label="Reset zoom">⌂</button>
+      <button type="button" class="zoom-btn" (click)="zoomOut()" aria-label="Zoom out">−</button>
+    </div>
+  </div>
+</div>

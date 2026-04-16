@@ -63,6 +63,10 @@ export class HomeComponent {
     this.router.navigate(['/create']);
   }
 
+  startExplore(): void {
+    this.router.navigate(['/explore']);
+  }
+
   onTouchStart(event: TouchEvent): void {
     this.touchStartX = event.changedTouches[0]?.clientX ?? null;
   }

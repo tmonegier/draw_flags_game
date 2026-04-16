@@ -9,6 +9,10 @@ export interface RoundScore {
   drawingDataUrl: string;
 }
 
+/** Distinguishes a normal queued game from a single-country round launched from
+ *  the world map, so the end screen can offer the right "play again" action. */
+export type GameEntry = 'queue' | 'explore';
+
 export function scoreToGrade(score: number): Grade {
   for (const { grade, min } of GRADE_THRESHOLDS) {
     if (score >= min) return grade;
@@ -21,6 +25,7 @@ export class GameStateService {
   private readonly countryService = inject(CountryService);
 
   readonly difficulty = signal<Difficulty>('easy');
+  readonly entry = signal<GameEntry>('queue');
   readonly queue = signal<Country[]>([]);
   readonly currentCountry = signal<Country | null>(null);
   readonly drawingDataUrl = signal<string>('');
@@ -40,6 +45,7 @@ export class GameStateService {
 
   startGame(difficulty: Difficulty): void {
     this.difficulty.set(difficulty);
+    this.entry.set('queue');
     this.roundScores.set([]);
     const source = difficulty === 'free'
       ? this.countryService.getFreeModeCountries()

@@ -17,6 +17,8 @@ Set `CHROME_BIN=/snap/bin/chromium` if Chrome is not found automatically (Linux/
 
 To download/refresh flag SVGs: `python3 scripts/download_flags.py` (requires `requests` + `bs4`; 20 s delay between downloads; resumes if interrupted).
 
+To regenerate the world map: `python3 scripts/build_world_map.py` (reads `scripts/world.geojson`, writes `public/world-map.svg`). The map uses an equirectangular projection on a 1000×500 canvas; each `<path>` carries `data-code="<iso2>"` matching `country.service.ts` codes.
+
 ## Architecture
 
 **flag-draws** is an Angular 19 standalone-component app where users draw country flags from memory and receive a pixel-similarity score. Only flags made purely of rectangular bands are used as game countries.
@@ -25,10 +27,11 @@ To download/refresh flag SVGs: `python3 scripts/download_flags.py` (requires `re
 
 Difficulty levels are `'easy' | 'hard' | 'free'` (the old `medium` tier was removed).
 
-1. `/` — `HomeComponent`: pick difficulty (easy/hard/free), call `GameStateService.startGame()`; if the tutorial for that difficulty has not been seen, `showTutorial` is set and `TutorialModalComponent` is shown before navigating; on close `markTutorialSeen()` writes `tutorial-seen-{difficulty}=1` to localStorage and navigates to `/game`
+1. `/` — `HomeComponent`: pick difficulty (easy/hard/free), call `GameStateService.startGame()`; if the tutorial for that difficulty has not been seen, `showTutorial` is set and `TutorialModalComponent` is shown before navigating; on close `markTutorialSeen()` writes `tutorial-seen-{difficulty}=1` to localStorage and navigates to `/game`. The Free page also exposes an **Explore the World** button that routes to `/explore` (see below).
+1a. `/explore` — `ExploreComponent`: loads `public/world-map.svg` via `fetch`, injects it into a container (with `ViewEncapsulation.None` so CSS reaches the `<path>` children), tags paths whose `data-code` appears in `CountryService.getFreeModeCountries()` with the `drawable` class; click delegation on the container reads `data-code` off the target, sets difficulty to `'free'`, and routes to `/game/:code` so the user draws that flag as a single-country round.
 2. `/game` (or `/game/:countryCode` — e.g. `/game/fr` — to jump directly to a specific country by its ISO 2-letter `code` from `country.service.ts`; handy for testing a single flag without cycling through the queue) — `GameComponent`: applies difficulty hints in `ngAfterViewInit()` (bands/cross on `splitsCanvas`, elements auto-placed on `elementsCanvas`); restricts colour picker to a **shuffled** copy of `country.colors` and pre-selects the first shuffled colour; toolbar `clearMode` is `'cancel'` on easy (restores hints) and `'clear'` on hard/free (full wipe); Elements picker is only shown on hard; pen mode and pen-size slider are shown on free mode; on submit stores the data URL in `GameStateService` and navigates to `/compare`
 3. `/compare` — `CompareComponent`: on init calls `ScoringService.computeScore()` which loads the local SVG via `getFlagUrl(svgFile)`, renders both images onto off-screen canvases, and computes a pixel-match score on the 0–`SCORE_SCALE` (1000) range using `PIXEL_TOLERANCE` (60/255 per channel) from `scoring-config.ts`; pixels matching the unfilled canvas grey never count as matches; stores `RoundScore` in `GameStateService`, then routes to `/game` (next round) or `/end`. On scoring failure (image load error, etc.) the promise rejects, the component surfaces `scoringError` in a red banner, and a 0/F round is recorded so the user can move on.
-4. `/end` — `EndComponent`: shows each round as a card with the user's drawing alongside the real flag
+4. `/end` — `EndComponent`: shows each round as a card with the user's drawing alongside the real flag. Offers **Play Again** (restarts `gameState.startGame(difficulty())` → `/game`, keeping the same mode) and **Home** (→ `/`).
 
 All routes use lazy-loaded standalone components (`loadComponent`).
 
@@ -194,6 +197,7 @@ Every service, component, pipe, and utility has a corresponding `*.spec.ts` file
 | `game/game.spec.ts` | Signal defaults, color/modal handlers, `allowedColors`, `clearMode`, `showElements`, hint application, `submit()` |
 | `compare/compare.spec.ts` | Redirect guard, scoring flow, `scoreMessage` boundary table, scoring-error path, destruction guard, navigation |
 | `end/end.spec.ts` | `playAgain()`, `gameState` exposure |
+| `explore/explore.spec.ts` | SVG injection, drawable class tagging, click → `/game/:code`, hover tooltip, fetch failure |
 | `drawing/toolbar.spec.ts` | `clearMode`/`clearLabel`, `showElements` inputs, `colorChange`, `clearCanvas` outputs |
 | `drawing/elements-modal.spec.ts` | Category filter, band/cross config, `updateRatio()` clamping, OK/close |
 | `drawing/drawing-canvas.spec.ts` | Canvas dimensions, split/cross boundaries, element placement, mouse events |
