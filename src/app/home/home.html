@@ -41,7 +41,7 @@
       (touchstart)="onTouchStart($event)"
       (touchend)="onTouchEnd($event)"
     >
-      <div class="carousel-track" [attr.data-page]="page()">
+      <div class="carousel-track" [class.animated]="animated()" [attr.data-page]="page()">
         <div class="carousel-page" [attr.aria-hidden]="page() !== 'free'">
           <h2 class="section-title">Free Drawing</h2>
           <div class="cards">

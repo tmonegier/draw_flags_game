@@ -266,6 +266,12 @@ describe('HomeComponent', () => {
       expect(fresh.selected()).toBe('easy');
     });
 
+    it('new HomeComponent restores the create page when last page was create', () => {
+      localStorage.setItem(LAST_PAGE_KEY, 'create');
+      const fresh = newFixture();
+      expect(fresh.page()).toBe('create');
+    });
+
     it('new HomeComponent defaults to free when no last page is stored', () => {
       localStorage.removeItem(LAST_PAGE_KEY);
       const fresh = newFixture();
@@ -279,6 +285,27 @@ describe('HomeComponent', () => {
     it('navigates to /explore', () => {
       component.startExplore();
       expect(router.navigate).toHaveBeenCalledWith(['/explore']);
+    });
+
+    it('stores "free" as the last page so returning home lands on the free page', () => {
+      localStorage.setItem(LAST_PAGE_KEY, 'guided');
+      component.startExplore();
+      expect(localStorage.getItem(LAST_PAGE_KEY)).toBe('free');
+    });
+  });
+
+  // ── startCreate() ─────────────────────────────────────────────────────────────
+
+  describe('startCreate()', () => {
+    it('navigates to /create', () => {
+      component.startCreate();
+      expect(router.navigate).toHaveBeenCalledWith(['/create']);
+    });
+
+    it('stores "create" as the last page so returning home lands on the create page', () => {
+      localStorage.setItem(LAST_PAGE_KEY, 'free');
+      component.startCreate();
+      expect(localStorage.getItem(LAST_PAGE_KEY)).toBe('create');
     });
   });
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameStateService } from '../services/game-state.service';
 import { Difficulty } from '../services/country.service';
@@ -18,7 +18,7 @@ export const LAST_PAGE_KEY = 'home-last-page';
   imports: [TutorialModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly gameState = inject(GameStateService);
 
@@ -26,6 +26,13 @@ export class HomeComponent {
   selected = signal<Difficulty>(this.initialPage === 'free' ? 'free' : 'easy');
   showTutorial = signal(false);
   page = signal<ModePage>(this.initialPage);
+  /** False during initial paint so the carousel jumps to the restored page
+   *  without sliding through the default one. Flipped on after first render. */
+  animated = signal(false);
+
+  ngAfterViewInit(): void {
+    requestAnimationFrame(() => this.animated.set(true));
+  }
 
   private touchStartX: number | null = null;
 
@@ -34,7 +41,7 @@ export class HomeComponent {
     { key: 'hard', label: 'Free Canvas',    description: 'Blank canvas — draw everything from scratch',      emoji: '🔴' },
   ];
 
-  readonly freeDifficulty = { key: 'free' as Difficulty, label: 'Free Drawing', description: 'Freehand pen — draw freely with the flag\'s colors', emoji: '✏️' };
+  readonly freeDifficulty = { key: 'free' as Difficulty, label: '10 in a row', description: 'Draw 10 random flags freehand with each flag\'s colors', emoji: '✏️' };
 
   select(difficulty: Difficulty): void {
     this.selected.set(difficulty);
@@ -60,10 +67,12 @@ export class HomeComponent {
   }
 
   startCreate(): void {
+    this.rememberPage('create');
     this.router.navigate(['/create']);
   }
 
   startExplore(): void {
+    this.rememberPage('free');
     this.router.navigate(['/explore']);
   }
 
@@ -83,7 +92,7 @@ export class HomeComponent {
 
   startGame(difficulty?: Difficulty): void {
     if (difficulty) this.selected.set(difficulty);
-    this.rememberPageFor(this.selected());
+    this.rememberPage(this.selected() === 'free' ? 'free' : 'guided');
     this.gameState.startGame(this.selected());
     if (this.hasTutorialBeenSeen(this.selected())) {
       this.router.navigate(['/game']);
@@ -111,7 +120,7 @@ export class HomeComponent {
     return PAGE_ORDER.includes(stored as ModePage) ? (stored as ModePage) : 'free';
   }
 
-  private rememberPageFor(difficulty: Difficulty): void {
-    localStorage.setItem(LAST_PAGE_KEY, difficulty === 'free' ? 'free' : 'guided');
+  private rememberPage(page: ModePage): void {
+    localStorage.setItem(LAST_PAGE_KEY, page);
   }
 }
