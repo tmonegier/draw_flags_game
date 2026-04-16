@@ -9,6 +9,10 @@
     class="base-canvas"
   ></canvas>
 
+  <!-- Grid overlay: visual empty-state cue; not drawn on any canvas so it
+       never affects flood fill, scoring, or the submission. -->
+  <div class="grid-overlay" aria-hidden="true"></div>
+
   <!-- Splits canvas: guide lines only — NOT included in submission -->
   <canvas
     #splitsCanvas
