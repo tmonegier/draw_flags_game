@@ -57,7 +57,24 @@
       "Bash(tee /tmp/download_log.txt)",
       "Bash(CHROME_BIN=/snap/bin/chromium npx ng test --browsers=ChromeHeadlessNoSandbox --watch=false)",
       "Bash(CHROME_BIN=/usr/bin/google-chrome npx ng test --browsers=ChromeHeadlessNoSandbox --watch=false)",
-      "Bash(grep -oE \"fill[:=][\\\\\"' ]*#[0-9a-fA-F]{3,6}|stop-color[:=][\\\\\"' ]*#[0-9a-fA-F]{3,6}|fill[:=][\\\\\"' ]*[a-z]+\" /home/thiba/projects/draw_flags_game/public/flags/honduras.svg)"
+      "Bash(grep -oE \"fill[:=][\\\\\"' ]*#[0-9a-fA-F]{3,6}|stop-color[:=][\\\\\"' ]*#[0-9a-fA-F]{3,6}|fill[:=][\\\\\"' ]*[a-z]+\" /home/thiba/projects/draw_flags_game/public/flags/honduras.svg)",
+      "Bash(grep -n \"as any\" /home/thiba/projects/draw_flags_game/src/app/**/*.spec.ts)",
+      "Bash(grep -E \"z-index|[0-9]{3,4}px\")",
+      "Bash(curl -sI \"https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg\")",
+      "Bash(curl -sI \"https://raw.githubusercontent.com/djaiss/mapsicon/master/all/all.geojson\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/djaiss/mapsicon/master/all/world/vector.svg\" -o /tmp/world.svg)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/ondreian/world-countries/master/dist/world.svg\" -o /tmp/world.svg)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/madebybowtie/FlagKit/master/Assets/SVG/Country.svg\" -o /tmp/t.svg)",
+      "Bash(curl -sL \"https://simplemaps.com/static/svg/world/world.svg\" -o /tmp/world.svg)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json\" -o /tmp/world.geojson)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/amcharts/amcharts4-geodata/master/dist/json/worldLow.json\" -o /tmp/wl.json)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson\" -o /tmp/w.geojson)",
+      "Bash(curl -sI http://localhost:4200/)",
+      "Bash(curl -sI http://localhost:4200/world-map.svg)",
+      "Bash(curl -s http://localhost:4200/world-map.svg)",
+      "Bash(curl -sI http://localhost:4200/explore)",
+      "Bash(npm start *)",
+      "Bash(echo \"Started PID $!\")"
     ]
   }
 }
