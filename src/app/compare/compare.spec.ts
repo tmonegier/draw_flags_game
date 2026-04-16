@@ -271,6 +271,18 @@ describe('CompareComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/end']);
   });
 
+  it('next() skips /end and goes to /explore when the round was launched from the map', async () => {
+    gameState.startGame('free');
+    gameState.entry.set('explore');
+    gameState.submitDrawing('data:x', 600, 400);
+    fixture   = TestBed.createComponent(CompareComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    component.next();
+    expect(router.navigate).toHaveBeenCalledWith(['/explore']);
+  });
+
   // ── goHome() ──────────────────────────────────────────────────────────────────
 
   it('goHome() navigates to /', async () => {

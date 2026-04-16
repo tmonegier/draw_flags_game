@@ -51,6 +51,10 @@ export class CompareComponent implements OnInit {
 
   get hasMore() { return this.gameState.queue().length > 0; }
 
+  /** Explore-mode rounds are one-off: no aggregate end screen, just bounce back
+   *  to the map so the user can pick another country. */
+  get isExploreEntry() { return this.gameState.entry() === 'explore'; }
+
   ngOnInit(): void {
     this.destroyRef.onDestroy(() => { this.destroyed = true; });
 
@@ -85,6 +89,10 @@ export class CompareComponent implements OnInit {
   }
 
   next(): void {
+    if (this.isExploreEntry) {
+      this.router.navigate(['/explore']);
+      return;
+    }
     const hasNext = this.gameState.nextCountry();
     if (hasNext) {
       this.router.navigate(['/game']);
